@@ -15,8 +15,13 @@ TEST(TestCaseForVirtualSSD, readDataWhereEmptyLBATest) {
   VirtualSSD ssd;
   EXPECT_THAT("0x00000000", ssd.Read(3));
 }
-//
-//// LBA 범위가 아닌 경우 exception throw test
-//TEST(TestCaseForVirtualSSD, excpetionWhenInvalidLBA) { 
-//	VirtualSSD ssd; 
-//}
+
+TEST(TestCaseForVirtualSSD, exceptionThrowMinusLBAWhenReadData) {
+  VirtualSSD ssd;
+  EXPECT_THROW({ ssd.Read(-10); }, std::invalid_argument);
+}
+
+TEST(TestCaseForVirtualSSD, exceptionThrow100LBAWhenReadData) {
+  VirtualSSD ssd;
+  EXPECT_THROW({ ssd.Read(100); }, std::invalid_argument);
+}

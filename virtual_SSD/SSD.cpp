@@ -10,8 +10,9 @@ using namespace std;
 class VirtualSSD : SSD {
 public:
   string SSD::Read(int lab) override {
-    // if (lab < 0 || lab > 99)
-    //   thorwInvalidException();
+    if (lab < 0 || lab > 99) {
+      throw invalid_argument("Invalid lab when reading the data.");
+    }
 
     ifstream nandFile("nand.txt");
 
