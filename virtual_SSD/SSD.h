@@ -10,10 +10,6 @@ public:
 	  return memory;
   }
 
-  void setMemory(std::map<int, std::string> newMemory) {
-	  memory = newMemory;
-  }
-
 private:
   std::map<int, std::string> memory;
 };
