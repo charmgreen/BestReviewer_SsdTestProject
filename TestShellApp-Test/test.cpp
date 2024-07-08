@@ -20,6 +20,7 @@ class TestShellFixture : public testing::Test {
  public:
      TestShell ts;
      MockSsdDriver msd;
+     const int MAX_LBA_CNT = 100;
 };
 
 TEST_F(TestShellFixture, unmap_read_1_lba) {
@@ -32,10 +33,24 @@ TEST_F(TestShellFixture, unmap_read_1_lba) {
 
 TEST_F(TestShellFixture, unmap_read_full_lba) {
     EXPECT_CALL(msd, Read)
-        .Times(100)
+        .Times(MAX_LBA_CNT)
         .WillRepeatedly(Return(0));
 
     ts.Run("fullread");
+}
+
+TEST_F(TestShellFixture, write_1_lba) {
+    EXPECT_CALL(msd, Write)
+        .Times(1);
+
+    ts.Run("write 3 0xAABBCCDD");
+}
+
+TEST_F(TestShellFixture, write_full_lba) {
+    EXPECT_CALL(msd, Write)
+        .Times(MAX_LBA_CNT);
+
+    ts.Run("fullwrite 0xABCDFFFF");
 }
 
 TEST_F(TestShellFixture, exit) {
