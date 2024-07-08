@@ -1,7 +1,7 @@
 #include "TestShell.h"
 #include "SsdDriver.h"
 
-bool TestShell::GetUserInput(char str[]) {
+void TestShell::Run(char str[]) {
     char* nextcmdLine = nullptr;
     char* cmdLine = strtok_s(str, "\n", &nextcmdLine);
 
@@ -13,10 +13,6 @@ bool TestShell::GetUserInput(char str[]) {
     for (const auto& t : RawInput) {
         std::cout << t << std::endl;
     }
-    return false;
-}
-
-void TestShell::Run() {
     // do nothing
 }
 
