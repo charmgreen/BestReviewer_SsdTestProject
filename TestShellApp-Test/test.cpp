@@ -16,6 +16,7 @@ class MockSsdDriver : public SsdDriver {
 class TestShellFixture : public testing::Test {
  protected:
     void SetUp() override {
+        ts.SetSsdDriver(&msd);
     }
 
  public:
