@@ -1,6 +1,7 @@
 // Copyright [2024] <JJY>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include "../Test_Shell_App/ShellCommandFactory.cpp"
 #include "../Test_Shell_App/TestShell.cpp"
 
 using namespace std;

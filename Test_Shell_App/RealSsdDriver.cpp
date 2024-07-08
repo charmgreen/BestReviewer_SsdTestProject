@@ -1,3 +1,4 @@
+// Copyright [2024] <CRA/BestReviewer>
 #include "RealSsdDriver.h"
 
 int RealSsdDriver::Read(int LBA) {

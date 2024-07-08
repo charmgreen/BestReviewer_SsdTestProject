@@ -1,26 +1,20 @@
+// Copyright [2024] <CRA/BestReviewer>
 #pragma once
 #include <vector>
 #include <string>
 #include <cstring>
 #include <iostream>
 #include "SsdDriver.h"
+#include "ShellCommandFactory.h"
 
 
 class TestShell {
  public:
-    void Run(char str[]);
+    void Run(const std::string& str);
     void SetSsdDriver(SsdDriver* ssddriver);
 
  private:
-    void parseArgument();
-    static const int MAX_INPUT_LENGTH = 1000;
-
-    std::vector<std::string> RawInput;
-
-    enum class ShellCommand {
-        Write,
-        Read,
-    };
-
+    ShellCommand CmdLine;
     SsdDriver* ssddriver;
+    ShellCommandFactory factory;
 };

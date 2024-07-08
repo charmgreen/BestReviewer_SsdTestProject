@@ -1,3 +1,4 @@
+// Copyright [2024] <CRA/BestReviewer>
 #pragma once
 
 class SsdDriver {
