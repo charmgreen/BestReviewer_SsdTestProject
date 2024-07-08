@@ -2,9 +2,12 @@
 
 #include "ShellCommandFactory.h"
 
-ShellCommand ShellCommandFactory::Parse(const std::string& strCommand) {
+ShellCommand* ShellCommandFactory::Parse(const std::string& strCommand) {
     TokenArgument(strCommand);
-
+    MakeCommand();
+    result->eCommand = GetCmdType();
+    result->LBA = GetLBA();
+    result->Data = GetData();
     return result;
 }
 
@@ -23,12 +26,41 @@ void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
     CommandToken.push_back(token);
 }
 
-void ShellCommandFactory::GetCmdType() {
+void ShellCommandFactory::MakeCommand() {
+    result = new ShellCommand();
 }
 
-void ShellCommandFactory::GetLBA() {
+
+ShellCmdType ShellCommandFactory::GetCmdType() {
+    ShellCmdType eCmdType = ShellCmdType::Invalid;
+
+    if (CommandToken[0] == "write") eCmdType = ShellCmdType::Write;
+    if (CommandToken[0] == "read") eCmdType = ShellCmdType::Read;
+    if (CommandToken[0] == "exit") eCmdType = ShellCmdType::Exit;
+    if (CommandToken[0] == "help") eCmdType = ShellCmdType::Help;
+    if (CommandToken[0] == "fullwrite") eCmdType = ShellCmdType::FullWrite;
+    if (CommandToken[0] == "fullread") eCmdType = ShellCmdType::FullRead;
+    if (CommandToken[0] == "testapp1") eCmdType = ShellCmdType::TestApp1;
+    if (CommandToken[0] == "testapp2") eCmdType = ShellCmdType::TestApp2;
+
+    return eCmdType;
 }
 
-void ShellCommandFactory::GetData() {
+int ShellCommandFactory::GetLBA() {
+    if ((result->eCommand == ShellCmdType::Write) ||
+        (result->eCommand == ShellCmdType::Read)) {
+        return std::stoi(CommandToken[1]);
+    }
+    return 0;
+}
+
+unsigned int ShellCommandFactory::GetData() {
+    if (result->eCommand == ShellCmdType::Write) {
+        return std::stoul(CommandToken[2], nullptr, 16);
+    } else if (result->eCommand == ShellCmdType::FullWrite) {
+        return std::stoul(CommandToken[1], nullptr, 16);
+    } else {
+        return 0;
+    }
 }
 

@@ -3,7 +3,8 @@
 #include "SsdDriver.h"
 
 void TestShell::Run(const std::string& strCommand) {
-    CmdLine = factory.Parse(strCommand);
+    ShellCommand* shellCommand;
+    shellCommand = factory.Parse(strCommand);
 }
 
 void TestShell::SetSsdDriver(SsdDriver* ssddriver) {

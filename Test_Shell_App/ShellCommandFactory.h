@@ -10,9 +10,13 @@ enum class ShellCmdType {
     Help,
     FullWrite,
     FullRead,
+    TestApp1,
+    TestApp2,
+    Invalid,
 };
 
 class ShellCommand {
+ public:
     ShellCmdType eCommand;
     int LBA;
     int Data;
@@ -20,13 +24,14 @@ class ShellCommand {
 
 class ShellCommandFactory {
  public:
-    ShellCommand Parse(const std::string& strCommand);
+    ShellCommand* Parse(const std::string& strCommand);
  private:
     void TokenArgument(const std::string& strCommand);
-    void GetCmdType();
-    void GetLBA();
-    void GetData();
+    void MakeCommand();
+    ShellCmdType GetCmdType();
+    int GetLBA();
+    unsigned int GetData();
 
     std::vector<std::string> CommandToken;
-    ShellCommand result;
+    ShellCommand* result;
 };
