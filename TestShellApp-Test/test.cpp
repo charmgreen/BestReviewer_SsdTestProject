@@ -1,14 +1,13 @@
 // Copyright [2024] <JJY>
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include "../Test_Shell_App/SsdDriver.h"
-#include "../Test_Shell_App/TestShell.h"
+#include "../Test_Shell_App/TestShell.cpp"
 
 using namespace std;
 using namespace testing;
 
 class MockSsdDriver : public SsdDriver {
-public:
+ public:
     MOCK_METHOD(int, Read, (int LBA), (override));
     MOCK_METHOD(void, Write, (int LBA, int Data), (override));
 };

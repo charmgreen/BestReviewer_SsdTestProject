@@ -97,8 +97,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\packages\gmock.1.11.0\lib\native\src\gtest\src\gtest_main.cc" />
-    <ClCompile Include="..\Test_Shell_App\RealSsdDriver.cpp" />
-    <ClCompile Include="..\Test_Shell_App\TestShell.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
