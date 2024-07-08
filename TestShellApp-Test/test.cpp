@@ -30,10 +30,19 @@ TEST_F(TestShellFixture, unmap_read_1_lba) {
     ts.Run("read 3");
 }
 
-TEST_F(TestShellFixture, unmap_full_read) {
+TEST_F(TestShellFixture, unmap_read_full_lba) {
     EXPECT_CALL(msd, Read)
         .Times(100)
         .WillRepeatedly(Return(0));
 
     ts.Run("fullread");
 }
+
+TEST_F(TestShellFixture, exit) {
+    ts.Run("exit");
+}
+
+TEST_F(TestShellFixture, help) {
+    ts.Run("help");
+}
+
