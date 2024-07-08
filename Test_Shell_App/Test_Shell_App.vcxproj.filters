@@ -21,7 +21,7 @@
     <ClCompile Include="TestShell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="RealTestShellDriver.cpp">
+    <ClCompile Include="RealSsdDriver.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -29,10 +29,10 @@
     <ClInclude Include="TestShell.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="TestShellDriver.h">
+    <ClInclude Include="SsdDriver.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="RealTestShellDriver.h">
+    <ClInclude Include="RealSsdDriver.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>

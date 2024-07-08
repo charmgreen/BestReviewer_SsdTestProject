@@ -20,13 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main_TestShell.cpp" />
+    <ClCompile Include="RealSsdDriver.cpp" />
     <ClCompile Include="TestShell.cpp" />
-    <ClCompile Include="RealTestShellDriver.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RealTestShellDriver.h" />
+    <ClInclude Include="RealSsdDriver.h" />
+    <ClInclude Include="SsdDriver.h" />
     <ClInclude Include="TestShell.h" />
-    <ClInclude Include="TestShellDriver.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
