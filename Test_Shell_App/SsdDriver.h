@@ -3,6 +3,6 @@
 
 class SsdDriver {
  public:
-    virtual int Read(int LBA) = 0;
-    virtual void Write(int LBA, int Data) = 0;
+    virtual unsigned int Read(int LBA) = 0;
+    virtual void Write(int LBA, unsigned int Data) = 0;
 };

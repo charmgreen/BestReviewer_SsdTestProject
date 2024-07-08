@@ -4,6 +4,6 @@
 
 class RealSsdDriver : public SsdDriver {
  public:
-    int Read(int LBA) override;
-    void Write(int LBA, int Data) override;
+    unsigned int Read(int LBA) override;
+    void Write(int LBA, unsigned int Data) override;
 };
