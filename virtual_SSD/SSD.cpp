@@ -15,40 +15,47 @@ public:
     resultFile.close();
   }
 
-  map<int, string> copyDataFromNandFile(ifstream &nandFile) {
-    map<int, string> copyMemory2;
-    string readLine;
+  map<int, string> copyDataFromNandFile() {
+    ifstream nandFile("nand.txt");
+    if (!nandFile.is_open()) {
+        throw runtime_error("nand.txt does not exist.");
+    }
+
+    map<int, string> copyData;
     int labNum = 0;
+    string readLine;
+
     while (!nandFile.eof()) {
       getline(nandFile, readLine);
-      copyMemory2.insert({labNum, readLine});
+      copyData.insert({labNum, readLine});
       labNum++;
     }
-    return copyMemory2;
+    nandFile.close();
+
+    return copyData;
   }
 
   bool isLabDataExistInMemory(int lab) {
     return copyMemory.find(lab) != copyMemory.end();
   }
 
+  bool isLabOutOfRange(int lab) { 
+    return lab < 0 || lab > 99; 
+  }
+
   string SSD::Read(int lab) override {
-    if (lab < 0 || lab > 99) {
+    if (isLabOutOfRange(lab)) {
       throw invalid_argument("Invalid lab when reading the data.");
     }
 
-    ifstream nandFile("nand.txt");
-    if (!nandFile.is_open()) {
-      return "0x00000000";
-    }
-
-    copyMemory = copyDataFromNandFile(nandFile);
-    nandFile.close();
+    copyMemory = copyDataFromNandFile();
 
     if (isLabDataExistInMemory(lab)) {
       string readData = copyMemory[lab];
       saveReadDataInResultFile(readData);
       return readData;
     }
+
      return "0x00000000";
   }
 
