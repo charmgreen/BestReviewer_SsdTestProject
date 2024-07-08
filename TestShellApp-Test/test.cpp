@@ -19,24 +19,22 @@ class TestShellFixture : public testing::Test {
     }
 
  public:
+     TestShell ts;
      MockSsdDriver msd;
 };
 
-TEST_F(TestShellFixture, unmap_read) {
+TEST_F(TestShellFixture, unmap_read_1_lba) {
     EXPECT_CALL(msd, Read)
+        .Times(1)
         .WillRepeatedly(Return(0));
 
-    int data = msd.Read(0);
-    EXPECT_EQ(data, 0);
+    ts.Run("read 3");
 }
 
 TEST_F(TestShellFixture, unmap_full_read) {
     EXPECT_CALL(msd, Read)
+        .Times(100)
         .WillRepeatedly(Return(0));
 
-    for (int i = 0; i < 100; i++)
-    {
-        int data = msd.Read(i);
-        EXPECT_EQ(data, 0);
-    }
+    ts.Run("fullread");
 }
