@@ -14,7 +14,16 @@ class TestShell {
     void SetSsdDriver(SsdDriver* ssddriver);
 
  private:
-    ShellCommand CmdLine;
     SsdDriver* ssddriver;
     ShellCommandFactory factory;
+    ShellCommand* shellCommand;
+
+    void _Write();
+    void _Read();
+    void _Exit();
+    void _Help();
+    void _FullWrite();
+    void _FullRead();
+    void _TestApp1();
+    void _TestApp2();
 };

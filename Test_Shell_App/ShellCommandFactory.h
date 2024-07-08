@@ -19,7 +19,8 @@ class ShellCommand {
  public:
     ShellCmdType eCommand;
     int LBA;
-    int Data;
+    unsigned int Data;
+    bool IsInvalid;
 };
 
 class ShellCommandFactory {
