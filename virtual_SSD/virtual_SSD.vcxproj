@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SSD.cpp" />
-    <ClCompile Include="test.cpp" />
+    <ClCompile Include="Virtual_SSD_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SSD.h" />
