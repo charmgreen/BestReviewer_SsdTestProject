@@ -12,6 +12,7 @@ ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
 void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
     std::string token;
     size_t start = 0, end = 0;
+    CommandToken.clear();
 
     while ((end = strCommand.find(' ', start)) != std::string::npos) {
         token = strCommand.substr(start, end - start);
