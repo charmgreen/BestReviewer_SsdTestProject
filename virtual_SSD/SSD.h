@@ -22,7 +22,6 @@ class SSD {
   void CheckWriteCondition(const int& LBA, const std::string& data);
   void CheckDataLength(const std::string& data);
   void CheckLBARange(const int& LBA);
-  void CheckExistNandFile();
   const std::string& ReturnReadData(const int& LBA);
   void WriteResultFile(const int& LBA);
 };

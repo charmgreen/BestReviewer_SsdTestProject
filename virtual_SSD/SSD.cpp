@@ -9,7 +9,6 @@
 
 class LBARangeException : public std::exception {};
 class DataRangeException : public std::exception {};
-class NotExistNandFileException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
@@ -20,7 +19,6 @@ void SSD::Write(const int& LBA, const std::string& data) {
 
 std::string SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
-    CheckExistNandFile();
     ReadMemory();
     return ReturnReadData(LBA);
 }
@@ -71,15 +69,6 @@ void SSD::CheckDataLength(const std::string& data) {
 void SSD::CheckLBARange(const int& LBA) {
     if (LBA < 0 || LBA > MAX_LBA)
         throw LBARangeException();
-}
-
-
-void SSD::CheckExistNandFile() {
-    std::ifstream nandFile(WriteFIleName);
-    if (!nandFile.is_open()) {
-        throw NotExistNandFileException();
-    }
-    nandFile.close();
 }
 
 const std::string &SSD::ReturnReadData(const int &LBA) {
