@@ -2,14 +2,19 @@
 #include<map>
 #include<string>
 
+using namespace std;
+
 class SSD{
 public:
-  virtual std::string Read(int lab) = 0;
+  virtual string Read(int lba);
+  virtual void saveReadDataInResultFile(string readData);
+  virtual map<int, string> copyDataFromNandFile();
+  virtual bool isLbaOutOfRange(int lba);
 
-  std::map<int, std::string> getMemory() {
+  map<int, string> getMemory() {
 	  return memory;
   }
 
 private:
-  std::map<int, std::string> memory;
+  map<int, string> memory;
 };

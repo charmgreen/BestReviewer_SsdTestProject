@@ -7,21 +7,21 @@ using namespace testing;
 
 
 TEST(TestCaseForVirtualSSD, readDataTest) {
-  VirtualSSD ssd;
+  SSD ssd;
   EXPECT_THAT("0x00000001", ssd.Read(0));
 }
 
 TEST(TestCaseForVirtualSSD, readDataWhereEmptyLBATest) {
-  VirtualSSD ssd;
+  SSD ssd;
   EXPECT_THAT("0x00000000", ssd.Read(3));
 }
 
 TEST(TestCaseForVirtualSSD, exceptionThrowMinusLBAWhenReadData) {
-  VirtualSSD ssd;
+  SSD ssd;
   EXPECT_THROW({ ssd.Read(-10); }, std::invalid_argument);
 }
 
 TEST(TestCaseForVirtualSSD, exceptionThrow100LBAWhenReadData) {
-  VirtualSSD ssd;
+  SSD ssd;
   EXPECT_THROW({ ssd.Read(100); }, std::invalid_argument);
 }
