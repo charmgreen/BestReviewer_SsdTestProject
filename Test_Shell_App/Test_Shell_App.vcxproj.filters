@@ -27,10 +27,10 @@
     <ClCompile Include="ShellCommandFactory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\TestShell - 복사본\Test_Shell_App\ShellCommand.cpp">
+    <ClCompile Include="ShellScript.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ShellScript.cpp">
+    <ClCompile Include="ShellCommand.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="ShellCommandFactory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\TestShell - 복사본\Test_Shell_App\ShellCommand.h">
+    <ClInclude Include="ShellScript.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ShellScript.h">
+    <ClInclude Include="ShellCommand.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

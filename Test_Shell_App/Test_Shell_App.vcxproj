@@ -19,16 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\TestShell - 복사본\Test_Shell_App\ShellCommand.cpp" />
     <ClCompile Include="Main_TestShell.cpp" />
     <ClCompile Include="RealSsdDriver.cpp" />
+    <ClCompile Include="ShellCommand.cpp" />
     <ClCompile Include="ShellCommandFactory.cpp" />
     <ClCompile Include="ShellScript.cpp" />
     <ClCompile Include="TestShell.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\TestShell - 복사본\Test_Shell_App\ShellCommand.h" />
     <ClInclude Include="RealSsdDriver.h" />
+    <ClInclude Include="ShellCommand.h" />
     <ClInclude Include="ShellCommandFactory.h" />
     <ClInclude Include="ShellScript.h" />
     <ClInclude Include="SsdDriver.h" />
