@@ -162,7 +162,7 @@ ShellCommand* ShellCommandFactory::MakeTestApp1Command() {
         return new InvalidCommand();
     }
 
-    return new ShellScript("testapp1.txt");
+    return new ShellScript("..\\Test_Shell_App\\testapp1.txt");
 }
 
 ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
@@ -171,5 +171,5 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
         return new InvalidCommand();
     }
 
-    return new ShellScript("testapp2.txt");
+    return new ShellScript("..\\Test_Shell_App\\testapp2.txt");
 }
