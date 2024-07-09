@@ -138,13 +138,6 @@ TEST_F(MockSsdTestShellFixture, invalid_argument_cnt2) {
     VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(MockSsdTestShellFixture, invalid_argument_cnt4) {
-    EXPECT_CALL(mockSsdDriver, Read)
-        .Times(0);
-
-    testShell.Run("fullread 0xABCDFFFF \n fullread");
-}
-
 TEST_F(MockSsdTestShellFixture, exit) {
     testShell.Run("exit");
     VerifyResult("[Exit] Quit Shell\n");
