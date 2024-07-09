@@ -148,23 +148,23 @@ TEST_F(MockSsdTestShellFixture, InvCommand) {
     VerifyResult(INVALID_COMMAND);
 }
 
-TEST_F(MockSsdTestShellFixture, exit) {
+TEST_F(MockSsdTestShellFixture, ExitTest) {
     testShell.Run("exit");
     VerifyResult("[Exit] Quit Shell\n");
 }
 
-TEST_F(MockSsdTestShellFixture, help) {
+TEST_F(MockSsdTestShellFixture, HelpTest) {
     testShell.Run("help");
     VerifyResult("[Help]\n");
 }
 
-TEST_F(MockSsdTestShellFixture, help_after_exit) {
+TEST_F(MockSsdTestShellFixture, HelpAfterExit) {
     testShell.Run("exit");
     testShell.Run("help");
     VerifyResult("[Exit] Quit Shell\n");
 }
 
-TEST_F(MockSsdTestShellFixture, testapp1) {
+TEST_F(MockSsdTestShellFixture, TestApp1) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(MAX_LBA_CNT);
 
@@ -174,7 +174,7 @@ TEST_F(MockSsdTestShellFixture, testapp1) {
     testShell.Run("testapp1");
 }
 
-TEST_F(MockSsdTestShellFixture, testapp2) {
+TEST_F(MockSsdTestShellFixture, TestApp2) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(36);
 
