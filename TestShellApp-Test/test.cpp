@@ -32,10 +32,10 @@ class MockSsdTestShellFixture : public testing::Test {
     streambuf* backup_cout;
     int startOneLBA = 3;
     const int MAX_LBA_CNT = 100;
-    const string UNMAPED_DATA = "0x00000000";
-    const string WRITE_DATA = "0xAABBCCDD";
-    const string INV_WRITE_DATA = "0xAAGGCCDD";
-    const string INVALID_COMMAND = "INVALID COMMAND\n";
+    const string UNMAPED_DATA       = "0x00000000";
+    const string WRITE_DATA         = "0xAABBCCDD";
+    const string INV_WRITE_DATA     = "0xAAGGCCDD";
+    const string INVALID_COMMAND    = "INVALID COMMAND\n";
 
     string MakeExpectedOutStr(int LBA, string Data) {
         string expectedOutStr;
@@ -61,7 +61,7 @@ class MockSsdTestShellFixture : public testing::Test {
 TEST_F(MockSsdTestShellFixture, Read_OneLBA) {
     EXPECT_CALL(mockSsdDriver, Read)
         .Times(1)
-        .WillRepeatedly(Return("0x00000000"));
+        .WillRepeatedly(Return(UNMAPED_DATA));
 
     testShell.Run("read " + to_string(startOneLBA));
     VerifyResult(MakeExpectedOutStr(3, UNMAPED_DATA));
@@ -70,7 +70,7 @@ TEST_F(MockSsdTestShellFixture, Read_OneLBA) {
 TEST_F(MockSsdTestShellFixture, Read_FullLBA) {
     EXPECT_CALL(mockSsdDriver, Read)
         .Times(MAX_LBA_CNT)
-        .WillRepeatedly(Return("0x00000000"));
+        .WillRepeatedly(Return(UNMAPED_DATA));
 
     testShell.Run("fullread");
     VerifyResult(MakeExpectedOutStr(MAX_LBA_CNT, UNMAPED_DATA));
@@ -164,8 +164,6 @@ TEST_F(MockSsdTestShellFixture, help_after_exit) {
     VerifyResult("[Exit] Quit Shell\n");
 }
 
-// Real Ssd Driver 관련 Test Case 는 이후 따로 추가 예정
-
 TEST_F(MockSsdTestShellFixture, testapp1) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(MAX_LBA_CNT);
@@ -186,6 +184,7 @@ TEST_F(MockSsdTestShellFixture, testapp2) {
     testShell.Run("testapp2");
 }
 
+// Real Ssd Driver 관련 Test Case 는 이후 따로 추가 예정
 //TEST(RealSsdTestShellFixture, Read_OneLBA) {
 //    TestShell testShell2;
 //    RealSsdDriver realSsdDriver;
