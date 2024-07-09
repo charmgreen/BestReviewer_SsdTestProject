@@ -80,7 +80,8 @@ TEST_F(MockSsdTestShellFixture, WriteAndRead_OneLBA) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(1);
     EXPECT_CALL(mockSsdDriver, Read)
-        .Times(1);
+        .Times(1)
+        .WillRepeatedly(Return(WRITE_DATA));
 
     testShell.Run("write " + to_string(startOneLBA) + " " + WRITE_DATA);
     testShell.Run("read " + to_string(startOneLBA));
@@ -91,7 +92,8 @@ TEST_F(MockSsdTestShellFixture, WriteAndRead_FullLBA) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(MAX_LBA_CNT);
     EXPECT_CALL(mockSsdDriver, Read)
-        .Times(MAX_LBA_CNT);
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(WRITE_DATA));
 
     testShell.Run("fullwrite " + WRITE_DATA);
     testShell.Run("fullread");

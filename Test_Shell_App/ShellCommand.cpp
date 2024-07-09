@@ -44,7 +44,7 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
-    std::cout << "[FullWrite]\n";
+    // std::cout << "[FullWrite]\n";
     for (int LBA = 0; LBA <= 99; LBA++) {
         ssddriver->Write(LBA, this->strData);
     }
