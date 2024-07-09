@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 #include "../Test_Shell_App/ShellCommandFactory.cpp"
+#include "../Test_Shell_App/RealSsdDriver.cpp"
 #include "../Test_Shell_App/TestShell.cpp"
 
 using namespace std;
@@ -22,6 +23,7 @@ class TestShellFixture : public testing::Test {
  public:
      TestShell ts;
      MockSsdDriver msd;
+     RealSsdDriver rsd;
      const int MAX_LBA_CNT = 100;
 };
 
@@ -30,6 +32,11 @@ TEST_F(TestShellFixture, unmap_read_1_lba) {
         .Times(1)
         .WillRepeatedly(Return("0"));
 
+    ts.Run("read 3");
+}
+
+TEST_F(TestShellFixture, real_unmap_read_1_lba) {
+    ts.SetSsdDriver(&rsd);
     ts.Run("read 3");
 }
 
@@ -88,4 +95,5 @@ TEST_F(TestShellFixture, exit) {
 TEST_F(TestShellFixture, help) {
     ts.Run("help");
 }
+
 
