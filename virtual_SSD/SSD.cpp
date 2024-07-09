@@ -8,9 +8,7 @@
 #include"SSD.h"
 
 class LBARangeException : public std::exception {};
-
 class DataRangeException : public std::exception {};
-
 class NotExistNandFileException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
