@@ -14,113 +14,150 @@ class MockSsdDriver : public SsdDriver {
     MOCK_METHOD(void, Write, (int LBA, std::string Data), (override));
 };
 
-class TestShellFixture : public testing::Test {
+class MockSsdTestShellFixture : public testing::Test {
  protected:
     void SetUp() override {
-        backup_cout = cout.rdbuf(outBuffer.rdbuf());
-        ts.SetSsdDriver(&msd);
+        backup_cout = cout.rdbuf(actualOutput.rdbuf());
+        testShell.SetSsdDriver(&mockSsdDriver);
     }
     void TearDown() override {
         cout.rdbuf(backup_cout);
     }
  public:
-     TestShell ts;
-     MockSsdDriver msd;
-     RealSsdDriver rsd;
-     const int MAX_LBA_CNT = 100;
-
-    stringstream outBuffer;
+    TestShell testShell;
+    MockSsdDriver mockSsdDriver;
+    stringstream actualOutput;
     streambuf* backup_cout;
+    const int MAX_LBA_CNT = 100;
+    const int UNMAPED_DATA = 0x00000000;
 
-    void VerifyOutBuffer(string expectOut) {
-        EXPECT_THAT(outBuffer.str(), StrEq(expectOut));
+    string toHexString(unsigned int value) {
+        stringstream stream;
+        stream << uppercase << setw(8) << setfill('0') << hex << value;
+        return stream.str();
+    }
+
+    string MakeExpectedOutStr(int LBA, unsigned int Data) {
+        string expectedOutStr;
+        if (LBA == MAX_LBA_CNT) {
+            expectedOutStr = "[FullRead]\n";
+            for (int i = 0; i < MAX_LBA_CNT; i++) {
+                expectedOutStr += ("[Read] LBA : " + to_string(i));
+                expectedOutStr += (", Data : 0x" + toHexString(Data) + "\n");
+            }
+        }
+        else {
+            expectedOutStr = "[Read] LBA : " + to_string(3) + ", Data : 0x" + toHexString(Data) + "\n";
+        }
+
+        return expectedOutStr;
+    }
+
+    void VerifyResult(string expectedOutStr) {
+        EXPECT_THAT(actualOutput.str(), StrEq(expectedOutStr));
     }
 };
 
-TEST_F(TestShellFixture, unmap_read_1_lba) {
-    EXPECT_CALL(msd, Read)
+TEST_F(MockSsdTestShellFixture, unmap_read_1_lba) {
+    EXPECT_CALL(mockSsdDriver, Read)
         .Times(1)
         .WillRepeatedly(Return("0x00000000"));
 
-    ts.Run("read 3");
-    VerifyOutBuffer("[Read] LBA : 3, Data : 0x00000000\n");
+    testShell.Run("read 3");
+    VerifyResult(MakeExpectedOutStr(3, UNMAPED_DATA));
 }
 
-TEST_F(TestShellFixture, real_unmap_read_1_lba) {
-    ts.SetSsdDriver(&rsd);
-    ts.Run("read 3");
-}
-
-TEST_F(TestShellFixture, unmap_read_1_invalid_lba) {
-    EXPECT_CALL(msd, Read)
+TEST_F(MockSsdTestShellFixture, unmap_read_1_invalid_lba) {
+    EXPECT_CALL(mockSsdDriver, Read)
         .Times(0);
 
-    ts.Run("read 100");
-    VerifyOutBuffer("INVALID COMMAND\n");
+    testShell.Run("read " + to_string(MAX_LBA_CNT));
+    VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(TestShellFixture, unmap_read_full_lba) {
-    string expectOut = "[FullRead]\n";
-    for (int LBA = 0; LBA < MAX_LBA_CNT; LBA++) {
-        expectOut += ("[Read] LBA : " + to_string(LBA));
-        expectOut += (", Data : 0x00000000\n");
-    }
-    EXPECT_CALL(msd, Read)
+TEST_F(MockSsdTestShellFixture, unmap_read_full_lba) {
+    EXPECT_CALL(mockSsdDriver, Read)
         .Times(MAX_LBA_CNT)
         .WillRepeatedly(Return("0x00000000"));
 
-    ts.Run("fullread");
-    VerifyOutBuffer(expectOut);
+    testShell.Run("fullread");
+    VerifyResult(MakeExpectedOutStr(MAX_LBA_CNT, UNMAPED_DATA));
 }
 
-TEST_F(TestShellFixture, write_1_lba) {
-    EXPECT_CALL(msd, Write)
+TEST_F(MockSsdTestShellFixture, write_1_lba) {
+    EXPECT_CALL(mockSsdDriver, Write)
         .Times(1);
 
-    ts.Run("write 3 0xAABBCCDD");
-    VerifyOutBuffer("[Write] LBA : 3, Data : 0xAABBCCDD\n");
+    testShell.Run("write 3 0xAABBCCDD");
 }
 
-TEST_F(TestShellFixture, write_1_invalid_lba) {
-    EXPECT_CALL(msd, Write)
+TEST_F(MockSsdTestShellFixture, write_1_invalid_lba) {
+    EXPECT_CALL(mockSsdDriver, Write)
         .Times(0);
 
-    ts.Run("write 100 0xAABBCCDD");
-    VerifyOutBuffer("INVALID COMMAND\n");
+    testShell.Run("write " + to_string(MAX_LBA_CNT) + " 0xAABBCCDD");
+    VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(TestShellFixture, write_1_invalid_data) {
-    EXPECT_CALL(msd, Write)
+TEST_F(MockSsdTestShellFixture, write_1_invalid_data) {
+    EXPECT_CALL(mockSsdDriver, Write)
         .Times(0);
 
-    ts.Run("write 99 0xAAKKCCDD");
-    VerifyOutBuffer("INVALID COMMAND\n");
+    testShell.Run("write 99 0xAAKKCCDD");
+    VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(TestShellFixture, write_full_lba) {
-    EXPECT_CALL(msd, Write)
+TEST_F(MockSsdTestShellFixture, write_full_lba) {
+    EXPECT_CALL(mockSsdDriver, Write)
         .Times(MAX_LBA_CNT);
 
-    ts.Run("fullwrite 0xABCDFFFF");
-    string expectOut = "[FullWrite]\n";
-    for (int LBA = 0; LBA < MAX_LBA_CNT; LBA++) {
-        expectOut += ("[Write] LBA : " + to_string(LBA));
-        expectOut += (", Data : 0xABCDFFFF\n");
-    }
+    testShell.Run("fullwrite 0xABCDFFFF");
 }
 
-TEST_F(TestShellFixture, invalid_command) {
-    ts.Run("fullrite 0xABCDFFFF");
-    VerifyOutBuffer("INVALID COMMAND\n");
+TEST_F(MockSsdTestShellFixture, invalid_command) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(0);
+
+    testShell.Run("fullrite 0xABCDFFFF");
+    VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(TestShellFixture, exit) {
-    ts.Run("exit");
-    VerifyOutBuffer("[Exit] Quit Shell\n");
+TEST_F(MockSsdTestShellFixture, invalid_argument_cnt) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(0);
+
+    testShell.Run("write 3 0xAABBCCDD test");
+    VerifyResult("INVALID COMMAND\n");
 }
 
-TEST_F(TestShellFixture, help) {
-    ts.Run("help");
-    VerifyOutBuffer("[Help]\n");
+TEST_F(MockSsdTestShellFixture, invalid_argument_cnt2) {
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(0);
+
+    testShell.Run("Read 3 0xAABBCCDD test");
+    VerifyResult("INVALID COMMAND\n");
 }
 
+TEST_F(MockSsdTestShellFixture, exit) {
+    testShell.Run("exit");
+    VerifyResult("[Exit] Quit Shell\n");
+}
+
+TEST_F(MockSsdTestShellFixture, help) {
+    testShell.Run("help");
+    VerifyResult("[Help]\n");
+}
+
+TEST_F(MockSsdTestShellFixture, help_after_exit) {
+    testShell.Run("exit");
+    testShell.Run("help");
+    VerifyResult("[Exit] Quit Shell\n");
+}
+
+// Real Ssd Driver 관련 Test Case 는 이후 따로 추가 예정
+TEST(RealSsdTestShellFixture, real_unmap_read_1_lba) {
+    TestShell testShell2;
+    RealSsdDriver realSsdDriver;
+    testShell2.SetSsdDriver(&realSsdDriver);
+    testShell2.Run("read 3");
+}

@@ -27,5 +27,5 @@ class TestShell {
     void _FullRead();
     void _TestApp1();
     void _TestApp2();
-    void _ExecuteScript(const std::string& script);
+    void _ExecuteScript(const std::string& filename);
 };
