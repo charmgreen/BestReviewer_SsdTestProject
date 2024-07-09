@@ -3,6 +3,17 @@
 #include <iostream>
 #include <string>
 
+std::string RealSsdDriver::Read(int LBA) {
+    std::string cmdLine = "R " + std::to_string(LBA);
+    SystemCall(cmdLine);
+    return cmdLine;  // temp
+}
+
+void RealSsdDriver::Write(int LBA, std::string Data) {
+    std::string cmdLine = "W " + std::to_string(LBA) + " " + Data;
+    SystemCall(cmdLine);
+}
+
 void RealSsdDriver::SystemCall(std::string cmdLine) {
 //    std::string virtual_ssd_exe_path = "..\\Test_Shell_App\\SSD.exe";
     std::string virtual_ssd_exe_path = "..\\x64\\Debug\\virtual_SSD.exe";
@@ -19,15 +30,4 @@ void RealSsdDriver::SystemCall(std::string cmdLine) {
         // b.exe 실행에 실패했음
         std::cerr << "Failed to execute b.exe. Error code: " << result << '\n';
     }
-}
-
-std::string RealSsdDriver::Read(int LBA) {
-    std::string cmdLine = "R " + std::to_string(LBA);
-    SystemCall(cmdLine);
-    return cmdLine;  // temp
-}
-
-void RealSsdDriver::Write(int LBA, std::string Data) {
-    std::string cmdLine = "W " + std::to_string(LBA) + " " + Data;
-    SystemCall(cmdLine);
 }

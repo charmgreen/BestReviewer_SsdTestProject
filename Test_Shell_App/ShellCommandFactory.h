@@ -2,37 +2,23 @@
 #pragma once
 #include <vector>
 #include <string>
-
-enum class ShellCmdType {
-    Write,
-    Read,
-    Exit,
-    Help,
-    FullWrite,
-    FullRead,
-    TestApp1,
-    TestApp2,
-    Invalid,
-};
-
-class ShellCommand {
- public:
-    ShellCmdType eCommand;
-    std::string strLBA;
-    std::string strData;
-    int LBA;
-    bool IsInvalid;
-};
+#include "ShellCommand.h"
 
 class ShellCommandFactory {
  public:
-    ShellCommand* Parse(const std::string& strCommand);
+    ShellCommand* Make(const std::string& strCommand);
  private:
     void TokenArgument(const std::string& strCommand);
     void MakeCommand();
-    void GetCmdType();
-    void GetLBA();
-    void GetData();
+    ShellCommand* MakeInvalidCommand();
+    ShellCommand* MakeWriteCommand();
+    ShellCommand* MakeReadCommand();
+    ShellCommand* MakeExitCommand();
+    ShellCommand* MakeHelpCommand();
+    ShellCommand* MakeFullWriteCommand();
+    ShellCommand* MakeFullReadCommand();
+    ShellCommand* MakeTestApp1Command();
+    ShellCommand* MakeTestApp2Command();
 
     std::vector<std::string> CommandToken;
     ShellCommand* result;
