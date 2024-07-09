@@ -1,6 +1,8 @@
 // Copyright [2024] <CRA/BestReviewer>
 #include "TestShell.h"
 #include "SsdDriver.h"
+#include <string>
+#include <fstream>
 
 void TestShell::Run(const std::string& strCommand) {
     shellCommand = factory.Parse(strCommand);
@@ -72,7 +74,32 @@ void TestShell::_FullRead() {
 }
 
 void TestShell::_TestApp1() {
+    std::string filename("testapp1.txt");
+    // std::cout << "Enter the script to execute>";
+    // std::getline(std::cin, filename);
+    _ExecuteScript(filename);
 }
 
 void TestShell::_TestApp2() {
+    std::string filename("testapp2.txt");
+    // std::cout << "Enter the script to execute>";
+    // std::getline(std::cin, filename);
+    _ExecuteScript(filename);
+}
+
+void TestShell::_ExecuteScript(const std::string& filename) {
+    std::ifstream script(filename);
+    if (!script.is_open()) {
+        throw::std::runtime_error("Not found the script.");
+    }
+    try {
+        while (!script.eof()) {
+            std::string statement;
+            std::getline(script, statement);
+            TestShell::Run(statement);
+        }
+        script.close();
+    } catch (...) {
+        std::cout << "ERROR!" << std::endl;
+    }
 }
