@@ -1,9 +1,13 @@
 // Copyright [2024] <CRA/BestReviewer>
 #pragma once
+#include <iostream>
+#include <string>
 #include "SsdDriver.h"
 
 class RealSsdDriver : public SsdDriver {
  public:
-    unsigned int Read(int LBA) override;
-    void Write(int LBA, unsigned int Data) override;
+    std::string Read(int LBA) override;
+    void Write(int LBA, std::string Data) override;
+ private:
+    void SystemCall(std::string cmdLine);
 };
