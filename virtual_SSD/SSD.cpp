@@ -94,4 +94,3 @@ void SSD::WriteResultFile(const int &LBA) {
     resultFile << memory[LBA];
     resultFile.close();
 }
-
