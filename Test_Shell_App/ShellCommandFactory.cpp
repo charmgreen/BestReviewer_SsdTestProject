@@ -32,8 +32,8 @@ void ShellCommandFactory::MakeCommand() {
     else if (CommandToken[0] == "help") result = MakeHelpCommand();
     else if (CommandToken[0] == "fullwrite") result = MakeFullWriteCommand();
     else if (CommandToken[0] == "fullread") result = MakeFullReadCommand();
-    else if (CommandToken[0] == "testapp1") result = MakeInvalidCommand();
-    else if (CommandToken[0] == "testapp2") result = MakeInvalidCommand();
+    else if (CommandToken[0] == "testapp1") result = MakeTestApp1Command();
+    else if (CommandToken[0] == "testapp2") result = MakeTestApp2Command();
     else
         result = MakeInvalidCommand();
 }
