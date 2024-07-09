@@ -35,7 +35,7 @@ TEST_F(TestShellFixture, unmap_read_1_lba) {
 
 TEST_F(TestShellFixture, unmap_read_1_invalid_lba) {
     EXPECT_CALL(msd, Read)
-        .Times(1)
+        .Times(0)
         .WillRepeatedly(Return(0));
 
     ts.Run("read 100");
@@ -58,14 +58,14 @@ TEST_F(TestShellFixture, write_1_lba) {
 
 TEST_F(TestShellFixture, write_1_invalid_lba) {
     EXPECT_CALL(msd, Write)
-        .Times(1);
+        .Times(0);
 
     ts.Run("write 100 0xAABBCCDD");
 }
 
 TEST_F(TestShellFixture, write_1_invalid_data) {
     EXPECT_CALL(msd, Write)
-        .Times(1);
+        .Times(0);
 
     ts.Run("write 99 0xAAKKCCDD");
 }
