@@ -10,6 +10,7 @@
 
 class TestShell {
  public:
+     TestShell() : IsProcessActive{ true } {}
     void Run(const std::string& str);
     void SetSsdDriver(SsdDriver* ssddriver);
 
@@ -17,4 +18,5 @@ class TestShell {
     SsdDriver* ssddriver;
     ShellCommandFactory shellCommandFactory;
     ShellCommand* shellCommand;
+    bool IsProcessActive;
 };

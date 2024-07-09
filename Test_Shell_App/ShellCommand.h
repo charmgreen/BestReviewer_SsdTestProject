@@ -2,6 +2,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include "SsdDriver.h"
 
 class ShellCommand {
@@ -49,7 +50,7 @@ class HelpCommand : public ShellCommand {
 
 class FullWriteCommand : public ShellCommand {
  public:
-     explicit FullWriteCommand(std::string strData);
+    explicit FullWriteCommand(std::string strData);
     void Run(SsdDriver* ssddriver) override;
  private:
     std::string strData;
@@ -61,5 +62,10 @@ class FullReadCommand : public ShellCommand {
     void Run(SsdDriver* ssddriver) override;
 };
 
-
-
+class ExitTestShell : public std::exception
+{
+public:
+    char const* what() const override {
+        return "Exit Test Shell!";
+    }
+};

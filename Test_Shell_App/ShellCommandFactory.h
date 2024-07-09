@@ -20,6 +20,14 @@ class ShellCommandFactory {
     ShellCommand* MakeTestApp1Command();
     ShellCommand* MakeTestApp2Command();
 
+    bool IsStringDecimal(const std::string& str);
+    bool IsStringHexadecimal(const std::string& str);
+    bool IsStringValidLBA(const std::string& str);
+
     std::vector<std::string> CommandToken;
     ShellCommand* result;
+
+    const int MAX_STR_LENGTH_DATA = 10;
+    const int MIN_LBA = 0;
+    const int MAX_LBA = 99;
 };

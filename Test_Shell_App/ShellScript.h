@@ -12,5 +12,3 @@ class ShellScript : public ShellCommand, public ShellCommandFactory {
  private:
     std::string filename;
 };
-
-

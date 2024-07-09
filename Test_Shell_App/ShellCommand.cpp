@@ -16,8 +16,6 @@ WriteCommand::WriteCommand(std::string strLBA, std::string strData) {
 
 void WriteCommand::Run(SsdDriver* ssddriver) {
     ssddriver->Write(this->nLBA, this->strData);
-    // std::cout << "[Write] LBA : " << this->strLBA;
-    // std::cout << ", Data : " << this->strData << std::endl;
 }
 
 ReadCommand::ReadCommand(std::string strLBA) {
@@ -33,10 +31,24 @@ void ReadCommand::Run(SsdDriver* ssddriver) {
 
 void ExitCommand::Run(SsdDriver* ssddriver) {
     std::cout << "[Exit] Quit Shell" << std::endl;
+    throw ExitTestShell();
 }
 
 void HelpCommand::Run(SsdDriver* ssddriver) {
-    std::cout << "[Help]" << std::endl;
+    std::string HelpMessage = "";
+
+    HelpMessage += "[Help]\n";
+    HelpMessage += "1. write {LBA} {Data}\n";
+    HelpMessage += "2. read {LBA}\n";
+    HelpMessage += "3. exit\n";
+    HelpMessage += "4. help\n";
+    HelpMessage += "5. fullwrite {Data}\n";
+    HelpMessage += "6. fullread\n";
+    HelpMessage += "7. testapp1\n";
+    HelpMessage += "8. testapp2\n";
+    HelpMessage += "{LBA} = {x is an integer | 0 <= x <= 99}\n";
+    HelpMessage += "{Data} = {""0x[0-9A-F]""}\n";
+    std::cout << HelpMessage;
 }
 
 FullWriteCommand::FullWriteCommand(std::string strData) {
@@ -44,7 +56,6 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
-    // std::cout << "[FullWrite]\n";
     for (int LBA = 0; LBA <= 99; LBA++) {
         ssddriver->Write(LBA, this->strData);
     }

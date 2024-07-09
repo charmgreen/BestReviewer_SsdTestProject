@@ -18,10 +18,15 @@ void ShellScript::Run(SsdDriver* ssddriver) {
             std::string statement;
             std::getline(script, statement);
 
-            ShellCommand* shellCommand;
-            shellCommand = Make(statement);
-            shellCommand->Run(ssddriver);
-            delete(shellCommand);
+            ShellCommand* shellCommand = Make(statement);
+            try {
+                shellCommand->Run(ssddriver);
+                delete(shellCommand);
+            }
+            catch (ExitCommand) {
+                delete(shellCommand);
+                throw;
+            }
         }
         script.close();
     }

@@ -154,8 +154,20 @@ TEST_F(MockSsdTestShellFixture, ExitTest) {
 }
 
 TEST_F(MockSsdTestShellFixture, HelpTest) {
+    string expectResult = "";
+    expectResult += "[Help]\n";
+    expectResult += "1. write {LBA} {Data}\n";
+    expectResult += "2. read {LBA}\n";
+    expectResult += "3. exit\n";
+    expectResult += "4. help\n";
+    expectResult += "5. fullwrite {Data}\n";
+    expectResult += "6. fullread\n";
+    expectResult += "7. testapp1\n";
+    expectResult += "8. testapp2\n";
+    expectResult += "{LBA} = {x is an integer | 0 <= x <= 99}\n";
+    expectResult += "{Data} = {""0x[0-9A-F]""}\n";
     testShell.Run("help");
-    VerifyResult("[Help]\n");
+    VerifyResult(expectResult);
 }
 
 TEST_F(MockSsdTestShellFixture, HelpAfterExit) {

@@ -4,9 +4,16 @@
 #include <string>
 
 void TestShell::Run(const std::string& strCommand) {
+    if (this->IsProcessActive == false) return;
+
     shellCommand = shellCommandFactory.Make(strCommand);
 
-    shellCommand->Run(ssddriver);
+    try {
+        shellCommand->Run(ssddriver);
+    }
+    catch (ExitTestShell) {
+        this->IsProcessActive = false;
+    }
 
     delete(shellCommand);
 }

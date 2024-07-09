@@ -50,35 +50,20 @@ ShellCommand* ShellCommandFactory::MakeWriteCommand() {
     }
 
     // Check Invalid 2) LBA
-    for (char ch = 0; ch < CommandToken[1].size(); ch++) {
-        if ('0' > CommandToken[1][ch] || CommandToken[1][ch] > '9') {
-            return new InvalidCommand();
-        }
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
     }
 
-    if (std::stoi(CommandToken[1]) >= 100) {
+    if (IsStringValidLBA(CommandToken[1]) == false) {
         return new InvalidCommand();
     }
 
     // Check Invalid 3) Data
-    std::string strData = CommandToken[2];
-    if (CommandToken[2].empty() == true) {
+    if (IsStringHexadecimal(CommandToken[2]) == false) {
         return new InvalidCommand();
     }
 
-    if ((strData[0] != '0') ||
-        (strData[1] != 'x') ||
-        (strData.size() != 10)) {
-        return new InvalidCommand();
-    }
-    for (int idx = 2; idx < strData.size(); idx++) {
-        if (('0' > strData[idx] || strData[idx] > '9') &&
-            ('A' > strData[idx] || strData[idx] > 'F')) {
-            return new InvalidCommand();
-        }
-    }
-
-    return new WriteCommand(CommandToken[1], strData);
+    return new WriteCommand(CommandToken[1], CommandToken[2]);
 }
 
 
@@ -89,13 +74,11 @@ ShellCommand* ShellCommandFactory::MakeReadCommand() {
     }
 
     // Check Invalid 2) LBA
-    for (char ch = 0; ch < CommandToken[1].size(); ch++) {
-        if ('0' > CommandToken[1][ch] || CommandToken[1][ch] > '9') {
-            return new InvalidCommand();
-        }
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
     }
 
-    if (std::stoi(CommandToken[1]) >= 100) {
+    if (IsStringValidLBA(CommandToken[1]) == false) {
         return new InvalidCommand();
     }
 
@@ -127,24 +110,11 @@ ShellCommand* ShellCommandFactory::MakeFullWriteCommand() {
     }
 
     // Check Invalid 2) Data
-    std::string strData = CommandToken[1];
-    if (CommandToken[1].empty() == true) {
+    if (IsStringHexadecimal(CommandToken[1]) == false) {
         return new InvalidCommand();
     }
 
-    if ((strData[0] != '0') ||
-        (strData[1] != 'x') ||
-        (strData.size() != 10)) {
-        return new InvalidCommand();
-    }
-    for (int idx = 2; idx < strData.size(); idx++) {
-        if (('0' > strData[idx] || strData[idx] > '9') &&
-            ('A' > strData[idx] || strData[idx] > 'F')) {
-            return new InvalidCommand();
-        }
-    }
-
-    return new FullWriteCommand(strData);
+    return new FullWriteCommand(CommandToken[1]);
 }
 
 ShellCommand* ShellCommandFactory::MakeFullReadCommand() {
@@ -172,4 +142,40 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
     }
 
     return new ShellScript("..\\Test_Shell_App\\testapp2.txt");
+}
+
+bool ShellCommandFactory::IsStringDecimal(const std::string& str)
+{
+    for (char ch = 0; ch < str.size(); ch++) {
+        if ('0' > str[ch] || str[ch] > '9') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ShellCommandFactory::IsStringHexadecimal(const std::string& str)
+{
+    if ((str[0] != '0') ||
+        (str[1] != 'x') ||
+        (str.size() != MAX_STR_LENGTH_DATA)) {
+        return false;
+    }
+
+    for (int idx = 2; idx < str.size(); idx++) {
+        if (('0' > str[idx] || str[idx] > '9') &&
+            ('A' > str[idx] || str[idx] > 'F')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ShellCommandFactory::IsStringValidLBA(const std::string& str)
+{
+    int LBA = std::stoi(CommandToken[1]);
+    if ((MIN_LBA <= LBA) && (LBA <= MAX_LBA)) {
+        return true;
+    }
+    return false;
 }
