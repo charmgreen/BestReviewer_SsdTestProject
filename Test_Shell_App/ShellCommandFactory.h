@@ -18,8 +18,9 @@ enum class ShellCmdType {
 class ShellCommand {
  public:
     ShellCmdType eCommand;
+    std::string strLBA;
+    std::string strData;
     int LBA;
-    unsigned int Data;
     bool IsInvalid;
 };
 
@@ -29,9 +30,9 @@ class ShellCommandFactory {
  private:
     void TokenArgument(const std::string& strCommand);
     void MakeCommand();
-    ShellCmdType GetCmdType();
-    int GetLBA();
-    unsigned int GetData();
+    void GetCmdType();
+    void GetLBA();
+    void GetData();
 
     std::vector<std::string> CommandToken;
     ShellCommand* result;

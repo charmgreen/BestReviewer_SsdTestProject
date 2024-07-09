@@ -9,8 +9,8 @@ using namespace testing;
 
 class MockSsdDriver : public SsdDriver {
  public:
-    MOCK_METHOD(unsigned int, Read, (int LBA), (override));
-    MOCK_METHOD(void, Write, (int LBA, unsigned int Data), (override));
+    MOCK_METHOD(std::string, Read, (int LBA), (override));
+    MOCK_METHOD(void, Write, (int LBA, std::string Data), (override));
 };
 
 class TestShellFixture : public testing::Test {
@@ -28,7 +28,7 @@ class TestShellFixture : public testing::Test {
 TEST_F(TestShellFixture, unmap_read_1_lba) {
     EXPECT_CALL(msd, Read)
         .Times(1)
-        .WillRepeatedly(Return(0));
+        .WillRepeatedly(Return("0"));
 
     ts.Run("read 3");
 }
@@ -36,7 +36,7 @@ TEST_F(TestShellFixture, unmap_read_1_lba) {
 TEST_F(TestShellFixture, unmap_read_1_invalid_lba) {
     EXPECT_CALL(msd, Read)
         .Times(1)
-        .WillRepeatedly(Return(0));
+        .WillRepeatedly(Return("0"));
 
     ts.Run("read 100");
 }
@@ -44,7 +44,7 @@ TEST_F(TestShellFixture, unmap_read_1_invalid_lba) {
 TEST_F(TestShellFixture, unmap_read_full_lba) {
     EXPECT_CALL(msd, Read)
         .Times(MAX_LBA_CNT)
-        .WillRepeatedly(Return(0));
+        .WillRepeatedly(Return("0"));
 
     ts.Run("fullread");
 }

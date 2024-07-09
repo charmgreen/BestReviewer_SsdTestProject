@@ -5,9 +5,9 @@
 ShellCommand* ShellCommandFactory::Parse(const std::string& strCommand) {
     TokenArgument(strCommand);
     MakeCommand();
-    result->eCommand = GetCmdType();
-    result->LBA = GetLBA();
-    result->Data = GetData();
+    GetCmdType();
+    GetLBA();
+    GetData();
     return result;
 }
 
@@ -31,36 +31,93 @@ void ShellCommandFactory::MakeCommand() {
 }
 
 
-ShellCmdType ShellCommandFactory::GetCmdType() {
-    ShellCmdType eCmdType = ShellCmdType::Invalid;
-
-    if (CommandToken[0] == "write") eCmdType = ShellCmdType::Write;
-    if (CommandToken[0] == "read") eCmdType = ShellCmdType::Read;
-    if (CommandToken[0] == "exit") eCmdType = ShellCmdType::Exit;
-    if (CommandToken[0] == "help") eCmdType = ShellCmdType::Help;
-    if (CommandToken[0] == "fullwrite") eCmdType = ShellCmdType::FullWrite;
-    if (CommandToken[0] == "fullread") eCmdType = ShellCmdType::FullRead;
-    if (CommandToken[0] == "testapp1") eCmdType = ShellCmdType::TestApp1;
-    if (CommandToken[0] == "testapp2") eCmdType = ShellCmdType::TestApp2;
-
-    return eCmdType;
+void ShellCommandFactory::GetCmdType() {
+    if (CommandToken[0] == "write") result->eCommand = ShellCmdType::Write;
+    else if (CommandToken[0] == "read") result->eCommand = ShellCmdType::Read;
+    else if (CommandToken[0] == "exit") result->eCommand = ShellCmdType::Exit;
+    else if (CommandToken[0] == "help") result->eCommand = ShellCmdType::Help;
+    else if (CommandToken[0] == "fullwrite") result->eCommand = ShellCmdType::FullWrite;
+    else if (CommandToken[0] == "fullread") result->eCommand = ShellCmdType::FullRead;
+    else if (CommandToken[0] == "testapp1") result->eCommand = ShellCmdType::TestApp1;
+    else if (CommandToken[0] == "testapp2") result->eCommand = ShellCmdType::TestApp2;
+    else {
+        result->eCommand = ShellCmdType::Invalid;
+        result->IsInvalid = true;
+    }
 }
 
-int ShellCommandFactory::GetLBA() {
+void ShellCommandFactory::GetLBA() {
     if ((result->eCommand == ShellCmdType::Write) ||
         (result->eCommand == ShellCmdType::Read)) {
-        return std::stoi(CommandToken[1]);
+
+        if (CommandToken[1].empty() == true)
+        {
+            result->IsInvalid = true;
+            return;
+        }
+
+        for (char ch = 0; ch < CommandToken[1].size(); ch++)
+        {
+            if ('0' > CommandToken[1][ch] || CommandToken[1][ch] > '9') {
+                result->IsInvalid = true;
+                return;
+            }
+        }
+        result->strLBA = CommandToken[1];
+        result->LBA = std::stoi(CommandToken[1]);
+
+        if (result->LBA >= 100) result->IsInvalid = true;
     }
-    return 0;
+    else if (result->eCommand == ShellCmdType::FullWrite)
+    {
+        // Do Nothing
+    }
+    else
+    {
+        if (CommandToken.size() > 1) {
+            result->IsInvalid = true;
+        }
+    }
 }
 
-unsigned int ShellCommandFactory::GetData() {
+void ShellCommandFactory::GetData() {
+    std::string strData;
     if (result->eCommand == ShellCmdType::Write) {
-        return std::stoul(CommandToken[2], nullptr, 16);
+        strData = CommandToken[2];
+        if (strData.empty() == true)
+        {
+            result->IsInvalid = true;
+            return;
+        }
     } else if (result->eCommand == ShellCmdType::FullWrite) {
-        return std::stoul(CommandToken[1], nullptr, 16);
+        strData = CommandToken[1];
+        if (strData.empty() == true)
+        {
+            result->IsInvalid = true;
+            return;
+        }
     } else {
-        return 0;
+        if (CommandToken.size() > 2)
+        {
+            result->IsInvalid = true;
+        }
+        return;
     }
+
+    if ((strData[0] != '0') ||
+        (strData[1] != 'x') ||
+        (strData.size() != 10)) {
+        result->IsInvalid = true;
+        return;
+    }
+    for (int idx = 2; idx < strData.size(); idx++) {
+        if (('0' > strData[idx] || strData[idx] > '9') &&
+            ('A' > strData[idx] || strData[idx] > 'F')) {
+            result->IsInvalid = true;
+            return;
+        }
+    }       
+
+    result->strData = strData;
 }
 
