@@ -116,7 +116,7 @@ TEST_F(MockSsdTestShellFixture, Write_OneLBA_OOR) { // out of range
     VerifyResult(INVALID_COMMAND);
 }
 
-TEST_F(MockSsdTestShellFixture, invalid_argument_cnt) {
+TEST_F(MockSsdTestShellFixture, Write_OneLBA_ArgCntFail) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(0);
 
