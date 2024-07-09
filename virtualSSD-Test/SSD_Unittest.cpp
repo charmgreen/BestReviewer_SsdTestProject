@@ -1,10 +1,10 @@
-// "Copyright [2024] <doyun kim>"
-#include "../virtual_SSD/SSD.cpp"
+// Copyright [2024] <CRA/BestReviewer>
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
+#include "../virtual_SSD/SSD.cpp"
 
 class SSDFixture : public testing::Test {
-public:
+ public:
   SSD ssd;
   std::string getLSBData(int LBA) {
     std::string line;
@@ -25,7 +25,7 @@ public:
   }
 };
 
-TEST_F(SSDFixture, TestLBARangeException) {
+TEST_F(SSDFixture, TestLBARangeExceptionWhenWrite) {
   EXPECT_THROW(ssd.Write(100, "0x10000000"), LBARangeException);
 }
 
@@ -40,8 +40,8 @@ TEST_F(SSDFixture, TestWriteMemory) {
   EXPECT_EQ("0x10000099", getLSBData(3));
 }
 
-TEST_F(SSDFixture, TestReadMemory) { 
-    EXPECT_THAT("0x10000001", ssd.Read(0)); 
+TEST_F(SSDFixture, TestReadMemory) {
+  EXPECT_THAT("0x10000001", ssd.Read(0));
 }
 
 TEST_F(SSDFixture, TestReadMemoryWhenEmpty) {

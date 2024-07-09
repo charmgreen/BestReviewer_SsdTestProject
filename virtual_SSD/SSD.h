@@ -1,9 +1,10 @@
+// Copyright [2024] <CRA/BestReviewer>
+#pragma once
 #include<map>
 #include<string>
 
 class SSD {
  public:
- 
   virtual void Write(const int& LBA, const std::string& data);
   void CheckWriteCondition(const int& LBA, const std::string& data);
   void StoreMemory();

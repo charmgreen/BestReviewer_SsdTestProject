@@ -1,5 +1,4 @@
-// "Copyright [2024] <doyun kim>"
-
+// Copyright [2024] <CRA/BestReviewer>
 #include<stdexcept>
 #include<fstream>
 #include<iostream>
