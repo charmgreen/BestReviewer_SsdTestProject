@@ -1,4 +1,4 @@
-// Copyright [2024] <CRA/BestReviewer>
+// Copyright 2024, Samsung
 
 #include "ShellCommandFactory.h"
 #include "ShellScript.h"

@@ -1,4 +1,4 @@
-// Copyright [2024] <CRA/BestReviewer>
+// Copyright 2024, Samsung
 #include "RealSsdDriver.h"
 #include <iostream>
 #include <string>
@@ -15,7 +15,6 @@ void RealSsdDriver::Write(int LBA, std::string Data) {
 }
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
-//    std::string virtual_ssd_exe_path = "..\\Test_Shell_App\\SSD.exe";
     std::string virtual_ssd_exe_path = "..\\x64\\Debug\\virtual_SSD.exe";
     virtual_ssd_exe_path += " ";
     virtual_ssd_exe_path += cmdLine;
