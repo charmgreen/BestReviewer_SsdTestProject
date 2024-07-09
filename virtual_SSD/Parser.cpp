@@ -2,7 +2,7 @@
 
 void Parser::TokenArgument(const std::string& strCommand) {
     std::string token;
-    size_t start = strCommand.find(' ', 0) + 1;
+    size_t start = 0;
     size_t end = start;
 
     while ((end = strCommand.find(' ', start)) != std::string::npos) {

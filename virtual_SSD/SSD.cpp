@@ -1,5 +1,4 @@
 // "Copyright [2024] <doyun kim>"
-
 #include<stdexcept>
 #include<fstream>
 #include<iostream>
@@ -13,6 +12,9 @@ class LBARangeException : public std::exception {};
 class DataRangeException : public std::exception {};
 
 class NotExistNandFileException : public std::exception {};
+
+SSD::SSD(SSDInterface* ssdInterface) : i_ssd(ssdInterface) {
+}
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);

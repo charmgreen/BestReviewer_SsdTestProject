@@ -23,10 +23,10 @@
     <ClCompile Include="SSD.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="TestCmd.cpp" />
-    <ClCompile Include="Virtaul_SSD_Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h" />
+    <ClInclude Include="SSDInterface.h" />
     <ClInclude Include="TestCmd.h" />
     <ClInclude Include="SSD.h" />
   </ItemGroup>
