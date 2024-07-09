@@ -6,14 +6,13 @@
 class SSD {
  public:
   virtual void Write(const int& LBA, const std::string& data);
-  void CheckWriteCondition(const int& LBA, const std::string& data);
-  void StoreMemory();
-  void UpdateMemory(const int& LBA, const std::string& data);
+  virtual std::string Read(const int& LBA);
   void ReadMemory();
+  void UpdateMemory(const int& LBA, const std::string& data);
+  void StoreMemory();
+  void CheckWriteCondition(const int& LBA, const std::string& data);
   void CheckDataLength(const std::string& data);
   void CheckLBARange(const int& LBA);
-
-  virtual std::string Read(const int &lba);
   void CheckExistNandFile();
   const std::string &ReturnReadData(const int &LBA);
   void WriteResultFile(const int &LBA);

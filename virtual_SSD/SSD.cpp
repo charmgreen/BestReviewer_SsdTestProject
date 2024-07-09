@@ -18,22 +18,11 @@ void SSD::Write(const int& LBA, const std::string& data) {
     StoreMemory();
 }
 
-void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
+std::string SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
-    CheckDataLength(data);
-}
-
-void SSD::StoreMemory() {
-    std::ofstream writeFile(WriteFIleName);
-    if (writeFile.is_open()) {
-        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
-            writeFile << LBA << " " << memory[LBA] << "\n";
-        }
-    }
-}
-
-void SSD::UpdateMemory(const int& LBA, const std::string& data) {
-    memory[LBA] = data;
+    CheckExistNandFile();
+    ReadMemory();
+    return ReturnReadData(LBA);
 }
 
 void SSD::ReadMemory() {
@@ -56,6 +45,24 @@ void SSD::ReadMemory() {
     }
 }
 
+void SSD::UpdateMemory(const int& LBA, const std::string& data) {
+    memory[LBA] = data;
+}
+
+void SSD::StoreMemory() {
+    std::ofstream writeFile(WriteFIleName);
+    if (writeFile.is_open()) {
+        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
+            writeFile << LBA << " " << memory[LBA] << "\n";
+        }
+    }
+}
+
+void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
+    CheckLBARange(LBA);
+    CheckDataLength(data);
+}
+
 void SSD::CheckDataLength(const std::string& data) {
     if (data.length() != 10)
         throw DataRangeException();
@@ -66,12 +73,6 @@ void SSD::CheckLBARange(const int& LBA) {
         throw LBARangeException();
 }
 
-std::string SSD::Read(const int &LBA) {
-    CheckLBARange(LBA);
-    CheckExistNandFile();
-    ReadMemory();
-    return ReturnReadData(LBA);
-}
 
 void SSD::CheckExistNandFile() {
     std::ifstream nandFile(WriteFIleName);
