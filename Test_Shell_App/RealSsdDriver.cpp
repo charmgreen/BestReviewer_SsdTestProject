@@ -15,7 +15,11 @@ void RealSsdDriver::Write(int LBA, std::string Data) {
 }
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
+#ifdef _DEBUG
     std::string virtual_ssd_exe_path = "..\\x64\\Debug\\virtual_SSD.exe";
+#else
+    std::string virtual_ssd_exe_path = "virtual_SSD.exe";
+#endif
     virtual_ssd_exe_path += " ";
     virtual_ssd_exe_path += cmdLine;
 
