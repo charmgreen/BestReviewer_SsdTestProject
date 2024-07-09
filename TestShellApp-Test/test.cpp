@@ -163,3 +163,23 @@ TEST(RealSsdTestShellFixture, real_unmap_read_1_lba) {
     testShell2.SetSsdDriver(&realSsdDriver);
     testShell2.Run("read 3");
 }
+
+TEST_F(MockSsdTestShellFixture, testapp1) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(MAX_LBA_CNT);
+
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT);
+
+    testShell.Run("testapp1");
+}
+
+TEST_F(MockSsdTestShellFixture, testapp2) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(36);
+
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(6);
+
+    testShell.Run("testapp2");
+}
