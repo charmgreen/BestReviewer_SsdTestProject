@@ -3,10 +3,9 @@
 #include "SsdDriver.h"
 
 void TestShell::Run(const std::string& strCommand) {
-
     shellCommand = factory.Parse(strCommand);
     if (shellCommand->IsInvalid == true) {
-        std::cout << "INVALID COMMAND" << std::endl;
+        _InvalidCommand();
     } else if (shellCommand->eCommand == ShellCmdType::Write) {
         _Write();
     } else if (shellCommand->eCommand == ShellCmdType::Read) {
@@ -32,30 +31,43 @@ void TestShell::SetSsdDriver(SsdDriver* ssddriver) {
     this->ssddriver = ssddriver;
 }
 
+void TestShell::_InvalidCommand() {
+    std::cout << "INVALID COMMAND" << std::endl;
+}
+
 void TestShell::_Write() {
     ssddriver->Write(shellCommand->LBA, shellCommand->strData);
-    // std::cout << "[Write] LBA : " << shellCommand->strLBA << " Data : " << shellCommand->strData << std::endl;
+    std::cout << "[Write] LBA : " << shellCommand->strLBA;
+    std::cout << ", Data : " << shellCommand->strData << std::endl;
 }
 
 void TestShell::_Read() {
-    ssddriver->Read(shellCommand->LBA);
+    std::string resultData = ssddriver->Read(shellCommand->LBA);
+    std::cout << "[Read] LBA : " << shellCommand->strLBA;
+    std::cout << ", Data : " << resultData << std::endl;
 }
 
 void TestShell::_Exit() {
+    std::cout << "[Exit] Quit Shell" << std::endl;
 }
 
 void TestShell::_Help() {
+    std::cout << "[Help]" << std::endl;
 }
 
 void TestShell::_FullWrite() {
+    std::cout << "[FullWrite]\n";
     for (int LBA = 0; LBA <= 99; LBA++) {
         ssddriver->Write(LBA, shellCommand->strData);
     }
 }
 
 void TestShell::_FullRead() {
+    std::cout << "[FullRead]\n";
     for (int LBA = 0; LBA <= 99; LBA++) {
-        ssddriver->Read(LBA);
+        std::string resultData = ssddriver->Read(LBA);
+        std::cout << "[Read] LBA : " << std::to_string(LBA);
+        std::cout << ", Data : " << resultData << std::endl;
     }
 }
 

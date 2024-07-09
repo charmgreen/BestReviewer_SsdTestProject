@@ -1,9 +1,9 @@
 // Copyright [2024] <CRA/BestReviewer>
 #include "RealSsdDriver.h"
 #include <iostream>
+#include <string>
 
-void RealSsdDriver::SystemCall(std::string cmdLine)
-{
+void RealSsdDriver::SystemCall(std::string cmdLine) {
     std::string ssd_exe_path = "..\\Test_Shell_App\\SSD.exe";
     ssd_exe_path += " ";
     ssd_exe_path += cmdLine;
@@ -14,8 +14,7 @@ void RealSsdDriver::SystemCall(std::string cmdLine)
     if (result == 0) {
         // b.exe가 성공적으로 실행되었음
         std::cout << "b.exe executed successfully.\n";
-    }
-    else {
+    } else {
         // b.exe 실행에 실패했음
         std::cerr << "Failed to execute b.exe. Error code: " << result << '\n';
     }
@@ -24,7 +23,7 @@ void RealSsdDriver::SystemCall(std::string cmdLine)
 std::string RealSsdDriver::Read(int LBA) {
     std::string cmdLine = "R " + std::to_string(LBA);
     SystemCall(cmdLine);
-    return cmdLine; // temp
+    return cmdLine;  // temp
 }
 
 void RealSsdDriver::Write(int LBA, std::string Data) {

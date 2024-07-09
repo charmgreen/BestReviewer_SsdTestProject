@@ -18,6 +18,7 @@ class TestShell {
     ShellCommandFactory factory;
     ShellCommand* shellCommand;
 
+    void _InvalidCommand();
     void _Write();
     void _Read();
     void _Exit();
