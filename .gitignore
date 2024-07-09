@@ -396,3 +396,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Ignore Read Write Test File 
+virtualSSD-Test/nand.txt
+virtualSSD-Test/result.txt
+

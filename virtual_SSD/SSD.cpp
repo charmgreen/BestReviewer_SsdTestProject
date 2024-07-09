@@ -3,13 +3,16 @@
 #include<stdexcept>
 #include<fstream>
 #include<iostream>
+#include <sstream>
+#include <string>
+#include <map>
 #include"SSD.h"
 
-class LBARangeException :public std::exception {
-};
+class LBARangeException : public std::exception {};
 
-class DataRangeException :public std::exception {
-};
+class DataRangeException : public std::exception {};
+
+class NotExistNandFileException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
@@ -66,5 +69,32 @@ void SSD::CheckLBARange(const int& LBA) {
         throw LBARangeException();
 }
 
-void SSD::Read() {
+std::string SSD::Read(const int &LBA) {
+  CheckLBARange(LBA);
+  CheckExistNandFile();
+  ReadMemory();
+  return ReturnReadData(LBA);
 }
+
+void SSD::CheckExistNandFile() {
+  std::ifstream nandFile(WriteFIleName);
+  if (!nandFile.is_open()) {
+    throw NotExistNandFileException();
+  }
+  nandFile.close();
+}
+
+const std::string &SSD::ReturnReadData(const int &LBA) {
+  if (memory.find(LBA) != memory.end()) {
+    WriteResultFile(LBA);
+    return memory[LBA];
+  }
+  return InitialLBAData;
+}
+
+void SSD::WriteResultFile(const int &LBA) {
+  std::ofstream resultFile(ReadFileName);
+  resultFile << memory[LBA];
+  resultFile.close();
+}
+
