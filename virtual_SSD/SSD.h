@@ -1,8 +1,5 @@
-
 #include<map>
 #include<string>
-
-class NotExistNandFileException : public std::exception {};
 
 class SSD {
  public:
