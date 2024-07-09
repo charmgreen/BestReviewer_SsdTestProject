@@ -1,19 +1,18 @@
-// Copyright [2024] <CRA/BestReviewer>
+// Copyright 2024, Samsung
 
 #include "ShellCommandFactory.h"
+#include "ShellScript.h"
 
-ShellCommand* ShellCommandFactory::Parse(const std::string& strCommand) {
+ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
     TokenArgument(strCommand);
     MakeCommand();
-    result->eCommand = GetCmdType();
-    result->LBA = GetLBA();
-    result->Data = GetData();
     return result;
 }
 
 void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
     std::string token;
     size_t start = 0, end = 0;
+    CommandToken.clear();
 
     while ((end = strCommand.find(' ', start)) != std::string::npos) {
         token = strCommand.substr(start, end - start);
@@ -27,40 +26,156 @@ void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
 }
 
 void ShellCommandFactory::MakeCommand() {
-    result = new ShellCommand();
+    if (CommandToken.empty() == true) result = MakeInvalidCommand();
+    else if (CommandToken[0] == "write") result = MakeWriteCommand();
+    else if (CommandToken[0] == "read") result = MakeReadCommand();
+    else if (CommandToken[0] == "exit") result = MakeExitCommand();
+    else if (CommandToken[0] == "help") result = MakeHelpCommand();
+    else if (CommandToken[0] == "fullwrite") result = MakeFullWriteCommand();
+    else if (CommandToken[0] == "fullread") result = MakeFullReadCommand();
+    else if (CommandToken[0] == "testapp1") result = MakeTestApp1Command();
+    else if (CommandToken[0] == "testapp2") result = MakeTestApp2Command();
+    else
+        result = MakeInvalidCommand();
 }
 
-
-ShellCmdType ShellCommandFactory::GetCmdType() {
-    ShellCmdType eCmdType = ShellCmdType::Invalid;
-
-    if (CommandToken[0] == "write") eCmdType = ShellCmdType::Write;
-    if (CommandToken[0] == "read") eCmdType = ShellCmdType::Read;
-    if (CommandToken[0] == "exit") eCmdType = ShellCmdType::Exit;
-    if (CommandToken[0] == "help") eCmdType = ShellCmdType::Help;
-    if (CommandToken[0] == "fullwrite") eCmdType = ShellCmdType::FullWrite;
-    if (CommandToken[0] == "fullread") eCmdType = ShellCmdType::FullRead;
-    if (CommandToken[0] == "testapp1") eCmdType = ShellCmdType::TestApp1;
-    if (CommandToken[0] == "testapp2") eCmdType = ShellCmdType::TestApp2;
-
-    return eCmdType;
+ShellCommand* ShellCommandFactory::MakeInvalidCommand() {
+    return new InvalidCommand();
 }
 
-int ShellCommandFactory::GetLBA() {
-    if ((result->eCommand == ShellCmdType::Write) ||
-        (result->eCommand == ShellCmdType::Read)) {
-        return std::stoi(CommandToken[1]);
+ShellCommand* ShellCommandFactory::MakeWriteCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 3) {
+        return new InvalidCommand();
     }
-    return 0;
-}
 
-unsigned int ShellCommandFactory::GetData() {
-    if (result->eCommand == ShellCmdType::Write) {
-        return std::stoul(CommandToken[2], nullptr, 16);
-    } else if (result->eCommand == ShellCmdType::FullWrite) {
-        return std::stoul(CommandToken[1], nullptr, 16);
-    } else {
-        return 0;
+    // Check Invalid 2) LBA
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
     }
+
+    if (IsStringValidLBA(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 3) Data
+    if (IsStringHexadecimal(CommandToken[2]) == false) {
+        return new InvalidCommand();
+    }
+
+    return new WriteCommand(CommandToken[1], CommandToken[2]);
 }
 
+
+ShellCommand* ShellCommandFactory::MakeReadCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 2) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 2) LBA
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    if (IsStringValidLBA(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    return new ReadCommand(CommandToken[1]);
+}
+
+ShellCommand* ShellCommandFactory::MakeExitCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new ExitCommand();
+}
+
+ShellCommand* ShellCommandFactory::MakeHelpCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new HelpCommand();
+}
+
+ShellCommand* ShellCommandFactory::MakeFullWriteCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 2) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 2) Data
+    if (IsStringHexadecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    return new FullWriteCommand(CommandToken[1]);
+}
+
+ShellCommand* ShellCommandFactory::MakeFullReadCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new FullReadCommand();
+}
+
+ShellCommand* ShellCommandFactory::MakeTestApp1Command() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new ShellScript("..\\Test_Shell_App\\testapp1.txt");
+}
+
+ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new ShellScript("..\\Test_Shell_App\\testapp2.txt");
+}
+
+bool ShellCommandFactory::IsStringDecimal(const std::string& str)
+{
+    for (char ch = 0; ch < str.size(); ch++) {
+        if ('0' > str[ch] || str[ch] > '9') {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ShellCommandFactory::IsStringHexadecimal(const std::string& str)
+{
+    if ((str[0] != '0') ||
+        (str[1] != 'x') ||
+        (str.size() != MAX_STR_LENGTH_DATA)) {
+        return false;
+    }
+
+    for (int idx = 2; idx < str.size(); idx++) {
+        if (('0' > str[idx] || str[idx] > '9') &&
+            ('A' > str[idx] || str[idx] > 'F')) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ShellCommandFactory::IsStringValidLBA(const std::string& str)
+{
+    int LBA = std::stoi(CommandToken[1]);
+    if ((MIN_LBA <= LBA) && (LBA <= MAX_LBA)) {
+        return true;
+    }
+    return false;
+}

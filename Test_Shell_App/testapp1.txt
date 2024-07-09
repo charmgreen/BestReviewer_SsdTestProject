@@ -1,0 +1,2 @@
+fullwrite 0x12341234
+fullread

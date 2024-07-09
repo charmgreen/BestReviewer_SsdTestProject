@@ -1,8 +1,8 @@
 // Copyright [2024] <CRA/BestReviewer>
 #pragma once
-
+#include <string>
 class SsdDriver {
  public:
-    virtual unsigned int Read(int LBA) = 0;
-    virtual void Write(int LBA, unsigned int Data) = 0;
+    virtual std::string Read(int LBA) = 0;
+    virtual void Write(int LBA, std::string Data) = 0;
 };
