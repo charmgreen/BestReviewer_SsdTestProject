@@ -69,31 +69,31 @@ void SSD::CheckLBARange(const int& LBA) {
 }
 
 std::string SSD::Read(const int &LBA) {
-  CheckLBARange(LBA);
-  CheckExistNandFile();
-  ReadMemory();
-  return ReturnReadData(LBA);
+    CheckLBARange(LBA);
+    CheckExistNandFile();
+    ReadMemory();
+    return ReturnReadData(LBA);
 }
 
 void SSD::CheckExistNandFile() {
-  std::ifstream nandFile(WriteFIleName);
-  if (!nandFile.is_open()) {
-    throw NotExistNandFileException();
-  }
-  nandFile.close();
+    std::ifstream nandFile(WriteFIleName);
+    if (!nandFile.is_open()) {
+        throw NotExistNandFileException();
+    }
+    nandFile.close();
 }
 
 const std::string &SSD::ReturnReadData(const int &LBA) {
-  if (memory.find(LBA) != memory.end()) {
-    WriteResultFile(LBA);
-    return memory[LBA];
-  }
-  return InitialLBAData;
+    if (memory.find(LBA) != memory.end()) {
+        WriteResultFile(LBA);
+        return memory[LBA];
+    }
+    return InitialLBAData;
 }
 
 void SSD::WriteResultFile(const int &LBA) {
-  std::ofstream resultFile(ReadFileName);
-  resultFile << memory[LBA];
-  resultFile.close();
+    std::ofstream resultFile(ReadFileName);
+    resultFile << memory[LBA];
+    resultFile.close();
 }
 
