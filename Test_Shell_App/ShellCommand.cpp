@@ -16,8 +16,8 @@ WriteCommand::WriteCommand(std::string strLBA, std::string strData) {
 
 void WriteCommand::Run(SsdDriver* ssddriver) {
     ssddriver->Write(this->nLBA, this->strData);
-    std::cout << "[Write] LBA : " << this->strLBA;
-    std::cout << ", Data : " << this->strData << std::endl;
+    // std::cout << "[Write] LBA : " << this->strLBA;
+    // std::cout << ", Data : " << this->strData << std::endl;
 }
 
 ReadCommand::ReadCommand(std::string strLBA) {
