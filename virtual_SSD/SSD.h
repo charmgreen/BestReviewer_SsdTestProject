@@ -1,20 +1,30 @@
-#pragma once
+
 #include<map>
 #include<string>
 
-using namespace std;
+class NotExistNandFileException : public std::exception {};
 
-class SSD{
-public:
-  virtual string Read(int lba);
-  virtual void saveReadDataInResultFile(string readData);
-  virtual map<int, string> copyDataFromNandFile();
-  virtual bool isLbaOutOfRange(int lba);
+class SSD {
+ public:
+ 
+  virtual void Write(const int& LBA, const std::string& data);
+  void CheckWriteCondition(const int& LBA, const std::string& data);
+  void StoreMemory();
+  void UpdateMemory(const int& LBA, const std::string& data);
+  void ReadMemory();
+  void CheckDataLength(const std::string& data);
+  void CheckLBARange(const int& LBA);
 
-  map<int, string> getMemory() {
-	  return memory;
-  }
+  virtual std::string Read(const int &lba);
+  void CheckExistNandFile();
+  const std::string &ReturnReadData(const int &LBA);
+  void WriteResultFile(const int &LBA);
 
-private:
-  map<int, string> memory;
+ private:
+  std::map<int, std::string> memory;
+  std::string InitialLBAData{ "0x00000000" };
+  std::string WriteFIleName{ "nand.txt" };
+  std::string ReadFileName{ "result.txt" };
+  const int MAX_LBA{ 99 };
+  const int MIN_LBA{ 0 };
 };

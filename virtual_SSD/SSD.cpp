@@ -1,79 +1,100 @@
-#include "SSD.h"
-#include <string>
-#include <fstream>
-#include <iostream>
+// "Copyright [2024] <doyun kim>"
+
+#include<stdexcept>
+#include<fstream>
+#include<iostream>
 #include <sstream>
+#include <string>
 #include <map>
+#include"SSD.h"
 
-using namespace std;
+class LBARangeException :public std::exception {
+};
 
-std::string SSD::Read(int lba){
-  if (isLbaOutOfRange(lba)) {
-    throw invalid_argument("Invalid lab when reading the data.");
-  }
+class DataRangeException :public std::exception {
+};
 
-  map<int, std::string> copyMemory = copyDataFromNandFile();
-
-  if (copyMemory.find(lba) != copyMemory.end()) {
-    string readData = copyMemory[lba];
-    saveReadDataInResultFile(readData);
-    return readData;
-  }
-
-  return "0x00000000";
+void SSD::Write(const int& LBA, const std::string& data) {
+    CheckWriteCondition(LBA, data);
+    ReadMemory();
+    UpdateMemory(LBA, data);
+    StoreMemory();
 }
 
-void SSD::saveReadDataInResultFile(string readData) {
-  ofstream resultFile("result.txt");
-  resultFile << readData;
-  resultFile.close();
+void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
+    CheckLBARange(LBA);
+    CheckDataLength(data);
 }
 
-map<int, string> SSD::copyDataFromNandFile() {
-  ifstream nandFile("nand.txt");
+void SSD::StoreMemory() {
+    std::ofstream writeFile(WriteFIleName);
+    if (writeFile.is_open()) {
+        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
+            writeFile << LBA << " " << memory[LBA] << "\n";
+        }
+    }
+}
+
+void SSD::UpdateMemory(const int& LBA, const std::string& data) {
+    memory[LBA] = data;
+}
+
+void SSD::ReadMemory() {
+    std::string line;
+    std::ifstream writeFIle(WriteFIleName);
+
+    if (writeFIle.is_open()) {
+        while (getline(writeFIle, line)) {
+            int firstSpacePosition = line.find(' ');
+            std::string LBA = line.substr(0, firstSpacePosition);
+            int iLBA = stoi(LBA);
+            std::string LBADATA = line.substr(firstSpacePosition + 1);
+            UpdateMemory(iLBA, LBADATA);
+        }
+        writeFIle.close();
+    } else {
+        for (int i = 0; i <= MAX_LBA; i++) {
+            memory[i] = InitialLBAData;
+        }
+    }
+}
+
+void SSD::CheckDataLength(const std::string& data) {
+    if (data.length() != 10)
+        throw DataRangeException();
+}
+
+void SSD::CheckLBARange(const int& LBA) {
+    if (LBA < 0 || LBA > MAX_LBA)
+        throw LBARangeException();
+}
+
+std::string SSD::Read(const int &LBA) {
+  CheckLBARange(LBA);
+  CheckExistNandFile();
+  ReadMemory();
+  return ReturnReadData(LBA);
+}
+
+void SSD::CheckExistNandFile() {
+  std::ifstream nandFile(WriteFIleName);
   if (!nandFile.is_open()) {
-    throw runtime_error("nand.txt does not exist.");
-  }
-
-  map<int, string> copyData;
-  int lbaNum = 0;
-  string readLine;
-
-  while (!nandFile.eof()) {
-    getline(nandFile, readLine);
-    copyData.insert({lbaNum, readLine});
-    lbaNum++;
+    throw NotExistNandFileException();
   }
   nandFile.close();
-
-  return copyData;
 }
 
+const std::string &SSD::ReturnReadData(const int &LBA) {
+  if (memory.find(LBA) != memory.end()) {
+    WriteResultFile(LBA);
+    return memory[LBA];
+  }
+  return InitialLBAData;
+}
 
-bool SSD::isLbaOutOfRange(int lba) { return lba < 0 || lba > 99; }
-
-/// <summary>
-/// class VirtualSSD : SSD {
-//public:
-// string Read(int lba) override {
-//   if (isLbaOutOfRange(lba)) {
-//     throw invalid_argument("Invalid lab when reading the data.");
-//   }
-
-//  copyMemory = copyDataFromNandFile();
-
-//  if (isLbaDataExistInMemory(lba)) {
-//    string readData = copyMemory[lba];
-//    saveReadDataInResultFile(readData);
-//    return readData;
-//  }
-
-//  return "0x00000000";
-//}
-
-//private:
-//map<int, string> copyMemory;
-//}
-//;
-/// </summary>
+void SSD::WriteResultFile(const int &LBA) {
+  std::ofstream resultFile(ReadFileName);
+  resultFile << memory[LBA];
+  resultFile.close();
+}
 
