@@ -16,12 +16,15 @@ class SSD : public SSDInterface {
     std::string InitialLBAData{ "0x00000000" };
     std::string WriteFIleName{ "nand.txt" };
     std::string ReadFileName{ "result.txt" };
+    std::string CommandBufferFileName{ "buffer.txt" };
     std::string DataPreFix{ "0x" };
     const int MAX_LBA{ 99 };
     const int MIN_LBA{ 0 };
     const int InitialUpdateSize{1};
+    const int COMMAND_MAX_LINE{10};
 
     void ProcessMemory(const int &LBA, const std::string data, const int &size);
+    void StoreCommand(const int &LBA, const std::string data, const int &size);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void StoreMemory();
@@ -34,4 +37,6 @@ class SSD : public SSDInterface {
     void CheckEraseSizeRange(const int size);
     bool isHexData(const char& data);
     void WriteResultFile(const int& LBA);
+    void WriteFile(std::string FileName, std::vector<std::string>& lines);
+    std::vector<std::string> ReadFile(std::string FileName);
 };
