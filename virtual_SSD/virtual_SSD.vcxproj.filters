@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test.cpp">
+    <ClCompile Include="SSD.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SSD.cpp">
+    <ClCompile Include="Virtual_SSD_main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Parser.cpp">

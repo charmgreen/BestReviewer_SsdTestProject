@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="SSD.cpp" />
+    <ClCompile Include="Virtual_SSD_main.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="TestCmd.cpp" />
   </ItemGroup>

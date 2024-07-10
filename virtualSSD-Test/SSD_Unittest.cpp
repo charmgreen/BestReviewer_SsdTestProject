@@ -50,6 +50,14 @@ TEST_F(SSDFixture, TestDataRangeException) {
     EXPECT_THROW(ssd.Write(99, "0x100000"), DataRangeException);
 }
 
+TEST_F(SSDFixture, TestDataPreFIxException) {
+    EXPECT_THROW(ssd.Write(99, "0110000000"), DataPreFIxException);
+}
+
+TEST_F(SSDFixture, TestDataTypeException) {
+    EXPECT_THROW(ssd.Write(99, "0x1000000Z"), DataTypeException);
+}
+
 TEST_F(SSDFixture, TestWriteMemory) {
     ssd.Write(0, "0x10000001");
     EXPECT_EQ("0x10000001", getLSBData(0));
@@ -57,8 +65,8 @@ TEST_F(SSDFixture, TestWriteMemory) {
     EXPECT_EQ("0x10000099", getLSBData(3));
 }
 
-TEST_F(SSDFixture, TestReadMemory) { 
-    EXPECT_THAT("0x10000001", ssd.Read(0)); 
+TEST_F(SSDFixture, TestReadMemory) {
+    EXPECT_THAT("0x10000001", ssd.Read(0));
 }
 
 TEST_F(SSDFixture, TestReadMemoryWhenEmpty) {

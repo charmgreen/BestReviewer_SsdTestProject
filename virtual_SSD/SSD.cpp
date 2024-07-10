@@ -1,4 +1,4 @@
-// "Copyright [2024] <doyun kim>"
+// Copyright [2024] <CRA/BestReviewer>
 #include<stdexcept>
 #include<fstream>
 #include<iostream>
@@ -8,10 +8,9 @@
 #include"SSD.h"
 
 class LBARangeException : public std::exception {};
-
 class DataRangeException : public std::exception {};
-
-class NotExistNandFileException : public std::exception {};
+class DataPreFIxException : public std::exception {};
+class DataTypeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
@@ -20,22 +19,10 @@ void SSD::Write(const int& LBA, const std::string& data) {
     StoreMemory();
 }
 
-void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
+std::string SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
-    CheckDataLength(data);
-}
-
-void SSD::StoreMemory() {
-    std::ofstream writeFile(WriteFIleName);
-    if (writeFile.is_open()) {
-        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
-            writeFile << LBA << " " << memory[LBA] << "\n";
-        }
-    }
-}
-
-void SSD::UpdateMemory(const int& LBA, const std::string& data) {
-    memory[LBA] = data;
+    ReadMemory();
+    return ReturnReadData(LBA);
 }
 
 void SSD::ReadMemory() {
@@ -58,9 +45,24 @@ void SSD::ReadMemory() {
     }
 }
 
-void SSD::CheckDataLength(const std::string& data) {
-    if (data.length() != 10)
-        throw DataRangeException();
+void SSD::UpdateMemory(const int& LBA, const std::string& data) {
+    memory[LBA] = data;
+}
+
+void SSD::StoreMemory() {
+    std::ofstream writeFile(WriteFIleName);
+    if (writeFile.is_open()) {
+        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
+            writeFile << LBA << " " << memory[LBA] << "\n";
+        }
+    }
+}
+
+void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
+    CheckLBARange(LBA);
+    CheckDataLength(data);
+    CheckDataPreFix(data);
+    CheckDataType(data);
 }
 
 void SSD::CheckLBARange(const int& LBA) {
@@ -68,32 +70,38 @@ void SSD::CheckLBARange(const int& LBA) {
         throw LBARangeException();
 }
 
-std::string SSD::Read(const int &LBA) {
-  CheckLBARange(LBA);
-  CheckExistNandFile();
-  ReadMemory();
-  return ReturnReadData(LBA);
+void SSD::CheckDataLength(const std::string& data) {
+    if (data.length() != 10)
+        throw DataRangeException();
 }
 
-void SSD::CheckExistNandFile() {
-  std::ifstream nandFile(WriteFIleName);
-  if (!nandFile.is_open()) {
-    throw NotExistNandFileException();
-  }
-  nandFile.close();
+void SSD::CheckDataPreFix(const std::string& data) {
+    if (data.substr(0, 2) != DataPreFix)
+        throw DataPreFIxException();
+}
+
+void SSD::CheckDataType(const std::string& data) {
+    for (int i = 2; i < data.length(); i++) {
+        if (isHexData(data[i]))continue;
+        throw DataTypeException();
+    }
+}
+
+bool SSD::isHexData(const char& data) {
+    return (0 <= data - '0' && data - '0' < 10)
+        || (0 <= data - 'A' && data - 'A' < 6);
 }
 
 const std::string &SSD::ReturnReadData(const int &LBA) {
-  if (memory.find(LBA) != memory.end()) {
-    WriteResultFile(LBA);
-    return memory[LBA];
-  }
-  return InitialLBAData;
+    if (memory.find(LBA) != memory.end()) {
+        WriteResultFile(LBA);
+        return memory[LBA];
+    }
+    return InitialLBAData;
 }
 
 void SSD::WriteResultFile(const int &LBA) {
-  std::ofstream resultFile(ReadFileName);
-  resultFile << memory[LBA];
-  resultFile.close();
+    std::ofstream resultFile(ReadFileName);
+    resultFile << memory[LBA];
+    resultFile.close();
 }
-

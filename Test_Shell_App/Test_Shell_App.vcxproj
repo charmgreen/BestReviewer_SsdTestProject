@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main_TestShell.cpp" />
+    <ClCompile Include="RealSsdDriver.cpp" />
+    <ClCompile Include="ShellCommand.cpp" />
+    <ClCompile Include="ShellCommandFactory.cpp" />
+    <ClCompile Include="ShellScript.cpp" />
+    <ClCompile Include="TestShell.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RealSsdDriver.h" />
+    <ClInclude Include="ShellCommand.h" />
+    <ClInclude Include="ShellCommandFactory.h" />
+    <ClInclude Include="ShellScript.h" />
+    <ClInclude Include="SsdDriver.h" />
+    <ClInclude Include="TestShell.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="testapp1.txt" />
+    <Text Include="testapp2.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
