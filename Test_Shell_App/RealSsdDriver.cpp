@@ -14,9 +14,7 @@ string RealSsdDriver::Read(int LBA) {
     string line;
 
     if (resultFile.is_open()) {
-        while (getline(resultFile, line)) {
-            cout << line << endl;
-        }
+        getline(resultFile, line);
         resultFile.close();
     }
     else {

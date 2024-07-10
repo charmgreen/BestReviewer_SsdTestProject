@@ -13,6 +13,8 @@ const int SCRIPT_MODE = 2;
 void CommandMode();
 void ScriptMode(char* argv[]);
 
+void RunScript(std::ifstream& runListFile);
+
 int main(int argc, char* argv[]) {
     if (argc == COMMAND_MODE)
     {
@@ -45,27 +47,45 @@ void CommandMode()
 
 void ScriptMode(char* argv[])
 {
-    TestShell TestShellApp;
-    TestShellApp.SetSsdDriver(new RealSsdDriver());
     string inputArg = argv[1];
     string ReadFileName{ inputArg };
-    ifstream resultFile(ReadFileName);
-    string command;
+    ifstream runListFile(ReadFileName);
 
-    if (resultFile.is_open()) {
-        while (getline(resultFile, command)) {
-            cout << command << endl;
-            try {
-                TestShellApp.Run(command);
-            }
-            catch (ExitTestShell) {
-                break;
-            }
-        }
-        resultFile.close();
+    if (runListFile.is_open()) {
+
+        RunScript(runListFile);
+
+        runListFile.close();
     }
     else {
-        cerr << "Open Error " + ReadFileName << endl;
+        cerr << "read Open Error " + ReadFileName << endl;
+    }
+}
+
+void RunScript(ifstream& runListFile)
+{
+    TestShell TestShellApp;
+    TestShellApp.SetSsdDriver(new RealSsdDriver());
+    string scriptFileName;
+
+    while (getline(runListFile, scriptFileName)) {
+        string command;
+        ifstream scriptFile(scriptFileName);
+
+        if (scriptFile.is_open()) {
+            while (getline(scriptFile, command)) {
+                cout << command << endl;
+                try {
+                    TestShellApp.Run(command);
+                }
+                catch (ExitTestShell) {
+                    break;
+                }
+            }
+            scriptFile.close();
+        }
+
+        cout << scriptFileName << endl;
     }
 }
 
