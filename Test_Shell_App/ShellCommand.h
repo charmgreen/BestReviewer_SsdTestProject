@@ -8,6 +8,9 @@
 class ShellCommand {
  public:
      virtual void Run(SsdDriver* ssddriver) = 0;
+ protected:
+     const int MAX_LBA = 99;
+     const int MIN_LBA = 0;
 };
 
 
@@ -62,9 +65,20 @@ class FullReadCommand : public ShellCommand {
     void Run(SsdDriver* ssddriver) override;
 };
 
-class ExitTestShell : public std::exception
-{
-public:
+class TestApp1 : public ShellCommand {
+ public:
+    TestApp1() {}
+    void Run(SsdDriver* ssddriver) override;
+};
+
+class TestApp2 : public ShellCommand {
+ public:
+    TestApp2() {}
+    void Run(SsdDriver* ssddriver) override;
+};
+
+class ExitTestShell : public std::exception {
+ public:
     char const* what() const override {
         return "Exit Test Shell!";
     }
