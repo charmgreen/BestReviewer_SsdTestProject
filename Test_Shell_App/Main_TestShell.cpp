@@ -27,9 +27,6 @@ int main(int argc, char* argv[]) {
     else if (argc == 2)
     {
         string inputArg = argv[1];
-
-        cout << inputArg << endl;
-
         string ReadFileName{ inputArg };
         ifstream resultFile(ReadFileName);
         string command;
