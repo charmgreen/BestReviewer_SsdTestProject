@@ -3,8 +3,6 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
 std::string GetConcatenateArgv(int argc, char* argv[]) {
     std::string result{ "" };
     for (int i = 1; i < argc; i++) {
