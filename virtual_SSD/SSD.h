@@ -18,12 +18,14 @@ class SSD : public SSDInterface {
     std::string DataPreFix{ "0x" };
     const int MAX_LBA{ 99 };
     const int MIN_LBA{ 0 };
+    const int InitialUpdateSize{1};
 
+    void ProcessMemory(const int &LBA, const std::string data, const int &size);
     void ReadMemory();
-    void UpdateMemory(const int& LBA, const std::string& data);
+    void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void StoreMemory();
-    void EraseMemory(const int &LBA, const int &size);
     void CheckWriteCondition(const int& LBA, const std::string& data);
+    void CheckEraseCondition(const int &LBA, const int &size);
     void CheckLBARange(const int& LBA);
     void CheckDataLength(const std::string& data);
     void CheckDataPreFix(const std::string& data);
