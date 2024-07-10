@@ -32,9 +32,9 @@ void CommandMode()
 {
     TestShell TestShellApp;
     TestShellApp.SetSsdDriver(new RealSsdDriver());
-
+    string command;
     while (true) {
-        string command;
+        command.clear();
         getline(cin, command);
         try {
             TestShellApp.Run(command);

@@ -29,6 +29,32 @@ void ReadCommand::Run(SsdDriver* ssddriver) {
     std::cout << ", Data : " << resultData << std::endl;
 }
 
+EraseCommand::EraseCommand(std::string strStartLBA, std::string strSize) {
+    this->strStartLBA = strStartLBA;
+    this->strSize = strSize;
+    this->nStartLBA = std::stoi(strStartLBA);
+    this->nSize = std::stoi(strSize);
+}
+
+void EraseCommand::Run(SsdDriver* ssddriver) {
+    ssddriver->Erase(this->nStartLBA, this->nSize);
+}
+
+EraseRangeCommand::EraseRangeCommand(std::string strStartLBA, std::string strEndLBA) {
+    this->strStartLBA = strStartLBA;
+    this->strEndLBA = strEndLBA;
+    this->nStartLBA = std::stoi(strStartLBA);
+    this->nEndLBA = std::stoi(strEndLBA);
+}
+
+void EraseRangeCommand::Run(SsdDriver* ssddriver) {
+    ssddriver->Erase(this->nStartLBA, this->nEndLBA - this->nStartLBA);
+}
+
+void FlushCommand::Run(SsdDriver* ssddriver) {
+    ssddriver->Flush();
+}
+
 void ExitCommand::Run(SsdDriver* ssddriver) {
     std::cout << "[Exit] Quit Shell" << std::endl;
     throw ExitTestShell();
@@ -56,14 +82,14 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
-    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+    for (int LBA = 0; LBA <= 99; LBA++) {
         ssddriver->Write(LBA, this->strData);
     }
 }
 
 void FullReadCommand::Run(SsdDriver* ssddriver) {
     std::cout << "[FullRead]\n";
-    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+    for (int LBA = 0; LBA <= 99; LBA++) {
         std::string resultData = ssddriver->Read(LBA);
         std::cout << "[Read] LBA : " << std::to_string(LBA);
         std::cout << ", Data : " << resultData << std::endl;
@@ -100,3 +126,4 @@ void TestApp2::Run(SsdDriver* ssddriver) {
         std::cout << ", Data : " << resultData << std::endl;
     }
 }
+
