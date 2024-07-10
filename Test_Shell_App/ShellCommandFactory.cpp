@@ -132,7 +132,7 @@ ShellCommand* ShellCommandFactory::MakeTestApp1Command() {
         return new InvalidCommand();
     }
 
-    return new ShellScript("..\\Test_Shell_App\\testapp1.txt");
+    return new TestApp1();
 }
 
 ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
@@ -141,7 +141,7 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
         return new InvalidCommand();
     }
 
-    return new ShellScript("..\\Test_Shell_App\\testapp2.txt");
+    return new TestApp2();
 }
 
 bool ShellCommandFactory::IsStringDecimal(const std::string& str)

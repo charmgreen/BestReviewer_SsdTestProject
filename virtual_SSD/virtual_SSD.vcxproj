@@ -22,7 +22,7 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="SSD.cpp" />
     <ClCompile Include="SSDCommand.cpp" />
-    <ClCompile Include="Virtual_SSD_main.cpp" />
+    <ClCompile Include="ssd_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h" />
@@ -38,6 +38,7 @@
     <ProjectGuid>{257d1023-3d32-47e1-b6d4-5318e53a9b5e}</ProjectGuid>
     <RootNamespace>virtualSSD</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>ssd</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

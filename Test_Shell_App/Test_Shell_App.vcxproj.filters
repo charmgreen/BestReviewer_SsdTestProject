@@ -54,8 +54,4 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="testapp2.txt" />
-    <Text Include="testapp1.txt" />
-  </ItemGroup>
 </Project>
