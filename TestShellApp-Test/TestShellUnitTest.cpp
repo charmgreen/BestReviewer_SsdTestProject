@@ -149,8 +149,7 @@ TEST_F(MockSsdTestShellFixture, InvCommand) {
 }
 
 TEST_F(MockSsdTestShellFixture, ExitTest) {
-    testShell.Run("exit");
-    VerifyResult("[Exit] Quit Shell\n");
+    EXPECT_THROW(testShell.Run("exit"), ExitTestShell);
 }
 
 TEST_F(MockSsdTestShellFixture, HelpTest) {
@@ -168,12 +167,6 @@ TEST_F(MockSsdTestShellFixture, HelpTest) {
     expectResult += "{Data} = {""0x[0-9A-F]""}\n";
     testShell.Run("help");
     VerifyResult(expectResult);
-}
-
-TEST_F(MockSsdTestShellFixture, HelpAfterExit) {
-    testShell.Run("exit");
-    testShell.Run("help");
-    VerifyResult("[Exit] Quit Shell\n");
 }
 
 TEST_F(MockSsdTestShellFixture, TestApp1) {
