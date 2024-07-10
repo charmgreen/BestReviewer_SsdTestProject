@@ -20,10 +20,10 @@ void SSD::Write(const int& LBA, const std::string& data) {
     StoreMemory();
 }
 
-std::string SSD::Read(const int& LBA) {
+void SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
     ReadMemory();
-    return ReturnReadData(LBA);
+    WriteResultFile(LBA);
 }
 
 void SSD::Erase(const int &LBA, const int &size) {
@@ -115,16 +115,10 @@ bool SSD::isHexData(const char& data) {
         || (0 <= data - 'A' && data - 'A' < 6);
 }
 
-const std::string &SSD::ReturnReadData(const int &LBA) {
-    if (memory.find(LBA) != memory.end()) {
-        WriteResultFile(LBA);
-        return memory[LBA];
-    }
-    return InitialLBAData;
-}
-
 void SSD::WriteResultFile(const int &LBA) {
-    std::ofstream resultFile(ReadFileName);
-    resultFile << memory[LBA];
-    resultFile.close();
+    if (memory.find(LBA) != memory.end()) {
+        std::ofstream resultFile(ReadFileName);
+        resultFile << memory[LBA];
+        resultFile.close();
+    }
 }

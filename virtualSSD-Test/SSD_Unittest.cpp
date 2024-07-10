@@ -11,7 +11,7 @@ using namespace testing;
 class MockSSD : public SSDInterface {
  public:
     MOCK_METHOD(void, Write, (const int &LBA, const std::string &data), (override));
-    MOCK_METHOD(std::string, Read, (const int &LBA), (override));
+    MOCK_METHOD(void, Read, (const int &LBA), (override));
     MOCK_METHOD(void, Erase, (const int &LBA, const int &size), (override));
 };
 
@@ -65,17 +65,19 @@ TEST_F(SSDFixture, TestWriteMemory) {
     EXPECT_EQ("0x10000099", getLSBData(98));
 }
 
+TEST_F(SSDFixture, TestWriteCommandWithMock) {
+  EXPECT_CALL(mockSSD, Write).Times(1);
+  testCmd.Run("SSD.exe W 0 0x00000001");
+}
+
 TEST_F(SSDFixture, TestLBARangeExceptionWhenRead) {
     EXPECT_THROW(ssd.Read(-10), LBARangeException);
     EXPECT_THROW(ssd.Read(100), LBARangeException);
 }
 
-TEST_F(SSDFixture, TestReadMemoryWhenEmpty) {
-    EXPECT_THAT("0x00000000", ssd.Read(1));
-}
-
-TEST_F(SSDFixture, TestReadMemory) { 
-    EXPECT_THAT("0x10000001", ssd.Read(0)); 
+TEST_F(SSDFixture, TestReadCommandWithMock) {
+    EXPECT_CALL(mockSSD, Read).Times(1);
+    testCmd.Run("SSD.exe R 0");
 }
 
 TEST_F(SSDFixture, TestLBARangeExceptionWhenErase) {
@@ -97,16 +99,6 @@ TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
     ssd.Erase(98, 10);
     EXPECT_EQ("0x00000000", getLSBData(98));
     EXPECT_EQ("0x00000000", getLSBData(99));
-}
-
-TEST_F(SSDFixture, TestReadCommandWithMock) {
-    EXPECT_CALL(mockSSD, Read).Times(1);
-    testCmd.Run("SSD.exe R 0");
-}
-
-TEST_F(SSDFixture, TestWriteCommandWithMock) {
-    EXPECT_CALL(mockSSD, Write).Times(1);
-    testCmd.Run("SSD.exe W 0 0x00000001");
 }
 
 TEST_F(SSDFixture, TestEraseCommandWithMock) {

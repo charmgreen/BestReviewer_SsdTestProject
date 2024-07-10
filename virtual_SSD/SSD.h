@@ -7,7 +7,7 @@
 class SSD : public SSDInterface {
  public:
   virtual void Write(const int& LBA, const std::string& data) override;
-  virtual std::string Read(const int &LBA) override;
+  virtual void Read(const int &LBA) override;
   virtual void Erase(const int &LBA, const int &size) override;
 
  private:
@@ -30,6 +30,5 @@ class SSD : public SSDInterface {
   void CheckDataType(const std::string& data);
   void CheckEraseSizeRange(const int size);
   bool isHexData(const char& data);
-  const std::string& ReturnReadData(const int& LBA);
   void WriteResultFile(const int& LBA);
 };

@@ -21,9 +21,8 @@ void SSDCommand::_Write() {
     ssd->Write(stoi(cmd->LBA), cmd->LBAData);
 }
 
-std::string SSDCommand::_Read() {
-    std::string res = ssd->Read(stoi(cmd->LBA));
-    return res;
+void SSDCommand::_Read() {
+    ssd->Read(stoi(cmd->LBA));
 }
 
 void SSDCommand::_Erase() { 
