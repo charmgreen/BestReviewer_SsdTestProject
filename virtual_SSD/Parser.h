@@ -6,6 +6,7 @@
 enum class CmdType {
     Read,
     Write,
+    Erase,
 };
 
 struct CmdStatus {
@@ -13,6 +14,7 @@ struct CmdStatus {
     CmdType Command;
     std::string LBA;
     std::string LBAData;
+    int EraseSize;
 };
 
 class Parser {
@@ -24,8 +26,13 @@ class Parser {
     CmdStatus* UpdateCmdStatus();
     CmdStatus* UpdateWriteCmdStatus();
     CmdStatus* UpdateReadCmdStatus();
+    CmdStatus* UpdateEraseCmdStatus();
+    void CheckWriteCommandToken();
+    void CheckReadCommandToken();
+    void CheckEraseCommandToken();
 
     std::vector<std::string> CommandToken;
     const std::string WRITE_CMD = "W";
     const std::string READ_CMD = "R";
+    const std::string ERASE_CMD = "E";
 };

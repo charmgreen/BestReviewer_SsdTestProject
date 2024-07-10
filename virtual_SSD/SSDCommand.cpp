@@ -12,6 +12,8 @@ void SSDCommand::Run(const std::string& strCommand) {
         _Write();
     } else if (cmd->Command == CmdType::Read) {
         _Read();
+    } else if (cmd->Command == CmdType::Erase) {
+        _Erase();
     }
 }
 
@@ -19,7 +21,10 @@ void SSDCommand::_Write() {
     ssd->Write(stoi(cmd->LBA), cmd->LBAData);
 }
 
-std::string SSDCommand::_Read() {
-    std::string res = ssd->Read(stoi(cmd->LBA));
-    return res;
+void SSDCommand::_Read() {
+    ssd->Read(stoi(cmd->LBA));
+}
+
+void SSDCommand::_Erase() {
+    ssd->Erase(stoi(cmd->LBA), cmd->EraseSize);
 }

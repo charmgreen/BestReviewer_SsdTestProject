@@ -17,6 +17,7 @@ class SSDCommand {
     SSDInterface *ssd;
     Parser* parser;
     CmdStatus* cmd;
-    std::string _Read();
+    void _Read();
     void _Write();
+    void _Erase();
 };
