@@ -7,7 +7,7 @@
 
 class ShellScript : public ShellCommand, public ShellCommandFactory {
  public:
-    explicit ShellScript(std::string filename);
+    ShellScript(std::string filename, SsdDriver* ssddriver);
     void Run(SsdDriver* ssddriver) override;
  private:
     std::string filename;
