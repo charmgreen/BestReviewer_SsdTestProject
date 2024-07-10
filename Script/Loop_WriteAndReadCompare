@@ -1,0 +1,16 @@
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
+write 0 0x0000000A
+read 0
