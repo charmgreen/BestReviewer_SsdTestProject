@@ -34,6 +34,7 @@ void CommandMode()
     TestShellApp.SetSsdDriver(new RealSsdDriver());
     string command;
     while (true) {
+        cout << "> ";
         command.clear();
         getline(cin, command);
         try {
