@@ -15,9 +15,7 @@ class EraseSizeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
-    ReadMemory();
-    UpdateMemory(LBA, data);
-    StoreMemory();
+    ProcessMemory(LBA, data, InitialUpdateSize);
 }
 
 void SSD::Read(const int& LBA) {
@@ -27,10 +25,13 @@ void SSD::Read(const int& LBA) {
 }
 
 void SSD::Erase(const int &LBA, const int &size) {
-    CheckLBARange(LBA);
-    CheckEraseSizeRange(size);
+    CheckEraseCondition(LBA, size);
+    ProcessMemory(LBA, InitialLBAData, size);
+}
+
+void SSD::ProcessMemory(const int &LBA, const std::string data, const int &size) {
     ReadMemory();
-    EraseMemory(LBA, size);
+    UpdateMemory(LBA, data, size);
     StoreMemory();
 }
 
@@ -44,7 +45,7 @@ void SSD::ReadMemory() {
             std::string LBA = line.substr(0, firstSpacePosition);
             int iLBA = stoi(LBA);
             std::string LBADATA = line.substr(firstSpacePosition + 1);
-            UpdateMemory(iLBA, LBADATA);
+            UpdateMemory(iLBA, LBADATA, InitialUpdateSize);
         }
         writeFIle.close();
     } else {
@@ -54,8 +55,12 @@ void SSD::ReadMemory() {
     }
 }
 
-void SSD::UpdateMemory(const int& LBA, const std::string& data) {
-    memory[LBA] = data;
+void SSD::UpdateMemory(const int &LBA, const std::string &data,  const int &size) {
+    int endLBA = LBA + size;
+    endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
+    for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
+        memory[iLBA] = data;
+    }
 }
 
 void SSD::StoreMemory() {
@@ -68,19 +73,16 @@ void SSD::StoreMemory() {
     }
 }
 
-void SSD::EraseMemory(const int &LBA, const int &size) {
-    int endLBA = LBA + size;
-    endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
-    for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
-        UpdateMemory(iLBA, "0x00000000");
-    }
-}
-
 void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
     CheckLBARange(LBA);
     CheckDataLength(data);
     CheckDataPreFix(data);
     CheckDataType(data);
+}
+
+void SSD::CheckEraseCondition(const int &LBA, const int &size) {
+    CheckLBARange(LBA);
+    CheckEraseSizeRange(size);
 }
 
 void SSD::CheckLBARange(const int& LBA) {
