@@ -9,18 +9,14 @@
 
 class TestCmd {
  public:
-    TestCmd(SSDInterface *ssd_i) 
-        : ssd(ssd_i), parser(nullptr), cmd(nullptr){
+    TestCmd(SSDInterface* ssd, Parser* parser, CmdStatus* cmd) 
+        : ssd(ssd), parser(parser), cmd(cmd){
     };
 
     void Run(const std::string& str);
-    Parser* SetParser();
-    SSDInterface* SetSSD();
-
- protected:
-    SSDInterface *ssd;
 
  private:
+    SSDInterface *ssd;
     Parser* parser;
     CmdStatus* cmd;
     

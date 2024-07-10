@@ -17,12 +17,12 @@ class MockSSD : public SSDInterface {
 class SSDFixture : public testing::Test {
 public:
 
-    MockSSD mockSSD;
-    TestCmd testCmd{&mockSSD}; 
+    NiceMock<MockSSD> mockSSD;
+    Parser* parser = new Parser();
+    CmdStatus* cmd = new CmdStatus();
+    TestCmd testCmd{&mockSSD, parser, cmd}; 
 
     SSD ssd;
-    //TestCmd testMock;
-
     std::string getLSBData(int LBA) {
     std::string line;
     std::ifstream writeFIle("nand.txt");
@@ -41,14 +41,6 @@ public:
     return "0x00000000";
   }
 };
-
-TEST_F(SSDFixture, TestReadCommand) { 
-    EXPECT_CALL(mockSSD, Read(0)).Times(1);
-    //EXPECT_CALL(mockSSD, Read(0))
-    //    .WillOnce(Return("0x10000002"));
-    testCmd.Run("R 0");
-    //std::cout << testCmd.Run("R 0") << std::endl;
-}
 
 TEST_F(SSDFixture, TestLBARangeExceptionWhenWrite) {
     EXPECT_THROW(ssd.Write(100, "0x10000000"), LBARangeException);
@@ -80,3 +72,14 @@ TEST_F(SSDFixture, TestMinusLBARangeExceptionWhenRead) {
 TEST_F(SSDFixture, Test100LBARangeExceptionWhenRead) {
     EXPECT_THROW(ssd.Read(100), LBARangeException);
 }
+
+TEST_F(SSDFixture, TestReadCommandWithMock) {
+  EXPECT_CALL(mockSSD, Read).Times(1);
+  testCmd.Run("R 0");
+}
+
+TEST_F(SSDFixture, TestWriteCommandWithMock) {
+  EXPECT_CALL(mockSSD, Write).Times(1);
+  testCmd.Run("W 0 0x00000001");
+}
+
