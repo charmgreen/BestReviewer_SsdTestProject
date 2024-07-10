@@ -1,3 +1,4 @@
+// Copyright [2024] <CRA/BestReviewer>
 #pragma once
 #include<vector>
 #include<string>
@@ -8,17 +9,17 @@ enum class CmdType {
 };
 
 struct CmdStatus {
-public:
+ public:
     CmdType Command;
     std::string LBA;
     std::string LBAData;
 };
 
 class Parser {
-public:
+ public:
     CmdStatus* Parse(const std::string& strCommand);
 
-private:
+ private:
     void TokenArgument(const std::string& strCommand);
     CmdStatus* UpdateCmdStatus();
     CmdStatus* UpdateWriteCmdStatus();

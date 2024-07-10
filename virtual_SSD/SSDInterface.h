@@ -1,4 +1,6 @@
+// Copyright [2024] <CRA/BestReviewer>
 #pragma once
+#include<string>
 #define interface struct
 
 interface SSDInterface {

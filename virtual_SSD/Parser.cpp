@@ -1,3 +1,4 @@
+// Copyright [2024] <CRA/BestReviewer>
 #include"Parser.h"
 
 void Parser::TokenArgument(const std::string& strCommand) {

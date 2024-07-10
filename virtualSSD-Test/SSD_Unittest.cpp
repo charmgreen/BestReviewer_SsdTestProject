@@ -15,12 +15,11 @@ class MockSSD : public SSDInterface {
 };
 
 class SSDFixture : public testing::Test {
-public:
-
+ public:
     NiceMock<MockSSD> mockSSD;
     Parser* parser = new Parser();
     CmdStatus* cmd = new CmdStatus();
-    TestCmd testCmd{&mockSSD, parser, cmd}; 
+    TestCmd testCmd{&mockSSD, parser, cmd};
 
     SSD ssd;
     std::string getLSBData(int LBA) {

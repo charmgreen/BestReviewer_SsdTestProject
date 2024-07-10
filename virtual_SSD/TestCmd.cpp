@@ -10,8 +10,7 @@ void TestCmd::Run(const std::string& strCommand) {
 
     if (cmd->Command == CmdType::Write) {
         _Write();
-    }
-    else if (cmd->Command == CmdType::Read) {
+    } else if (cmd->Command == CmdType::Read) {
         _Read();
     }
 }

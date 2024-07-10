@@ -6,21 +6,17 @@
 #include "Parser.h"
 #include "SSDInterface.h"
 
-
 class TestCmd {
  public:
-    TestCmd(SSDInterface* ssd, Parser* parser, CmdStatus* cmd) 
-        : ssd(ssd), parser(parser), cmd(cmd){
-    };
-
+    TestCmd(SSDInterface* ssd, Parser* parser, CmdStatus* cmd)
+        : ssd(ssd), parser(parser), cmd(cmd) {
+    }
     void Run(const std::string& str);
 
  private:
     SSDInterface *ssd;
     Parser* parser;
     CmdStatus* cmd;
-    
     std::string _Read();
     void _Write();
 };
-
