@@ -14,6 +14,10 @@ class MockSsdDriver : public SsdDriver {
  public:
     MOCK_METHOD(std::string, Read, (int LBA), (override));
     MOCK_METHOD(void, Write, (int LBA, std::string Data), (override));
+    MOCK_METHOD(void, Erase, (int startLBA, int Size), (override));
+    MOCK_METHOD(void, Flush, (), (override));
+    int GetMinLBA() override { return 0; }
+    int GetMaxLBA() override { return 99; }
 };
 
 class MockSsdTestShellFixture : public testing::Test {
@@ -163,10 +167,115 @@ TEST_F(MockSsdTestShellFixture, HelpTest) {
     expectResult += "6. fullread\n";
     expectResult += "7. testapp1\n";
     expectResult += "8. testapp2\n";
+    expectResult += "9. erase {LBA} {Size}\n";
+    expectResult += "10. erase_range {LBA} {LBA}\n";
+    expectResult += "11. flush\n";
     expectResult += "{LBA} = {x is an integer | 0 <= x <= 99}\n";
     expectResult += "{Data} = {""0x[0-9A-F]""}\n";
     testShell.Run("help");
     VerifyResult(expectResult);
+}
+
+TEST_F(MockSsdTestShellFixture, Erase_One) {
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(1);
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(1)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+
+    testShell.Run("erase " + to_string(startOneLBA) + " 1");
+    testShell.Run("read " + to_string(startOneLBA));
+    VerifyResult(MakeExpectedOutStr(startOneLBA, UNMAPED_DATA));
+}
+
+TEST_F(MockSsdTestShellFixture, WriteErase_FullLBA) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(MAX_LBA_CNT);
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(1);
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+
+    testShell.Run("fullwrite " + WRITE_DATA);
+    testShell.Run("erase 0 " + to_string(MAX_LBA_CNT));
+    testShell.Run("fullread");
+    VerifyResult(MakeExpectedOutStr(MAX_LBA_CNT, UNMAPED_DATA));
+}
+
+TEST_F(MockSsdTestShellFixture, Erase_OOR) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(MAX_LBA_CNT);
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(1);
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+
+    testShell.Run("fullwrite " + WRITE_DATA);
+    testShell.Run("erase 0 " + to_string(MAX_LBA_CNT + MAX_LBA_CNT));
+    testShell.Run("fullread");
+    VerifyResult(MakeExpectedOutStr(MAX_LBA_CNT, UNMAPED_DATA));
+}
+
+TEST_F(MockSsdTestShellFixture, Erase_Partial) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(MAX_LBA_CNT);
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(1);
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT)
+        .WillOnce(Return(UNMAPED_DATA))
+        .WillOnce(Return(UNMAPED_DATA))
+        .WillOnce(Return(UNMAPED_DATA))
+        .WillOnce(Return(UNMAPED_DATA))
+        .WillOnce(Return(UNMAPED_DATA))
+        .WillRepeatedly(Return(WRITE_DATA));
+
+    testShell.Run("fullwrite " + WRITE_DATA);
+    testShell.Run("erase 0 " + to_string(5));
+    testShell.Run("fullread");
+
+    string expectBuffer = "[FullRead]\n";
+    for (int LBA = 0; LBA < 5; LBA++) {
+        expectBuffer += MakeExpectedOutStr(LBA, UNMAPED_DATA);
+    }
+    for (int LBA = 5; LBA < MAX_LBA_CNT; LBA++) {
+        expectBuffer += MakeExpectedOutStr(LBA, WRITE_DATA);
+    }
+    VerifyResult(expectBuffer);
+}
+
+TEST_F(MockSsdTestShellFixture, Erase_Invalid) {
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(0);
+
+    testShell.Run("erase " + to_string(MAX_LBA_CNT) + " 1");
+    VerifyResult(INVALID_COMMAND);
+}
+
+
+TEST_F(MockSsdTestShellFixture, EraseRange_InvalidInverted) {
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(0);
+
+    testShell.Run("erase_range" + to_string(startOneLBA) + " " + to_string(startOneLBA - 1));
+    VerifyResult(INVALID_COMMAND);
+}
+
+TEST_F(MockSsdTestShellFixture, EraseRange_OOR) {
+    EXPECT_CALL(mockSsdDriver, Write)
+        .Times(MAX_LBA_CNT);
+    EXPECT_CALL(mockSsdDriver, Erase)
+        .Times(1);
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+
+    testShell.Run("fullwrite " + WRITE_DATA);
+    testShell.Run("erase_range 0 " + to_string(MAX_LBA_CNT + MAX_LBA_CNT));
+    testShell.Run("fullread");
+    VerifyResult(MakeExpectedOutStr(MAX_LBA_CNT, UNMAPED_DATA));
 }
 
 TEST_F(MockSsdTestShellFixture, TestApp1) {

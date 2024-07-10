@@ -18,5 +18,5 @@ void TestShell::Run(const std::string& strCommand) {
 
 void TestShell::SetSsdDriver(SsdDriver* ssddriver) {
     this->ssddriver = ssddriver;
+    shellCommandFactory.SetSsdDriver(ssddriver);
 }
-

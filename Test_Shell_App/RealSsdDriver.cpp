@@ -29,6 +29,21 @@ void RealSsdDriver::Write(int LBA, std::string Data) {
     SystemCall(cmdLine);
 }
 
+void RealSsdDriver::Erase(int startLBA, int Size) {
+    int LBA = startLBA;
+    while (Size > 0) {
+        int EraseUnitSize = ((ERASE_LBA_UNIT < Size) ? (ERASE_LBA_UNIT) : (Size));
+        std::string cmdLine = "E " + std::to_string(LBA) + " " + std::to_string(EraseUnitSize);
+        SystemCall(cmdLine);
+        Size -= EraseUnitSize;
+        LBA += EraseUnitSize;
+    }
+}
+
+void RealSsdDriver::Flush() {
+    SystemCall("F ");
+}
+
 void RealSsdDriver::SystemCall(std::string cmdLine) {
 #ifdef _DEBUG
     string ssd_exe_path = "..\\x64\\Debug\\SSD.exe";
