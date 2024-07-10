@@ -39,6 +39,34 @@ class ReadCommand : public ShellCommand {
     std::string strLBA;
 };
 
+class EraseCommand : public ShellCommand {
+public:
+    EraseCommand(std::string strStartLBA, std::string strSize);
+    void Run(SsdDriver* ssddriver) override;
+private:
+    int nStartLBA;
+    int nSize;
+    std::string strStartLBA;
+    std::string strSize;
+};
+
+class EraseRangeCommand : public ShellCommand {
+public:
+    EraseRangeCommand(std::string strStartLBA, std::string strEndLBA);
+    void Run(SsdDriver* ssddriver) override;
+private:
+    int nStartLBA;
+    int nEndLBA;
+    std::string strStartLBA;
+    std::string strEndLBA;
+};
+
+class FlushCommand : public ShellCommand {
+public:
+    FlushCommand() {}
+    void Run(SsdDriver* ssddriver) override;
+};
+
 class ExitCommand : public ShellCommand {
  public:
     ExitCommand() {}

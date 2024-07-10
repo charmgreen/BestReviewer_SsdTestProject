@@ -60,9 +60,10 @@ void CommandMode(void)
     TestShellApp.SetSsdDriver(new RealSsdDriver());
 
     FormatSSD();
-
+    string command;
     while (true) {
-        string command;
+        cout << "> ";
+        command.clear();
         getline(cin, command);
         try {
             TestShellApp.Run(command);

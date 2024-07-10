@@ -9,6 +9,10 @@ ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
     return result;
 }
 
+void ShellCommandFactory::SetSsdDriver(SsdDriver* ssddriver) {
+    this->ssddriver = ssddriver;
+}
+
 void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
     std::string token;
     size_t start = 0, end = 0;
@@ -29,6 +33,9 @@ void ShellCommandFactory::MakeCommand() {
     if (CommandToken.empty() == true) result = MakeInvalidCommand();
     else if (CommandToken[0] == "write") result = MakeWriteCommand();
     else if (CommandToken[0] == "read") result = MakeReadCommand();
+    else if (CommandToken[0] == "erase") result = MakeEraseCommand();
+    else if (CommandToken[0] == "erase_range") result = MakeEraseRangeCommand();
+    else if (CommandToken[0] == "flush") result = MakeFlushCommand();
     else if (CommandToken[0] == "exit") result = MakeExitCommand();
     else if (CommandToken[0] == "help") result = MakeHelpCommand();
     else if (CommandToken[0] == "fullwrite") result = MakeFullWriteCommand();
@@ -83,6 +90,70 @@ ShellCommand* ShellCommandFactory::MakeReadCommand() {
     }
 
     return new ReadCommand(CommandToken[1]);
+}
+
+ShellCommand* ShellCommandFactory::MakeEraseCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 3) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 2) LBA
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    if (IsStringValidLBA(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 3) Size
+    if (IsStringDecimal(CommandToken[2]) == false) {
+        return new InvalidCommand();
+    }
+
+    if (IsStringValidLength(CommandToken[2]) == false) {
+        return new InvalidCommand();
+    }
+
+    return new EraseCommand(CommandToken[1], CommandToken[2]);
+}
+
+ShellCommand* ShellCommandFactory::MakeEraseRangeCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 3) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 2) StartLBA
+    if (IsStringDecimal(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    if (IsStringValidLBA(CommandToken[1]) == false) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 3) EndLBA
+    if (IsStringDecimal(CommandToken[2]) == false) {
+        return new InvalidCommand();
+    }
+
+    // Check Invalid 4) Size
+    if (IsStringValidLength(CommandToken[1], CommandToken[2]) == false) {
+        return new InvalidCommand();
+    }
+
+    return new EraseRangeCommand(LimitToMinLBA(CommandToken[1]), LimitToMaxLBA(CommandToken[2]));
+}
+
+ShellCommand* ShellCommandFactory::MakeFlushCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new FlushCommand();
 }
 
 ShellCommand* ShellCommandFactory::MakeExitCommand() {
@@ -144,8 +215,7 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
     return new TestApp2();
 }
 
-bool ShellCommandFactory::IsStringDecimal(const std::string& str)
-{
+bool ShellCommandFactory::IsStringDecimal(const std::string& str) {
     for (char ch = 0; ch < str.size(); ch++) {
         if ('0' > str[ch] || str[ch] > '9') {
             return false;
@@ -154,8 +224,7 @@ bool ShellCommandFactory::IsStringDecimal(const std::string& str)
     return true;
 }
 
-bool ShellCommandFactory::IsStringHexadecimal(const std::string& str)
-{
+bool ShellCommandFactory::IsStringHexadecimal(const std::string& str) {
     if ((str[0] != '0') ||
         (str[1] != 'x') ||
         (str.size() != MAX_STR_LENGTH_DATA)) {
@@ -171,11 +240,38 @@ bool ShellCommandFactory::IsStringHexadecimal(const std::string& str)
     return true;
 }
 
-bool ShellCommandFactory::IsStringValidLBA(const std::string& str)
-{
-    int LBA = std::stoi(CommandToken[1]);
-    if ((MIN_LBA <= LBA) && (LBA <= MAX_LBA)) {
+bool ShellCommandFactory::IsStringValidLBA(const std::string& str) {
+    int LBA = std::stoi(str);
+    if ((ssddriver->GetMinLBA() <= LBA) && (LBA <= ssddriver->GetMaxLBA())) {
         return true;
     }
     return false;
+}
+
+bool ShellCommandFactory::IsStringValidLength(const std::string& str) {
+    return (std::stoi(str) > 0);
+}
+
+bool ShellCommandFactory::IsStringValidLength(const std::string& strStartLBA, const std::string& strEndLBA)
+{
+    return ((std::stoi(strEndLBA) - std::stoi(strStartLBA)) > 0);
+}
+
+
+std::string ShellCommandFactory::LimitToMinLBA(const std::string& str) {
+    int LBA = std::stoi(str);
+    if (LBA < ssddriver->GetMinLBA()) {
+        LBA = ssddriver->GetMinLBA();
+    }
+
+    return std::to_string(LBA);
+}
+
+std::string ShellCommandFactory::LimitToMaxLBA(const std::string& str) {
+    int LBA = std::stoi(str);
+    if (LBA > ssddriver->GetMaxLBA() + 1) {
+        LBA = ssddriver->GetMaxLBA() + 1;
+    }
+
+    return std::to_string(LBA);
 }

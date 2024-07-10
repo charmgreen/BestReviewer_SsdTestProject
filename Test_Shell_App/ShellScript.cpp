@@ -4,8 +4,9 @@
 #include <fstream>
 #include "ShellScript.h"
 
-ShellScript::ShellScript(std::string filename) {
+ShellScript::ShellScript(std::string filename, SsdDriver* ssddriver) {
     this->filename = filename;
+    SetSsdDriver(ssddriver);
 }
 
 void ShellScript::Run(SsdDriver* ssddriver) {
@@ -21,6 +22,7 @@ void ShellScript::Run(SsdDriver* ssddriver) {
             ShellCommand* shellCommand = Make(statement);
             try {
                 shellCommand->Run(ssddriver);
+
                 delete(shellCommand);
             }
             catch (ExitCommand) {
@@ -33,4 +35,6 @@ void ShellScript::Run(SsdDriver* ssddriver) {
     catch (...) {
         std::cout << "ERROR!" << std::endl;
     }
+
+
 }
