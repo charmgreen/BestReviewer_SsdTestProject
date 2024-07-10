@@ -11,6 +11,7 @@ class LBARangeException : public std::exception {};
 class DataRangeException : public std::exception {};
 class DataPreFIxException : public std::exception {};
 class DataTypeException : public std::exception {};
+class EraseSizeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
@@ -23,6 +24,14 @@ std::string SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
     ReadMemory();
     return ReturnReadData(LBA);
+}
+
+void SSD::Erase(const int &LBA, const int &size) {
+    CheckLBARange(LBA);
+    CheckEraseSizeRange(size);
+    ReadMemory();
+    EraseMemory(LBA, size);
+    StoreMemory();
 }
 
 void SSD::ReadMemory() {
@@ -55,6 +64,15 @@ void SSD::StoreMemory() {
         for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
             writeFile << LBA << " " << memory[LBA] << "\n";
         }
+        writeFile.close();
+    }
+}
+
+void SSD::EraseMemory(const int &LBA, const int &size) {
+    int endLBA = LBA + size;
+    endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
+    for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
+        UpdateMemory(iLBA, "0x00000000");
     }
 }
 
@@ -85,6 +103,11 @@ void SSD::CheckDataType(const std::string& data) {
         if (isHexData(data[i]))continue;
         throw DataTypeException();
     }
+}
+
+void SSD::CheckEraseSizeRange(const int size) {
+  if (size > 10 || size < 0)
+    throw EraseSizeException();
 }
 
 bool SSD::isHexData(const char& data) {

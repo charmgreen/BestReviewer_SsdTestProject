@@ -12,6 +12,7 @@ class MockSSD : public SSDInterface {
  public:
     MOCK_METHOD(void, Write, (const int &LBA, const std::string &data), (override));
     MOCK_METHOD(std::string, Read, (const int &LBA), (override));
+    MOCK_METHOD(void, Erase, (const int &LBA, const int &size), (override));
 };
 
 class SSDFixture : public testing::Test {
@@ -64,21 +65,46 @@ TEST_F(SSDFixture, TestWriteMemory) {
     EXPECT_EQ("0x10000099", getLSBData(3));
 }
 
-TEST_F(SSDFixture, TestReadMemory) {
-    EXPECT_THAT("0x10000001", ssd.Read(0));
+TEST_F(SSDFixture, TestLBARangeExceptionWhenRead) {
+    EXPECT_THROW(ssd.Read(-10), LBARangeException);
+    EXPECT_THROW(ssd.Read(100), LBARangeException);
 }
 
 TEST_F(SSDFixture, TestReadMemoryWhenEmpty) {
     EXPECT_THAT("0x00000000", ssd.Read(1));
 }
 
-TEST_F(SSDFixture, TestMinusLBARangeExceptionWhenRead) {
-    EXPECT_THROW(ssd.Read(-10), LBARangeException);
+TEST_F(SSDFixture, TestReadMemory) { 
+    EXPECT_THAT("0x10000001", ssd.Read(0)); 
 }
 
-TEST_F(SSDFixture, Test100LBARangeExceptionWhenRead) {
-    EXPECT_THROW(ssd.Read(100), LBARangeException);
+TEST_F(SSDFixture, TestLBARangeExceptionWhenErase) {
+    EXPECT_THROW(ssd.Erase(-10, 10), LBARangeException);
+    EXPECT_THROW(ssd.Erase(100, 10), LBARangeException);
 }
+
+TEST_F(SSDFixture, TestEraseSizeRangeException) {
+    EXPECT_THROW(ssd.Erase(1, 11), EraseSizeException);
+    EXPECT_THROW(ssd.Erase(1, -1), EraseSizeException);
+}
+
+TEST_F(SSDFixture, TestEraseMemory) {
+    ssd.Erase(0, 4);
+    EXPECT_EQ("0x00000000", getLSBData(0));
+    EXPECT_EQ("0x00000000", getLSBData(3));
+}
+
+TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
+  ssd.Erase(98, 10);
+  EXPECT_EQ("0x00000000", getLSBData(98));
+  EXPECT_EQ("0x00000000", getLSBData(99));
+}
+
+/// <summary>
+/// //
+/// </summary>
+/// <param name=""></param>
+/// <param name=""></param>
 
 TEST_F(SSDFixture, TestReadCommandWithMock) {
     EXPECT_CALL(mockSSD, Read).Times(1);
@@ -89,4 +115,3 @@ TEST_F(SSDFixture, TestWriteCommandWithMock) {
     EXPECT_CALL(mockSSD, Write).Times(1);
     testCmd.Run("W 0 0x00000001");
 }
-
