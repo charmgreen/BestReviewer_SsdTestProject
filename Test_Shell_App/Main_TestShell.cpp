@@ -15,7 +15,7 @@ void CommandMode(void);
 void ScriptMode(char* argv[]);
 void RunScript(std::ifstream& runListFile);
 void FormatSSD(void);
-`
+
 int main(int argc, char* argv[]) {
     if (argc == COMMAND_MODE)
     {
