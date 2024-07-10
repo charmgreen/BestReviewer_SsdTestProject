@@ -19,4 +19,5 @@ class SSDCommand {
     CmdStatus* cmd;
     std::string _Read();
     void _Write();
+    void _Erase();
 };
