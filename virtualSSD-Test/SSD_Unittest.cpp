@@ -100,18 +100,12 @@ TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
   EXPECT_EQ("0x00000000", getLSBData(99));
 }
 
-/// <summary>
-/// //
-/// </summary>
-/// <param name=""></param>
-/// <param name=""></param>
-
 TEST_F(SSDFixture, TestReadCommandWithMock) {
     EXPECT_CALL(mockSSD, Read).Times(1);
-    testCmd.Run("R 0");
+    testCmd.Run("ssd.exe R 0");
 }
 
 TEST_F(SSDFixture, TestWriteCommandWithMock) {
     EXPECT_CALL(mockSSD, Write).Times(1);
-    testCmd.Run("W 0 0x00000001");
+    testCmd.Run("ssd.exe W 0 0x00000001");
 }
