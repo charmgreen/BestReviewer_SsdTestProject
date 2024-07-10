@@ -66,8 +66,8 @@ TEST_F(SSDFixture, TestWriteMemory) {
 }
 
 TEST_F(SSDFixture, TestWriteCommandWithMock) {
-  EXPECT_CALL(mockSSD, Write).Times(1);
-  testCmd.Run("SSD.exe W 0 0x00000001");
+    EXPECT_CALL(mockSSD, Write).Times(1);
+    testCmd.Run("SSD.exe W 0 0x00000001");
 }
 
 TEST_F(SSDFixture, TestLBARangeExceptionWhenRead) {
@@ -80,15 +80,9 @@ TEST_F(SSDFixture, TestReadCommandWithMock) {
     testCmd.Run("SSD.exe R 0");
 }
 
-<<<<<<< HEAD
 TEST_F(SSDFixture, TestLBARangeExceptionWhenErase) {
     EXPECT_THROW(ssd.Erase(-10, 10), LBARangeException);
     EXPECT_THROW(ssd.Erase(100, 10), LBARangeException);
-=======
-TEST_F(SSDFixture, TestWriteCommandWithMock) {
-    EXPECT_CALL(mockSSD, Write).Times(1);
-    testCmd.Run("SSD.exe W 0 0x00000001");
->>>>>>> 6332e283211d799f1bd8f54596d3051a5802c662
 }
 
 TEST_F(SSDFixture, TestEraseSizeRangeException) {
@@ -108,6 +102,6 @@ TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
 }
 
 TEST_F(SSDFixture, TestEraseCommandWithMock) {
-  EXPECT_CALL(mockSSD, Erase).Times(1);
-  testCmd.Run("SSD.exe E 0 0x00000001");
+    EXPECT_CALL(mockSSD, Erase).Times(1);
+    testCmd.Run("SSD.exe E 0 0x00000001");
 }

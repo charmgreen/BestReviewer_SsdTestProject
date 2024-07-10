@@ -25,6 +25,6 @@ void SSDCommand::_Read() {
     ssd->Read(stoi(cmd->LBA));
 }
 
-void SSDCommand::_Erase() { 
-    ssd->Erase(stoi(cmd->LBA), cmd->EraseSize); 
+void SSDCommand::_Erase() {
+    ssd->Erase(stoi(cmd->LBA), cmd->EraseSize);
 }

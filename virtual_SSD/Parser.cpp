@@ -5,8 +5,8 @@
 class ArgsLengthNotMatchException : public std::exception {};
 
 CmdStatus *Parser::Parse(const std::string &strCommand) {
-  TokenArgument(strCommand);
-  return UpdateCmdStatus();
+    TokenArgument(strCommand);
+    return UpdateCmdStatus();
 }
 
 void Parser::TokenArgument(const std::string& strCommand) {
