@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "../virtual_SSD/SSD.cpp"
-#include "../virtual_SSD/TestCmd.cpp"
+#include "../virtual_SSD/SSDCommand.cpp"
 #include "../virtual_SSD/Parser.cpp"
 
 using namespace testing;
@@ -19,7 +19,7 @@ class SSDFixture : public testing::Test {
     NiceMock<MockSSD> mockSSD;
     Parser* parser = new Parser();
     CmdStatus* cmd = new CmdStatus();
-    TestCmd testCmd{&mockSSD, parser, cmd};
+    SSDCommand testCmd{&mockSSD, parser, cmd};
 
     SSD ssd;
     std::string getLSBData(int LBA) {

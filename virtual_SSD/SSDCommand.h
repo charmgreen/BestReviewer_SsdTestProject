@@ -6,9 +6,9 @@
 #include "Parser.h"
 #include "SSDInterface.h"
 
-class TestCmd {
+class SSDCommand {
  public:
-    TestCmd(SSDInterface* ssd, Parser* parser, CmdStatus* cmd)
+    SSDCommand(SSDInterface* ssd, Parser* parser, CmdStatus* cmd)
         : ssd(ssd), parser(parser), cmd(cmd) {
     }
     void Run(const std::string& str);
