@@ -34,10 +34,6 @@
     <ClInclude Include="SsdDriver.h" />
     <ClInclude Include="TestShell.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="testapp1.txt" />
-    <Text Include="testapp2.txt" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

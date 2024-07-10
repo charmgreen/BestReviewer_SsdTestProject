@@ -56,14 +56,45 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
-    for (int LBA = 0; LBA <= 99; LBA++) {
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
         ssddriver->Write(LBA, this->strData);
     }
 }
 
 void FullReadCommand::Run(SsdDriver* ssddriver) {
     std::cout << "[FullRead]\n";
-    for (int LBA = 0; LBA <= 99; LBA++) {
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+        std::string resultData = ssddriver->Read(LBA);
+        std::cout << "[Read] LBA : " << std::to_string(LBA);
+        std::cout << ", Data : " << resultData << std::endl;
+    }
+}
+
+void TestApp1::Run(SsdDriver* ssddriver) {
+    std::cout << "[TestApp1]\n";
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+        ssddriver->Write(LBA, "0x12341234");
+    }
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+        std::string resultData = ssddriver->Read(LBA);
+        std::cout << "[Read] LBA : " << std::to_string(LBA);
+        std::cout << ", Data : " << resultData << std::endl;
+    }
+}
+
+void TestApp2::Run(SsdDriver* ssddriver) {
+    std::cout << "[TestApp2]\n";
+    for (unsigned int LBA = 0; LBA <= 5; LBA++) {
+        for (unsigned int cnt = 1; cnt <= 5; cnt++) {
+            ssddriver->Write(LBA, "0xAAAABBBB");
+        }
+    }
+
+    for (unsigned int LBA = 0; LBA <= 5; LBA++) {
+        ssddriver->Write(LBA, "0x12345678");
+    }
+
+    for (int LBA = 0; LBA <= 5; LBA++) {
         std::string resultData = ssddriver->Read(LBA);
         std::cout << "[Read] LBA : " << std::to_string(LBA);
         std::cout << ", Data : " << resultData << std::endl;
