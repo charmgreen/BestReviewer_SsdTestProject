@@ -22,7 +22,7 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="SSD.cpp" />
     <ClCompile Include="SSDCommand.cpp" />
-    <ClCompile Include="Virtual_SSD_main.cpp" />
+    <ClCompile Include="ssd_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Parser.h" />
