@@ -9,6 +9,7 @@ class SSD : public SSDInterface {
     virtual void Write(const int& LBA, const std::string& data) override;
     virtual void Read(const int &LBA) override;
     virtual void Erase(const int &LBA, const int &size) override;
+    virtual void Flush() override;
 
  private:
     std::map<int, std::string> memory;

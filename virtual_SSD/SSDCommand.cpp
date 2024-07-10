@@ -14,6 +14,8 @@ void SSDCommand::Run(const std::string& strCommand) {
         _Read();
     } else if (cmd->Command == CmdType::Erase) {
         _Erase();
+    } else if (cmd->Command == CmdType::Flush) {
+        _Flush();
     }
 }
 
@@ -27,4 +29,8 @@ void SSDCommand::_Read() {
 
 void SSDCommand::_Erase() {
     ssd->Erase(stoi(cmd->LBA), cmd->EraseSize);
+}
+
+void SSDCommand::_Flush() {
+    ssd->Flush();
 }

@@ -29,6 +29,9 @@ void SSD::Erase(const int &LBA, const int &size) {
     ProcessMemory(LBA, InitialLBAData, size);
 }
 
+void SSD::Flush() {
+}
+
 void SSD::ProcessMemory(const int &LBA, const std::string data, const int &size) {
     ReadMemory();
     UpdateMemory(LBA, data, size);

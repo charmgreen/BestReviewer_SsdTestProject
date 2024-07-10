@@ -20,4 +20,5 @@ class SSDCommand {
     void _Read();
     void _Write();
     void _Erase();
+    void _Flush();
 };
