@@ -25,6 +25,7 @@ class SSD : public SSDInterface {
 
     void ProcessMemory(const int &LBA, const std::string data, const int &size);
     void StoreCommand(const int &LBA, const std::string data, const int &size);
+    void CheckFlush(const int& bufferSize);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void StoreMemory();

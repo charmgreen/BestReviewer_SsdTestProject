@@ -35,12 +35,13 @@ void SSD::Flush() {
 
 void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
-
     lines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
-
     WriteFile(CommandBufferFileName, lines);
+    CheckFlush(lines.size());
+}
 
-    if (lines.size() == 10) {
+void SSD::CheckFlush(const int& bufferSize) {
+    if (bufferSize == 10) {
         Flush();
     }
 }
