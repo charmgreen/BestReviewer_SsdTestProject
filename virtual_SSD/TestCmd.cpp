@@ -23,13 +23,12 @@ void TestCmd::Run(const std::string& strCommand) {
 }
 
 Parser* TestCmd::SetParser() { 
-  Parser *parser = new Parser();
-  return parser;
+    Parser* parser = new Parser();
+    return parser;
 }
 
-SSD *TestCmd::SetSSD() {
-  SSD *ssd = new SSD();
-  return ssd;
+SSDInterface* TestCmd::SetSSD() {
+    return ssd;
 }
 
 void TestCmd::_Write() {
@@ -37,6 +36,6 @@ void TestCmd::_Write() {
 }
 
 std::string TestCmd::_Read() {
-  std::string res = ssd->Read(stoi(cmd->LBA));
-  return res;
+    std::string res = ssd->Read(stoi(cmd->LBA));
+    return res;
 }

@@ -1,39 +1,56 @@
-// "Copyright [2024] <doyun kim>"
+//  Copyright [2024] <CRA/BestReviewer>
+#pragma once
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "../virtual_SSD/SSD.cpp"
+#include "../virtual_SSD/TestCmd.cpp"
+#include "../virtual_SSD/Parser.cpp"
 
 using namespace testing;
 
-class SSDMock : public SSDInterface {
+class MockSSD : public SSDInterface {
  public:
-    MOCK_METHOD(std::string, Read, (const int &lba), (override));
+    MOCK_METHOD(void, Write, (const int &LBA, const std::string &data), (override));
+    MOCK_METHOD(std::string, Read, (const int &LBA), (override));
 };
 
 class SSDFixture : public testing::Test {
-  public:
-    // SSDMock mock;
+public:
+
+    MockSSD mockSSD;
+    TestCmd testCmd{&mockSSD}; 
+
     SSD ssd;
+    //TestCmd testMock;
+
     std::string getLSBData(int LBA) {
     std::string line;
     std::ifstream writeFIle("nand.txt");
 
     if (writeFIle.is_open()) {
-        for (int i = 0; i < LBA; i++) {
+      for (int i = 0; i < LBA; i++) {
         if (!std::getline(writeFIle, line)) {
-            break;
+          break;
         }
-        }
-        getline(writeFIle, line);
-        int LBADataFIrstIndex = line.find(" ");
-        writeFIle.close();
-        return line.substr(LBADataFIrstIndex + 1);
+      }
+      getline(writeFIle, line);
+      int LBADataFIrstIndex = line.find(" ");
+      writeFIle.close();
+      return line.substr(LBADataFIrstIndex + 1);
     }
     return "0x00000000";
-    }
+  }
 };
 
-TEST_F(SSDFixture, TestLBARangeException) {
+TEST_F(SSDFixture, TestReadCommand) { 
+    EXPECT_CALL(mockSSD, Read(0)).Times(1);
+    //EXPECT_CALL(mockSSD, Read(0))
+    //    .WillOnce(Return("0x10000002"));
+    testCmd.Run("R 0");
+    //std::cout << testCmd.Run("R 0") << std::endl;
+}
+
+TEST_F(SSDFixture, TestLBARangeExceptionWhenWrite) {
     EXPECT_THROW(ssd.Write(100, "0x10000000"), LBARangeException);
 }
 

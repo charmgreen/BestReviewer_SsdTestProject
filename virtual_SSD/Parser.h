@@ -27,5 +27,4 @@ private:
     std::vector<std::string> CommandToken;
     const std::string WRITE_CMD = "W";
     const std::string READ_CMD = "R";
-
 };

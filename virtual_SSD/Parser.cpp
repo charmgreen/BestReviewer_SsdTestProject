@@ -21,7 +21,7 @@ CmdStatus* Parser::UpdateCmdStatus() {
     return nullptr;
 }
 
-CmdStatus *Parser::UpdateWriteCmdStatus() {
+CmdStatus* Parser::UpdateWriteCmdStatus() {
     CmdStatus* result = new CmdStatus();
     result->Command = CmdType::Write;
     result->LBA = CommandToken[1];
@@ -29,7 +29,7 @@ CmdStatus *Parser::UpdateWriteCmdStatus() {
     return result;
 }
 
-CmdStatus *Parser::UpdateReadCmdStatus() {
+CmdStatus* Parser::UpdateReadCmdStatus() {
     CmdStatus* result = new CmdStatus();
     result->Command = CmdType::Read;
     result->LBA = CommandToken[1];
@@ -40,3 +40,4 @@ CmdStatus* Parser::Parse(const std::string& strCommand) {
     TokenArgument(strCommand);
     return UpdateCmdStatus();
 }
+

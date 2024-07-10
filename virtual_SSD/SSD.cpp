@@ -13,9 +13,6 @@ class DataRangeException : public std::exception {};
 
 class NotExistNandFileException : public std::exception {};
 
-SSD::SSD(SSDInterface* ssdInterface) : i_ssd(ssdInterface) {
-}
-
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
     ReadMemory();
