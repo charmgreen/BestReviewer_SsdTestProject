@@ -1,12 +1,28 @@
-// Copyright [2024] <CRA/BestReviewer>
+//  Copyright [2024] <CRA/BestReviewer>
+#pragma once
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 #include "../virtual_SSD/SSD.cpp"
+#include "../virtual_SSD/SSDCommand.cpp"
+#include "../virtual_SSD/Parser.cpp"
+
+using namespace testing;
+
+class MockSSD : public SSDInterface {
+ public:
+    MOCK_METHOD(void, Write, (const int &LBA, const std::string &data), (override));
+    MOCK_METHOD(std::string, Read, (const int &LBA), (override));
+};
 
 class SSDFixture : public testing::Test {
  public:
-  SSD ssd;
-  std::string getLSBData(int LBA) {
+    NiceMock<MockSSD> mockSSD;
+    Parser parser;
+    CmdStatus cmd;
+    SSDCommand testCmd{&mockSSD, &parser, &cmd};
+
+    SSD ssd;
+    std::string getLSBData(int LBA) {
     std::string line;
     std::ifstream writeFIle("nand.txt");
 
@@ -63,3 +79,14 @@ TEST_F(SSDFixture, TestMinusLBARangeExceptionWhenRead) {
 TEST_F(SSDFixture, Test100LBARangeExceptionWhenRead) {
     EXPECT_THROW(ssd.Read(100), LBARangeException);
 }
+
+TEST_F(SSDFixture, TestReadCommandWithMock) {
+    EXPECT_CALL(mockSSD, Read).Times(1);
+    testCmd.Run("R 0");
+}
+
+TEST_F(SSDFixture, TestWriteCommandWithMock) {
+    EXPECT_CALL(mockSSD, Write).Times(1);
+    testCmd.Run("W 0 0x00000001");
+}
+
