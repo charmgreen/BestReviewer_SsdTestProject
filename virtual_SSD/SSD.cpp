@@ -47,25 +47,25 @@ void SSD::CheckFlush(const int& bufferSize) {
 }
 
 void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
-    std::ofstream commandBufferWriteFile(FileName);
-    if (commandBufferWriteFile.is_open()) {
+    std::ofstream WriteFile(FileName);
+    if (WriteFile.is_open()) {
         for (const auto& line : lines) {
-            commandBufferWriteFile << line << "\n";
+            WriteFile << line << "\n";
         }
-        commandBufferWriteFile.close();
+        WriteFile.close();
     }
 }
 
 std::vector<std::string> SSD::ReadFile(std::string FileName) {
     std::vector<std::string> lines;
-    std::ifstream commandBufferReadFile(FileName);
+    std::ifstream ReadFile(FileName);
     std::string line;
 
-    if (commandBufferReadFile.is_open()) {
-        while (getline(commandBufferReadFile, line)) {
+    if (ReadFile.is_open()) {
+        while (getline(ReadFile, line)) {
             lines.push_back(line);
         }
-        commandBufferReadFile.close();
+        ReadFile.close();
     }
 
     return lines;
