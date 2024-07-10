@@ -167,6 +167,9 @@ TEST_F(MockSsdTestShellFixture, HelpTest) {
     expectResult += "6. fullread\n";
     expectResult += "7. testapp1\n";
     expectResult += "8. testapp2\n";
+    expectResult += "9. erase {LBA} {Size}\n";
+    expectResult += "10. erase_range {LBA} {LBA}\n";
+    expectResult += "11. flush\n";
     expectResult += "{LBA} = {x is an integer | 0 <= x <= 99}\n";
     expectResult += "{Data} = {""0x[0-9A-F]""}\n";
     testShell.Run("help");
