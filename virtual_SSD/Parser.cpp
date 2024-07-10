@@ -19,6 +19,7 @@ void Parser::TokenArgument(const std::string& strCommand) {
 CmdStatus* Parser::UpdateCmdStatus() {
     if (CommandToken[0] == WRITE_CMD) return UpdateWriteCmdStatus();
     else if (CommandToken[0] == READ_CMD) return UpdateReadCmdStatus();
+    else if (CommandToken[0] == ERASE_CMD) return UpdateEraseCmdStatus();
     return nullptr;
 }
 
@@ -34,6 +35,14 @@ CmdStatus* Parser::UpdateReadCmdStatus() {
     CmdStatus* result = new CmdStatus();
     result->Command = CmdType::Read;
     result->LBA = CommandToken[1];
+    return result;
+}
+
+CmdStatus *Parser::UpdateEraseCmdStatus() {
+    CmdStatus *result = new CmdStatus();
+    result->Command = CmdType::Erase;
+    result->LBA = CommandToken[1];
+    result->EraseSize = stoi(CommandToken[2]);
     return result;
 }
 
