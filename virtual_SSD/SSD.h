@@ -6,8 +6,8 @@
 
 class SSD : public SSDInterface {
  public:
-  virtual void Write(const int& LBA, const std::string& data);
-  virtual std::string Read(const int& LBA);
+  virtual void Write(const int& LBA, const std::string& data) override;
+  virtual std::string Read(const int &LBA) override;
 
  private:
   std::map<int, std::string> memory;
