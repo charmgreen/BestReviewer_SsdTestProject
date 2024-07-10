@@ -76,7 +76,7 @@ void SSD::CheckDataLength(const std::string& data) {
 }
 
 void SSD::CheckDataPreFix(const std::string& data) {
-    if (data.substr(0, 2) != LBAPreFIx)
+    if (data.substr(0, 2) != DataPreFix)
         throw DataPreFIxException();
 }
 

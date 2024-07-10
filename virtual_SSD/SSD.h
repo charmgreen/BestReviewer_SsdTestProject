@@ -13,7 +13,7 @@ class SSD {
   std::string InitialLBAData{ "0x00000000" };
   std::string WriteFIleName{ "nand.txt" };
   std::string ReadFileName{ "result.txt" };
-  std::string LBAPreFIx{ "0x" };
+  std::string DataPreFix{ "0x" };
   const int MAX_LBA{ 99 };
   const int MIN_LBA{ 0 };
 
