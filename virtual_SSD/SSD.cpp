@@ -9,6 +9,8 @@
 
 class LBARangeException : public std::exception {};
 class DataRangeException : public std::exception {};
+class DataPreFIxException : public std::exception {};
+class DataTypeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
@@ -59,6 +61,13 @@ void SSD::StoreMemory() {
 void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
     CheckLBARange(LBA);
     CheckDataLength(data);
+    CheckDataPreFix(data);
+    CheckDataType(data);
+}
+
+void SSD::CheckLBARange(const int& LBA) {
+    if (LBA < 0 || LBA > MAX_LBA)
+        throw LBARangeException();
 }
 
 void SSD::CheckDataLength(const std::string& data) {
@@ -66,9 +75,21 @@ void SSD::CheckDataLength(const std::string& data) {
         throw DataRangeException();
 }
 
-void SSD::CheckLBARange(const int& LBA) {
-    if (LBA < 0 || LBA > MAX_LBA)
-        throw LBARangeException();
+void SSD::CheckDataPreFix(const std::string& data) {
+    if (data.substr(0, 2) != DataPreFix)
+        throw DataPreFIxException();
+}
+
+void SSD::CheckDataType(const std::string& data) {
+    for (int i = 2; i < data.length(); i++) {
+        if (isHexData(data[i]))continue;
+        throw DataTypeException();
+    }
+}
+
+bool SSD::isHexData(const char& data) {
+    return (0 <= data - '0' && data - '0' < 10)
+        || (0 <= data - 'A' && data - 'A' < 6);
 }
 
 const std::string &SSD::ReturnReadData(const int &LBA) {
