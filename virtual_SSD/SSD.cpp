@@ -55,7 +55,7 @@ void SSD::ReadMemory() {
     }
 }
 
-void SSD::UpdateMemory(const int &LBA, const std::string &data,  const int &size) {
+void SSD::UpdateMemory(const int &LBA, const std::string &data, const int &size) {
     int endLBA = LBA + size;
     endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
     for (int iLBA = LBA; iLBA < endLBA; iLBA++) {

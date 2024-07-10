@@ -33,6 +33,4 @@ class SSD : public SSDInterface {
     void CheckEraseSizeRange(const int size);
     bool isHexData(const char& data);
     void WriteResultFile(const int& LBA);
-
-    
 };
