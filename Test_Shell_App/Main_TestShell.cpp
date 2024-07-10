@@ -33,6 +33,8 @@ int main(int argc, char* argv[]) {
 
         if (resultFile.is_open()) {
             while (getline(resultFile, command)) {
+
+
                 cout << command << endl;
                 try {
                     TestShellApp.Run(command);
