@@ -27,6 +27,9 @@ class Parser {
     CmdStatus* UpdateWriteCmdStatus();
     CmdStatus* UpdateReadCmdStatus();
     CmdStatus* UpdateEraseCmdStatus();
+    void CheckWriteCommandToken();
+    void CheckReadCommandToken();
+    void CheckEraseCommandToken();
 
     std::vector<std::string> CommandToken;
     const std::string WRITE_CMD = "W";
