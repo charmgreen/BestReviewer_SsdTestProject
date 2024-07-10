@@ -106,8 +106,8 @@ void SSD::CheckDataType(const std::string& data) {
 }
 
 void SSD::CheckEraseSizeRange(const int size) {
-  if (size > 10 || size < 0)
-    throw EraseSizeException();
+    if (size > 10 || size < 0)
+        throw EraseSizeException();
 }
 
 bool SSD::isHexData(const char& data) {
