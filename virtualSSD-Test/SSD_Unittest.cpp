@@ -82,11 +82,11 @@ TEST_F(SSDFixture, Test100LBARangeExceptionWhenRead) {
 
 TEST_F(SSDFixture, TestReadCommandWithMock) {
     EXPECT_CALL(mockSSD, Read).Times(1);
-    testCmd.Run("ssd.exe R 0");
+    testCmd.Run("SSD.exe R 0");
 }
 
 TEST_F(SSDFixture, TestWriteCommandWithMock) {
     EXPECT_CALL(mockSSD, Write).Times(1);
-    testCmd.Run("ssd.exe W 0 0x00000001");
+    testCmd.Run("SSD.exe W 0 0x00000001");
 }
 
