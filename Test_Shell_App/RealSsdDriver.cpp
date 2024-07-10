@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "../Logger/logger.cpp"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ RealSsdDriver::RealSsdDriver() {
 }
 
 string RealSsdDriver::Read(int LBA) {
+    Logger::print(__FUNCTION__, "Read from LBA");
     string cmdLine = "R " + to_string(LBA);
     SystemCall(cmdLine);
     string ReadFileName{ "result.txt" };
@@ -48,6 +50,7 @@ string RealSsdDriver::Read(int LBA) {
 }
 
 void RealSsdDriver::Write(int LBA, std::string Data) {
+    Logger::print(__FUNCTION__, "Write a data to LBA");
     string cmdLine = "W " + to_string(LBA) + " " + Data;
     cmpBufMgr.SetCompareData(LBA, Data);
     SystemCall(cmdLine);
@@ -77,6 +80,7 @@ string RealSsdDriver::CmpBufRead(int LBA) {
 }
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
+    Logger::print(__FUNCTION__, "Execute SSD.exe with a command");
 #ifdef _DEBUG
     string ssd_exe_path = "..\\x64\\Debug\\SSD.exe";
 #else
