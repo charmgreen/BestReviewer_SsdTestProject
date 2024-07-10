@@ -44,6 +44,6 @@ void RealSsdDriver::SystemCall(std::string cmdLine) {
 
     if (result)
     {
-        cerr << "Failed to execute virtual_SSD.exe. Error code: " << result << '\n';
+        cerr << "Failed to execute SSD.exe. Error code: " << result << '\n';
     }
 }
