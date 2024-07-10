@@ -23,14 +23,11 @@ void RealSsdDriver::SystemCall(std::string cmdLine) {
     virtual_ssd_exe_path += " ";
     virtual_ssd_exe_path += cmdLine;
 
-    // b 프로젝트의 실행 파일을 시스템 호출로 실행
     int result = system(virtual_ssd_exe_path.c_str());
 
     if (result == 0) {
-        // b.exe가 성공적으로 실행되었음
-        std::cout << "b.exe executed successfully.\n";
+        std::cout << "virtual_SSD.exe executed successfully.\n";
     } else {
-        // b.exe 실행에 실패했음
-        std::cerr << "Failed to execute b.exe. Error code: " << result << '\n';
+        std::cerr << "Failed to execute virtual_SSD.exe. Error code: " << result << '\n';
     }
 }
