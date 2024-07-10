@@ -23,7 +23,7 @@ string RealSsdDriver::Read(int LBA) {
         cerr << "Open Error " + ReadFileName << endl;
     }
 
-    return cmdLine;
+    return line;
 }
 
 void RealSsdDriver::Write(int LBA, std::string Data) {
