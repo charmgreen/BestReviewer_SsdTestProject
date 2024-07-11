@@ -399,3 +399,5 @@ FodyWeavers.xsd
 
 # Ignore Read Write Test File 
 *.txt
+*.zip
+*.log
