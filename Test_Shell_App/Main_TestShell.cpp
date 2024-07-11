@@ -99,12 +99,12 @@ void RunScript(ifstream& runListFile)
 {
     Logger::getInstance().print(__FUNCTION__, "Read the outer script");
 
-    string scriptFileName;
-    while (getline(runListFile, scriptFileName)) {
-        string command;
-        ifstream scriptFile(scriptFileName);
+    string strScriptFile;
 
-
+    while (getline(runListFile, strScriptFile)) {
+        ifstream scriptFile(strScriptFile);
+        TestShell TestShellApp;
+        TestShellApp.SetSsdDriver(new RealSsdDriver());
         FormatSSD();
 
         if (scriptFile.is_open()) {
@@ -145,4 +145,3 @@ void RunScript(ifstream& runListFile)
         }
     }
 }
-
