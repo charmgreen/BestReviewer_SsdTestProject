@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main_TestShell.cpp">
+    <ClCompile Include="Main_Shell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="TestShell.cpp">
+    <ClCompile Include="Shell.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="RealSsdDriver.cpp">
@@ -32,7 +32,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestShell.h">
+    <ClInclude Include="Shell.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="SsdDriver.h">

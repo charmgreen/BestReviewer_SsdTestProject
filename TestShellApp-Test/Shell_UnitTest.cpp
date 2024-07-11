@@ -1,13 +1,11 @@
 // Copyright 2024, Samsung
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
-#include <fstream>
-#include <cstdio> // std::remove
 #include <sstream>
 #include <iomanip>
 #include "../Test_Shell_App/ShellCommandFactory.cpp"
 #include "../Test_Shell_App/RealSsdDriver.cpp"
-#include "../Test_Shell_App/TestShell.cpp"
+#include "../Test_Shell_App/Shell.cpp"
 #include "../Test_Shell_App/ShellCommand.cpp"
 
 using namespace std;
@@ -15,11 +13,11 @@ using namespace testing;
 
 class MockSsdDriver : public SsdDriver {
  public:
-    MOCK_METHOD(std::string, Read, (int LBA), (override));
-    MOCK_METHOD(void, Write, (int LBA, std::string Data), (override));
+    MOCK_METHOD(string, Read, (int LBA), (override));
+    MOCK_METHOD(void, Write, (int LBA, string Data), (override));
     MOCK_METHOD(void, Erase, (int startLBA, int Size), (override));
     MOCK_METHOD(void, Flush, (), (override));
-    MOCK_METHOD(std::string, CmpBufRead, (int LBA), (override));
+    MOCK_METHOD(string, CmpBufRead, (int LBA), (override));
     int GetMinLBA() override { return 0; }
     int GetMaxLBA() override { return 99; }
 };
@@ -33,8 +31,9 @@ class MockSsdTestShellFixture : public testing::Test {
     void TearDown() override {
         cout.rdbuf(backup_cout);
     }
+
  public:
-    TestShell testShell;
+    Shell testShell;
     NiceMock<MockSsdDriver> mockSsdDriver;
     stringstream actualOutput;
     streambuf* backup_cout;
@@ -53,9 +52,9 @@ class MockSsdTestShellFixture : public testing::Test {
                 expectedOutStr += ("[Read] LBA : " + to_string(i));
                 expectedOutStr += (", Data : " + Data + "\n");
             }
-        }
-        else {
-            expectedOutStr = "[Read] LBA : " + to_string(LBA) + ", Data : " + Data + "\n";
+        } else {
+            expectedOutStr = "[Read] LBA : " + to_string(LBA);
+            expectedOutStr += ", Data : " + Data + "\n";
         }
 
         return expectedOutStr;
@@ -254,8 +253,8 @@ TEST_F(MockSsdTestShellFixture, Erase_OneLBA_ArgCntFail) {
     VerifyResult(INVALID_COMMAND);
 }
 
-// OOR 
-TEST_F(MockSsdTestShellFixture, Write_OneLBA_OOR) { // out of range
+// OOR
+TEST_F(MockSsdTestShellFixture, Write_OneLBA_OOR) {
     EXPECT_CALL(mockSsdDriver, Write)
         .Times(0);
 
@@ -263,7 +262,7 @@ TEST_F(MockSsdTestShellFixture, Write_OneLBA_OOR) { // out of range
     VerifyResult(INVALID_COMMAND);
 }
 
-TEST_F(MockSsdTestShellFixture, Read_OneLBA_OOR) { // out of range
+TEST_F(MockSsdTestShellFixture, Read_OneLBA_OOR) {
     EXPECT_CALL(mockSsdDriver, Read)
         .Times(0);
 
@@ -271,7 +270,7 @@ TEST_F(MockSsdTestShellFixture, Read_OneLBA_OOR) { // out of range
     VerifyResult(INVALID_COMMAND);
 }
 
-TEST_F(MockSsdTestShellFixture, Erase_OneLBA_OOR) { // out of range
+TEST_F(MockSsdTestShellFixture, Erase_OneLBA_OOR) {
     EXPECT_CALL(mockSsdDriver, Erase)
         .Times(0);
 
@@ -380,8 +379,7 @@ TEST_F(MockSsdTestShellFixture, Flush) {
     EXPECT_CALL(mockSsdDriver, Flush)
         .Times(1);
 
-    for (int i = 0; i < 7; i++)
-    {
+    for (int i = 0; i < 7; i++) {
         testShell.Run("write " + to_string(i) + " " + WRITE_DATA);
     }
     testShell.Run("flush");
@@ -390,8 +388,8 @@ TEST_F(MockSsdTestShellFixture, Flush) {
 #ifdef _DEBUG
 // Real Ssd Driver 관련 Test Case
 class RealSsdTestShellFixture : public testing::Test {
-public:
-    TestShell testShell;
+ public:
+    Shell testShell;
     RealSsdDriver realSsdDriver;
     stringstream actualOutput;
     streambuf* backup_cout;
@@ -451,11 +449,12 @@ public:
     }
 
     string MakeRandomData(int randvalue) {
-        std::stringstream stream;
-        stream << "0x" << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << randvalue;
+        stringstream stream;
+        stream << "0x" << setfill('0') << setw(8) << hex << uppercase << randvalue;
         return stream.str();
     }
-protected:
+
+ protected:
     void SetUp() override {
         backup_cout = cout.rdbuf(actualOutput.rdbuf());
         testShell.SetSsdDriver(&realSsdDriver);
@@ -469,23 +468,22 @@ protected:
         cout.rdbuf(backup_cout);
         cout << endl;
     }
-private:
-    bool deleteFileIfExists(const string& file_path)
-    {
+
+ private:
+    bool deleteFileIfExists(const string& file_path) {
         ifstream file(file_path);
 
-        // 파일이 존재하는지 확인
         if (file.good()) {
-            file.close(); // 파일 스트림 닫기
-            if (std::remove(file_path.c_str()) == 0) {
-                return true; // 파일 삭제 성공
+            file.close();
+            if (remove(file_path.c_str()) == 0) {
+                return true;
             }
             else {
-                return false; // 파일 삭제 실패
+                return false;
             }
         }
         else {
-            return false; // 파일이 존재하지 않음
+            return false;
         }
     }
 
@@ -548,7 +546,7 @@ TEST_F(RealSsdTestShellFixture, LongTermTest) {
         }
         if (i % 23 == 0) {
             PrintCurrentStep(i, "Flush ");
-            // Flush();
+            Flush();
         }
 
         // Verify가 너무 오래 걸려 Interval을 늘림. TC Fail 시 Interval 조정하여 Verify.
