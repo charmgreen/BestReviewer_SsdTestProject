@@ -28,6 +28,7 @@ CmdStatus* Parser::UpdateCmdStatus() {
     if (CommandToken[0] == WRITE_CMD) return UpdateWriteCmdStatus();
     else if (CommandToken[0] == READ_CMD) return UpdateReadCmdStatus();
     else if (CommandToken[0] == ERASE_CMD) return UpdateEraseCmdStatus();
+    else if (CommandToken[0] == FLUSH_CMD) return UpdateFlushCmdStatus();
     return nullptr;
 }
 
@@ -57,6 +58,13 @@ CmdStatus *Parser::UpdateEraseCmdStatus() {
     return result;
 }
 
+CmdStatus *Parser::UpdateFlushCmdStatus() {
+    CheckFlushCommandToken();
+    CmdStatus *result = new CmdStatus();
+    result->Command = CmdType::Flush;
+    return result;
+}
+
 void Parser::CheckWriteCommandToken() {
     if (CommandToken.size() != 3) {
         throw ArgsLengthNotMatchException();
@@ -71,6 +79,12 @@ void Parser::CheckReadCommandToken() {
 
 void Parser::CheckEraseCommandToken() {
     if (CommandToken.size() != 3) {
+        throw ArgsLengthNotMatchException();
+    }
+}
+
+void Parser::CheckFlushCommandToken() {
+    if (CommandToken.size() != 1) {
         throw ArgsLengthNotMatchException();
     }
 }
