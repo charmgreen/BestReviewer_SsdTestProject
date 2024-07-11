@@ -28,7 +28,7 @@ class RealSsdDriver : public SsdDriver {
 
     int GetMinLBA() override { return MIN_LBA; }
     int GetMaxLBA() override { return MAX_LBA; }
-    std::string CmpBufRead(int LBA);
+    std::string CmpBufRead(int LBA) override;
  private:
     void SystemCall(std::string cmdLine);
 
