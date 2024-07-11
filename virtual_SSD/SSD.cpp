@@ -5,7 +5,6 @@
 #include <sstream>
 #include <string>
 #include <map>
-#include <vector>
 #include"SSD.h"
 
 class LBARangeException : public std::exception {};
@@ -16,7 +15,7 @@ class EraseSizeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
-    StoreCommand(LBA, data, InitialUpdateSize);
+    ProcessMemory(LBA, data, InitialUpdateSize);
 }
 
 void SSD::Read(const int& LBA) {
@@ -27,47 +26,7 @@ void SSD::Read(const int& LBA) {
 
 void SSD::Erase(const int &LBA, const int &size) {
     CheckEraseCondition(LBA, size);
-    StoreCommand(LBA, InitialLBAData, InitialUpdateSize);
-}
-
-void SSD::Flush() {
-}
-
-void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
-    std::vector<std::string> lines = ReadFile(CommandBufferFileName);
-
-    lines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
-
-    WriteFile(CommandBufferFileName, lines);
-
-    if (lines.size() == 10) {
-        Flush();
-    }
-}
-
-void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
-    std::ofstream commandBufferWriteFile(FileName);
-    if (commandBufferWriteFile.is_open()) {
-        for (const auto& line : lines) {
-            commandBufferWriteFile << line << "\n";
-        }
-        commandBufferWriteFile.close();
-    }
-}
-
-std::vector<std::string> SSD::ReadFile(std::string FileName) {
-    std::vector<std::string> lines;
-    std::ifstream commandBufferReadFile(FileName);
-    std::string line;
-
-    if (commandBufferReadFile.is_open()) {
-        while (getline(commandBufferReadFile, line)) {
-            lines.push_back(line);
-        }
-        commandBufferReadFile.close();
-    }
-
-    return lines;
+    ProcessMemory(LBA, InitialLBAData, size);
 }
 
 void SSD::ProcessMemory(const int &LBA, const std::string data, const int &size) {
