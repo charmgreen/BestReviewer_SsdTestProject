@@ -58,7 +58,7 @@ void FormatSSD(void)
 
 void CommandMode(void)
 {
-    Logger::print(__FUNCTION__, "Execute the input command being supported");
+    Logger::getInstance().print(__FUNCTION__, "Execute the input command being supported");
     TestShell TestShellApp;
     TestShellApp.SetSsdDriver(new RealSsdDriver());
 
@@ -79,7 +79,7 @@ void CommandMode(void)
 
 void ScriptMode(char* argv[])
 {
-    Logger::print(__FUNCTION__, "Verify the script exists");
+    Logger::getInstance().print(__FUNCTION__, "Verify the script exists");
     string inputArg = argv[1];
     string strRunListFile{ inputArg };
     ifstream runListFile(strRunListFile);
@@ -97,12 +97,14 @@ void ScriptMode(char* argv[])
 
 void RunScript(ifstream& runListFile)
 {
-    Logger::print(__FUNCTION__, "Read the outer script");
-    string strScriptFile;
-    while (getline(runListFile, strScriptFile)) {
-        ifstream scriptFile(strScriptFile);
-        TestShell TestShellApp;
-        TestShellApp.SetSsdDriver(new RealSsdDriver());
+    Logger::getInstance().print(__FUNCTION__, "Read the outer script");
+
+    string scriptFileName;
+    while (getline(runListFile, scriptFileName)) {
+        string command;
+        ifstream scriptFile(scriptFileName);
+
+
         FormatSSD();
 
         if (scriptFile.is_open()) {

@@ -6,7 +6,7 @@
 #include "../Logger/logger.cpp"
 
 void InvalidCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "");
+    Logger::getInstance().print(__FUNCTION__, "");
     std::cout << "INVALID COMMAND" << std::endl;
 }
 
@@ -17,7 +17,7 @@ WriteCommand::WriteCommand(std::string strLBA, std::string strData) {
 }
 
 void WriteCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute write command");
+    Logger::getInstance().print(__FUNCTION__, "execute write command");
     ssddriver->Write(this->nLBA, this->strData);
 }
 
@@ -27,7 +27,7 @@ ReadCommand::ReadCommand(std::string strLBA) {
 }
 
 void ReadCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute read command");
+    Logger::getInstance().print(__FUNCTION__, "execute read command");
     std::string resultData = ssddriver->Read(this->nLBA);
     std::cout << "[Read] LBA : " << this->strLBA;
     std::cout << ", Data : " << resultData << std::endl;
@@ -41,6 +41,7 @@ EraseCommand::EraseCommand(std::string strStartLBA, std::string strSize) {
 }
 
 void EraseCommand::Run(SsdDriver* ssddriver) {
+    Logger::getInstance().print(__FUNCTION__, "execute erase command");
     ssddriver->Erase(this->nStartLBA, this->nSize);
 }
 
@@ -52,21 +53,23 @@ EraseRangeCommand::EraseRangeCommand(std::string strStartLBA, std::string strEnd
 }
 
 void EraseRangeCommand::Run(SsdDriver* ssddriver) {
+    Logger::getInstance().print(__FUNCTION__, "execute erase range command");
     ssddriver->Erase(this->nStartLBA, this->nEndLBA - this->nStartLBA);
 }
 
 void FlushCommand::Run(SsdDriver* ssddriver) {
+    Logger::getInstance().print(__FUNCTION__, "execute flush command");
     ssddriver->Flush();
 }
 
 void ExitCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "");
+    Logger::getInstance().print(__FUNCTION__, "");
     std::cout << "[Exit] Quit Shell" << std::endl;
     throw ExitTestShell();
 }
 
 void HelpCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "print supported commands");
+    Logger::getInstance().print(__FUNCTION__, "print supported commands");
     std::string HelpMessage = "";
 
     HelpMessage += "[Help]\n";
@@ -91,14 +94,14 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute full write command");
+    Logger::getInstance().print(__FUNCTION__, "execute full write command");
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         ssddriver->Write(LBA, this->strData);
     }
 }
 
 void FullReadCommand::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute full read command");
+    Logger::getInstance().print(__FUNCTION__, "execute full read command");
     std::cout << "[FullRead]\n";
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         std::string resultData = ssddriver->Read(LBA);
@@ -108,7 +111,7 @@ void FullReadCommand::Run(SsdDriver* ssddriver) {
 }
 
 void TestApp1::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute testapp1 scenario");
+    Logger::getInstance().print(__FUNCTION__, "execute testapp1 scenario");
     std::cout << "[TestApp1]\n";
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         ssddriver->Write(LBA, "0x12341234");
@@ -121,7 +124,7 @@ void TestApp1::Run(SsdDriver* ssddriver) {
 }
 
 void TestApp2::Run(SsdDriver* ssddriver) {
-    Logger::print(__FUNCTION__, "execute testapp2 scenario");
+    Logger::getInstance().print(__FUNCTION__, "execute testapp2 scenario");
     std::cout << "[TestApp2]\n";
     for (unsigned int LBA = 0; LBA <= 5; LBA++) {
         for (unsigned int cnt = 1; cnt <= 5; cnt++) {

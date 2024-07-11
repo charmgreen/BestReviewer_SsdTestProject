@@ -14,7 +14,7 @@ void ShellCommandFactory::SetSsdDriver(SsdDriver* ssddriver) {
 }
 
 void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
-    Logger::print(__FUNCTION__, "Separate commands into tokens");
+    Logger::getInstance().print(__FUNCTION__, "Separate commands into tokens");
     std::string token;
     size_t start = 0, end = 0;
     CommandToken.clear();
@@ -31,7 +31,7 @@ void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
 }
 
 void ShellCommandFactory::MakeCommand() {
-    Logger::print(__FUNCTION__, "Generate the appropriate command");
+    Logger::getInstance().print(__FUNCTION__, "Generate the appropriate command");
     if (CommandToken.empty() == true) result = MakeInvalidCommand();
     else if (CommandToken[0] == "write") result = MakeWriteCommand();
     else if (CommandToken[0] == "read") result = MakeReadCommand();
