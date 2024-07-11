@@ -41,6 +41,7 @@ void SSD::Flush() {
         int BufferLBAsize = stoi(line.substr(secondSpacePosition + 1));
         UpdateMemory(BufferLBA, BufferLBADATA, BufferLBAsize);
     }
+    remove(CommandBufferFileName.c_str());
     StoreMemory();
 }
 
