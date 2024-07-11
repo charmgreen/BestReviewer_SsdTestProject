@@ -74,7 +74,7 @@ void RealSsdDriver::Erase(int startLBA, int Size) {
 
 void RealSsdDriver::Flush() {
     LOG_PRINT("Execute commands in 'Command Buffer'");
-    SystemCall("F ");
+    SystemCall("F");
 }
 
 string RealSsdDriver::CmpBufRead(int LBA) {
