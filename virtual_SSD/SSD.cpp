@@ -86,7 +86,7 @@ void SSD::ReadMemory() {
 
     if (lines.empty()) {
         for (int i = 0; i <= MAX_LBA; i++) {
-          memory[i] = InitialLBAData;
+            memory[i] = InitialLBAData;
         }
      }
 }
@@ -100,10 +100,10 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
 }
 
 void SSD::UpdateMemoryWithCmd(std::vector<std::string> &lines) {
-  for (const auto &line : lines) {
-    CmdContent bufferData = ParseCmd(line);
-    UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
-  }
+    for (const auto &line : lines) {
+        CmdContent bufferData = ParseCmd(line);
+        UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
+    }
 }
 
 void SSD::StoreMemory() {
@@ -117,18 +117,18 @@ void SSD::StoreMemory() {
 }
 
 std::vector<std::string> SSD::ReadFile(std::string FileName) {
-  std::vector<std::string> lines;
-  std::ifstream ReadFile(FileName);
-  std::string line;
+    std::vector<std::string> lines;
+    std::ifstream ReadFile(FileName);
+    std::string line;
 
-  if (ReadFile.is_open()) {
-    while (getline(ReadFile, line)) {
-      lines.push_back(line);
+    if (ReadFile.is_open()) {
+        while (getline(ReadFile, line)) {
+            lines.push_back(line);
+        }
+        ReadFile.close();
     }
-    ReadFile.close();
-  }
 
-  return lines;
+    return lines;
 }
 
 void SSD::WriteFile(std::string FileName, std::vector<std::string> &lines) {

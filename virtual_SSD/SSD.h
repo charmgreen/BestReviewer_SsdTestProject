@@ -2,6 +2,7 @@
 #pragma once
 #include<map>
 #include<string>
+#include <vector>
 #include"SSDInterface.h"
 
 
@@ -31,13 +32,16 @@ class SSD : public SSDInterface {
     const int InitialUpdateSize{1};
     const int COMMAND_MAX_LINE{10};
 
-   void UpdateMemoryWithCmd(std::vector<std::string> &lines);
-
+    CmdContent ParseCmd(std::string line);
+    std::vector<std::string> FindLBAData(const int &LBA);
     void StoreCommand(const int &LBA, const std::string data, const int &size);
     void CheckFlush(const int& bufferSize);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
+    void UpdateMemoryWithCmd(std::vector<std::string> &lines);
     void StoreMemory();
+    std::vector<std::string> ReadFile(std::string FileName);
+    void WriteFile(std::string FileName, std::vector<std::string> &lines);
     void CheckWriteCondition(const int& LBA, const std::string& data);
     void CheckEraseCondition(const int &LBA, const int &size);
     void CheckLBARange(const int& LBA);
@@ -46,8 +50,4 @@ class SSD : public SSDInterface {
     void CheckDataType(const std::string& data);
     void CheckEraseSizeRange(const int size);
     bool isHexData(const char& data);
-    std::vector<std::string> FindLBAData(const int& LBA);
-    void WriteFile(std::string FileName, std::vector<std::string>& lines);
-    std::vector<std::string> ReadFile(std::string FileName);
-    CmdContent ParseCmd(std::string line);
 };
