@@ -2,9 +2,10 @@
 #include<stdexcept>
 #include<fstream>
 #include<iostream>
-#include <sstream>
-#include <string>
-#include <map>
+#include<sstream>
+#include<string>
+#include<vector>
+#include<map>
 #include"SSD.h"
 
 class LBARangeException : public std::exception {};
@@ -15,7 +16,10 @@ class EraseSizeException : public std::exception {};
 
 void SSD::Write(const int& LBA, const std::string& data) {
     CheckWriteCondition(LBA, data);
-    ProcessMemory(LBA, data, InitialUpdateSize);
+    int bufferSize = StoreBuffer(LBA, data, InitialUpdateSize); 
+    if (isFlush(bufferSize)) {
+      Flush();
+    }
 }
 
 void SSD::Read(const int& LBA) {
@@ -26,19 +30,64 @@ void SSD::Read(const int& LBA) {
 
 void SSD::Erase(const int &LBA, const int &size) {
     CheckEraseCondition(LBA, size);
-    ProcessMemory(LBA, InitialLBAData, size);
+    int bufferSize = StoreBuffer(LBA, InitialLBAData, size); 
+    if (isFlush(bufferSize)) {
+      Flush();
+    }
 }
 
-void SSD::ProcessMemory(const int &LBA, const std::string data, const int &size) {
-    ReadMemory();
-    UpdateMemory(LBA, data, size);
-    StoreMemory();
+bool SSD::isFlush(int bufferSize) {
+  if (bufferSize == 10) {
+    return true;
+  }
+  return false;
+}
+
+int SSD::StoreBuffer(const int &LBA, const std::string data, const int &size) {
+  std::vector<std::string> bufferLines = ReadFile(CommandBufferFileName);
+  bufferLines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
+
+  std::ofstream bufferFile(CommandBufferFileName);
+  if (bufferFile.is_open()) {
+    for (const auto &cmd : bufferLines) {
+      bufferFile << cmd << "\n";
+    }
+    bufferFile.close();
+  }
+
+  return bufferLines.size();
+}
+
+void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
+    std::ofstream WriteFile(FileName);
+    if (WriteFile.is_open()) {
+        for (const auto& line : lines) {
+            WriteFile << line << "\n";
+        }
+        WriteFile.close();
+    }
+}
+
+std::vector<std::string> SSD::ReadFile(std::string FileName) {
+    std::vector<std::string> lines;
+    std::ifstream ReadFile(FileName);
+    std::string line;
+
+    if (ReadFile.is_open()) {
+        while (getline(ReadFile, line)) {
+            lines.push_back(line);
+        }
+        ReadFile.close();
+    }
+
+    return lines;
 }
 
 void SSD::ReadMemory() {
     std::string line;
     std::ifstream writeFIle(WriteFIleName);
 
+    // nand.txt 를 읽어서 SSD memory 에 저장하는 코드 
     if (writeFIle.is_open()) {
         while (getline(writeFIle, line)) {
             int firstSpacePosition = line.find(' ');
@@ -60,16 +109,6 @@ void SSD::UpdateMemory(const int &LBA, const std::string &data, const int &size)
     endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
     for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
         memory[iLBA] = data;
-    }
-}
-
-void SSD::StoreMemory() {
-    std::ofstream writeFile(WriteFIleName);
-    if (writeFile.is_open()) {
-        for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
-            writeFile << LBA << " " << memory[LBA] << "\n";
-        }
-        writeFile.close();
     }
 }
 

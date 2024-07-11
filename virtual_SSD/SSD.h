@@ -1,6 +1,7 @@
 // Copyright [2024] <CRA/BestReviewer>
 #pragma once
 #include<map>
+#include<vector>
 #include<string>
 #include"SSDInterface.h"
 
@@ -24,7 +25,8 @@ class SSD : public SSDInterface {
     const int COMMAND_MAX_LINE{10};
 
     void ProcessMemory(const int &LBA, const std::string data, const int &size);
-    void StoreCommand(const int &LBA, const std::string data, const int &size);
+    //void StoreCommand(const int &LBA, const std::string data, const int &size);
+    //void CheckFlush(const int &bufferSize);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void StoreMemory();
@@ -39,4 +41,8 @@ class SSD : public SSDInterface {
     void WriteResultFile(const int& LBA);
     void WriteFile(std::string FileName, std::vector<std::string>& lines);
     std::vector<std::string> ReadFile(std::string FileName);
+
+    int StoreBuffer(const int &LBA, const std::string data, const int &size);
+    bool isFlush(const int bufferSize);
+    
 };
