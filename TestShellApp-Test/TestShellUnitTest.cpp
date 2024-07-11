@@ -1,6 +1,8 @@
 // Copyright 2024, Samsung
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include <fstream>
+#include <cstdio> // std::remove
 #include "../Test_Shell_App/ShellCommandFactory.cpp"
 #include "../Test_Shell_App/RealSsdDriver.cpp"
 #include "../Test_Shell_App/TestShell.cpp"
@@ -16,6 +18,7 @@ class MockSsdDriver : public SsdDriver {
     MOCK_METHOD(void, Write, (int LBA, std::string Data), (override));
     MOCK_METHOD(void, Erase, (int startLBA, int Size), (override));
     MOCK_METHOD(void, Flush, (), (override));
+    MOCK_METHOD(std::string, CmpBufRead, (int LBA), (override));
     int GetMinLBA() override { return 0; }
     int GetMaxLBA() override { return 99; }
 };
@@ -31,7 +34,7 @@ class MockSsdTestShellFixture : public testing::Test {
     }
  public:
     TestShell testShell;
-    MockSsdDriver mockSsdDriver;
+    NiceMock<MockSsdDriver> mockSsdDriver;
     stringstream actualOutput;
     streambuf* backup_cout;
     int startOneLBA = 3;
@@ -298,11 +301,86 @@ TEST_F(MockSsdTestShellFixture, TestApp2) {
     testShell.Run("testapp2");
 }
 
-// Real Ssd Driver 관련 Test Case 는 이후 따로 추가 예정
-//TEST(RealSsdTestShellFixture, Read_OneLBA) {
-//    TestShell testShell2;
-//    RealSsdDriver realSsdDriver;
-//    testShell2.SetSsdDriver(&realSsdDriver);
-//    testShell2.Run("read 3");
-//}
+TEST_F(MockSsdTestShellFixture, UnmapCompare) {
+    EXPECT_CALL(mockSsdDriver, Read)
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+    EXPECT_CALL(mockSsdDriver, CmpBufRead)
+        .Times(MAX_LBA_CNT)
+        .WillRepeatedly(Return(UNMAPED_DATA));
+
+    testShell.Run("compare");
+}
+
+#ifdef _DEBUG
+// Real Ssd Driver 관련 Test Case
+class RealSsdTestShellFixture : public testing::Test {
+private:
+    bool deleteFileIfExists(const string& file_path)
+    {
+        ifstream file(file_path);
+
+        // 파일이 존재하는지 확인
+        if (file.good()) {
+            file.close(); // 파일 스트림 닫기
+            if (std::remove(file_path.c_str()) == 0) {
+                return true; // 파일 삭제 성공
+            }
+            else {
+                return false; // 파일 삭제 실패
+            }
+        }
+        else {
+            return false; // 파일이 존재하지 않음
+        }
+    }
+
+    void FormatSSD(void)
+    {
+        deleteFileIfExists("nand.txt");
+        deleteFileIfExists("result.txt");
+    }
+protected:
+    void SetUp() override {
+        testShell.SetSsdDriver(&realSsdDriver);
+        FormatSSD();
+    }
+    void TearDown() override {
+    }
+public:
+    TestShell testShell;
+    RealSsdDriver realSsdDriver;
+};
+
+TEST_F(RealSsdTestShellFixture, FullWriteReadCompare) {
+    testShell.Run("fullwrite 0x0000000A");
+    testShell.Run("fullread");
+    testShell.Run("compare");
+}
+
+TEST_F(RealSsdTestShellFixture, FullRead10Compare) {
+    for (int i = 0; i < 10; i++)
+    {
+        testShell.Run("fullread");
+    }
+    testShell.Run("compare");
+}
+
+TEST_F(RealSsdTestShellFixture, Loop_WriteAndReadCompare) {
+    for (int i = 0; i < 8; i++)
+    {
+        testShell.Run("write 0 0x0000000A");
+        testShell.Run("read 0");
+    }
+    testShell.Run("compare");
+}
+
+TEST_F(RealSsdTestShellFixture, Write10AndCompare) {
+    for (int i = 0; i < 10; i++)
+    {
+        testShell.Run("write " + to_string(i) + " 0x0000000A");
+    }
+    testShell.Run("compare");
+}
+#endif
 

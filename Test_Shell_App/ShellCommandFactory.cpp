@@ -42,6 +42,7 @@ void ShellCommandFactory::MakeCommand() {
     else if (CommandToken[0] == "fullread") result = MakeFullReadCommand();
     else if (CommandToken[0] == "testapp1") result = MakeTestApp1Command();
     else if (CommandToken[0] == "testapp2") result = MakeTestApp2Command();
+    else if (CommandToken[0] == "compare") result = MakeCompareCommand();
     else
         result = MakeInvalidCommand();
 }
@@ -213,6 +214,15 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
     }
 
     return new TestApp2();
+}
+
+ShellCommand* ShellCommandFactory::MakeCompareCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new Compare();
 }
 
 bool ShellCommandFactory::IsStringDecimal(const std::string& str) {

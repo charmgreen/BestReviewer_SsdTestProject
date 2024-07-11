@@ -93,14 +93,14 @@ void ScriptMode(char* argv[])
 
 void RunScript(ifstream& runListFile)
 {
-    TestShell TestShellApp;
-    TestShellApp.SetSsdDriver(new RealSsdDriver());
     string scriptFileName;
 
     while (getline(runListFile, scriptFileName)) {
         string command;
         ifstream scriptFile(scriptFileName);
 
+        TestShell TestShellApp;
+        TestShellApp.SetSsdDriver(new RealSsdDriver());
         FormatSSD();
 
         if (scriptFile.is_open()) {
