@@ -9,7 +9,7 @@ class SsdDriver {
     virtual void Write(int LBA, string Data) = 0;
     virtual void Erase(int startLBA, int Size) = 0;
     virtual void Flush() = 0;
-    virtual string CmpBufRead(int LBA) = 0;
+    virtual bool Compare() = 0;
 
     virtual int GetMinLBA() = 0;
     virtual int GetMaxLBA() = 0;

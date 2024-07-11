@@ -8,18 +8,61 @@
 using namespace std;
 
 void CompareBufferMgr::SetCompareData(int LBA, string Data) {
-    if (LBA >= 0 && LBA < CONFIG_MAX_LBA) {
+    if (0 <= LBA && LBA < CONFIG_MAX_LBA) {
         compareData[LBA] = Data;
     }
 }
 
-string CompareBufferMgr::GetCompareData(int LBA) {
-    if (LBA >= 0 && LBA < CONFIG_MAX_LBA) {
-        return compareData[LBA];
+bool CompareBufferMgr::CompareBuf() {
+    string ReadFileName{ "nand.txt" };
+    ifstream resultFile(ReadFileName);
+    string line;
+    int LBA = 0;
+
+    if (resultFile.is_open()) {
+        while (getline(resultFile, line)) {
+            LBA_INFO LbaInfo = Parse(line);
+            if (LbaInfo.LBAData != compareData[LBA])
+            {
+                return false;
+            }
+
+            LBA++;
+            if (LBA >= CONFIG_MAX_LBA)
+            {
+                break;
+            }
+        }
+        resultFile.close();
+    }
+    else
+    {
+        for (LBA = 0; LBA < CONFIG_MAX_LBA; LBA++)
+        {
+            if (compareData[LBA] != ERASE_DATA)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+LBA_INFO CompareBufferMgr::Parse(const string& line) {
+    LBA_INFO LbaInfo;
+    int firstSpacePos = line.find(' ');
+    int secondSpacePos = line.find(' ', firstSpacePos + 1);
+    LbaInfo.LBA = stoi(line.substr(0, firstSpacePos));
+    if (secondSpacePos == string::npos) {
+        LbaInfo.LBASize = 1;
+        LbaInfo.LBAData = line.substr(firstSpacePos + 1);
     }
     else {
-        return ERASE_DATA;
+        LbaInfo.LBAData = line.substr(firstSpacePos + 1, secondSpacePos - (firstSpacePos + 1));
+        LbaInfo.LBASize = stoi(line.substr(secondSpacePos + 1));
     }
+    return LbaInfo;
 }
 
 RealSsdDriver::RealSsdDriver() {
@@ -36,12 +79,9 @@ string RealSsdDriver::Read(int LBA) {
     ifstream resultFile(ReadFileName);
     string line;
 
-    if (resultFile.is_open()) {
+    while (resultFile.is_open()) {
         getline(resultFile, line);
         resultFile.close();
-    }
-    else {
-        cerr << "Open Error " + ReadFileName << endl;
     }
 
     return line;
@@ -76,10 +116,55 @@ void RealSsdDriver::Flush() {
     SystemCall("F");
 }
 
-string RealSsdDriver::CmpBufRead(int LBA) {
-    return cmpBufMgr.GetCompareData(LBA);
+bool RealSsdDriver::Compare() {
+    return cmpBufMgr.CompareBuf();
 }
 
+#if 1
+#include <windows.h> 
+
+void RealSsdDriver::SystemCall(std::string cmdLine) {
+    LOG_PRINT("Execute SSD.exe with a command");
+
+    std::wstring ssd_exe_path;
+#ifdef _DEBUG
+    ssd_exe_path = L"..\\x64\\Debug\\SSD.exe"; // 유니코드 문자열 (L 접두사 사용)
+#else
+    ssd_exe_path = L"SSD.exe"; // 유니코드 문자열 (L 접두사 사용)
+#endif
+
+    ssd_exe_path += L" ";
+    ssd_exe_path += std::wstring(cmdLine.begin(), cmdLine.end()); // std::string을 std::wstring으로 변환
+
+    // 필요한 변수들 선언
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+
+    // CreateProcessW로 외부 프로그램 실행
+    if (!CreateProcessW(NULL, // 실행할 프로그램의 경로. NULL이면 ssd_exe_path에서 전체 경로를 지정해야 함
+                        const_cast<LPWSTR>(ssd_exe_path.c_str()), // 실행할 프로그램 명령어 (const wchar_t* 타입으로 변환)
+                        NULL, // 보안 속성
+                        NULL, // 보안 속성
+                        FALSE, // 핸들 상속 여부
+                        0, // 생성 플래그
+                        NULL, // 새로운 프로세스의 환경 변수
+                        NULL, // 현재 디렉토리
+                        &si, // STARTUPINFOW 구조체
+                        &pi // PROCESS_INFORMATION 구조체
+                        )) {
+        std::cerr << "Failed to execute SSD.exe. Error code: " << GetLastError() << '\n';
+        return;
+    }
+
+    // 프로세스 생성 후 핸들 닫기
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+}
+#else
 void RealSsdDriver::SystemCall(string cmdLine) {
     LOG_PRINT("Execute SSD.exe with a command");
 #ifdef _DEBUG
@@ -97,3 +182,4 @@ void RealSsdDriver::SystemCall(string cmdLine) {
         cerr << "Failed to execute SSD.exe. Error code: " << result << '\n';
     }
 }
+#endif
