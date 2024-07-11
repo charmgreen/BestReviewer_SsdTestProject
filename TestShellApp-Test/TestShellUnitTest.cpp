@@ -315,6 +315,16 @@ TEST_F(MockSsdTestShellFixture, UnmapCompare) {
 #ifdef _DEBUG
 // Real Ssd Driver 관련 Test Case
 class RealSsdTestShellFixture : public testing::Test {
+public:
+    TestShell testShell;
+    RealSsdDriver realSsdDriver;
+protected:
+    void SetUp() override {
+        testShell.SetSsdDriver(&realSsdDriver);
+        FormatSSD();
+    }
+    void TearDown() override {
+    }
 private:
     bool deleteFileIfExists(const string& file_path)
     {
@@ -340,16 +350,6 @@ private:
         deleteFileIfExists("nand.txt");
         deleteFileIfExists("result.txt");
     }
-protected:
-    void SetUp() override {
-        testShell.SetSsdDriver(&realSsdDriver);
-        FormatSSD();
-    }
-    void TearDown() override {
-    }
-public:
-    TestShell testShell;
-    RealSsdDriver realSsdDriver;
 };
 
 TEST_F(RealSsdTestShellFixture, FullWriteReadCompare) {
