@@ -9,7 +9,7 @@
 using namespace testing;
 
 class MockSSD : public SSDInterface {
-public:
+ public:
     MOCK_METHOD(void, Write, (const int& LBA, const std::string& data), (override));
     MOCK_METHOD(void, Read, (const int& LBA), (override));
     MOCK_METHOD(void, Erase, (const int& LBA, const int& size), (override));
@@ -17,7 +17,7 @@ public:
 };
 
 class SSDFixture : public testing::Test {
-public:
+ public:
     NiceMock<MockSSD> mockSSD;
     Parser parser;
     CmdStatus cmd;
@@ -107,5 +107,3 @@ TEST_F(SSDFixture, TestEraseCommandWithMock) {
     EXPECT_CALL(mockSSD, Erase).Times(1);
     testCmd.Run("SSD.exe E 0 0x00000001");
 }
-
-
