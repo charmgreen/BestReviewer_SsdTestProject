@@ -9,7 +9,6 @@
 #include "../Test_Shell_App/RealSsdDriver.cpp"
 #include "../Test_Shell_App/TestShell.cpp"
 #include "../Test_Shell_App/ShellCommand.cpp"
-#include "../Test_Shell_App/ShellScript.cpp"
 
 using namespace std;
 using namespace testing;

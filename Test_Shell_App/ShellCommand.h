@@ -117,3 +117,10 @@ class ExitTestShell : public std::exception {
         return "Exit Test Shell!";
     }
 };
+
+class ExceptionCompareFail : public std::exception {
+public:
+    char const* what() const override {
+        return "Compare Fail";
+    }
+};

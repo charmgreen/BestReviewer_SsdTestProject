@@ -1,5 +1,6 @@
 // Copyright [2024] <CRA/BestReviewer>
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <cstdio> // std::remove
 #include <string>
@@ -77,8 +78,8 @@ void CommandMode(void)
 void ScriptMode(char* argv[])
 {
     string inputArg = argv[1];
-    string ReadFileName{ inputArg };
-    ifstream runListFile(ReadFileName);
+    string strRunListFile{ inputArg };
+    ifstream runListFile(strRunListFile);
 
     if (runListFile.is_open()) {
 
@@ -87,36 +88,56 @@ void ScriptMode(char* argv[])
         runListFile.close();
     }
     else {
-        cerr << "read Open Error " + ReadFileName << endl;
+        cerr << "script file open error " << strRunListFile << endl;
     }
 }
 
 void RunScript(ifstream& runListFile)
 {
-    string scriptFileName;
+    string strScriptFile;
 
-    while (getline(runListFile, scriptFileName)) {
-        string command;
-        ifstream scriptFile(scriptFileName);
-
+    while (getline(runListFile, strScriptFile)) {
+        ifstream scriptFile(strScriptFile);
         TestShell TestShellApp;
         TestShellApp.SetSsdDriver(new RealSsdDriver());
         FormatSSD();
 
         if (scriptFile.is_open()) {
+            stringstream actualOutput;
+            streambuf* backup_cout;
+            string command;
+            bool bIsPass = true;
+
+            cout << strScriptFile << " --- Run ... ";
+
+            backup_cout = cout.rdbuf(actualOutput.rdbuf());
+
             while (getline(scriptFile, command)) {
-                cout << command << endl;
                 try {
                     TestShellApp.Run(command);
                 }
                 catch (ExitTestShell) {
                     break;
                 }
+                catch (ExceptionCompareFail) {
+                    bool bIsPass = false;
+                    break;
+                }
             }
-            scriptFile.close();
-        }
 
-        cout << scriptFileName << endl;
+            scriptFile.close();
+            cout.rdbuf(backup_cout);
+
+            if (bIsPass) {
+                cout << "Pass" << endl;
+            }
+            else {
+                cout << "FAIL!" << endl;
+            }
+        }
+        else {
+            cerr << "script file open error " << strScriptFile << endl;
+        }
     }
 }
 

@@ -12,6 +12,9 @@ void TestShell::Run(const std::string& strCommand) {
     catch (ExitTestShell) {
         throw ExitTestShell();
     }
+    catch (ExceptionCompareFail) {
+        throw ExceptionCompareFail();
+    }
 
     delete(shellCommand);
 }
