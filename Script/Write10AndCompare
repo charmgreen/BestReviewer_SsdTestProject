@@ -8,13 +8,4 @@ write 6 0x0000000A
 write 7 0x0000000A
 write 8 0x0000000A
 write 9 0x0000000A
-read 0
-read 1
-read 2
-read 3
-read 4
-read 5
-read 6
-read 7
-read 8
-read 9
+compare

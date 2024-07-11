@@ -3,8 +3,10 @@
 #include <string>
 #include "ShellCommand.h"
 #include "SsdDriver.h"
+#include "../Logger/logger.cpp"
 
 void InvalidCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("");
     std::cout << "INVALID COMMAND" << std::endl;
 }
 
@@ -15,6 +17,7 @@ WriteCommand::WriteCommand(std::string strLBA, std::string strData) {
 }
 
 void WriteCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute write command");
     ssddriver->Write(this->nLBA, this->strData);
 }
 
@@ -24,6 +27,7 @@ ReadCommand::ReadCommand(std::string strLBA) {
 }
 
 void ReadCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute read command");
     std::string resultData = ssddriver->Read(this->nLBA);
     std::cout << "[Read] LBA : " << this->strLBA;
     std::cout << ", Data : " << resultData << std::endl;
@@ -37,6 +41,7 @@ EraseCommand::EraseCommand(std::string strStartLBA, std::string strSize) {
 }
 
 void EraseCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute erase command");
     ssddriver->Erase(this->nStartLBA, this->nSize);
 }
 
@@ -48,19 +53,23 @@ EraseRangeCommand::EraseRangeCommand(std::string strStartLBA, std::string strEnd
 }
 
 void EraseRangeCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute erase range command");
     ssddriver->Erase(this->nStartLBA, this->nEndLBA - this->nStartLBA);
 }
 
 void FlushCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute flush command");
     ssddriver->Flush();
 }
 
 void ExitCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("");
     std::cout << "[Exit] Quit Shell" << std::endl;
     throw ExitTestShell();
 }
 
 void HelpCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("print supported commands");
     std::string HelpMessage = "";
 
     HelpMessage += "[Help]\n";
@@ -85,12 +94,14 @@ FullWriteCommand::FullWriteCommand(std::string strData) {
 }
 
 void FullWriteCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute full write command");
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         ssddriver->Write(LBA, this->strData);
     }
 }
 
 void FullReadCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute full read command");
     std::cout << "[FullRead]\n";
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         std::string resultData = ssddriver->Read(LBA);
@@ -100,6 +111,7 @@ void FullReadCommand::Run(SsdDriver* ssddriver) {
 }
 
 void TestApp1::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute testapp1 scenario");
     std::cout << "[TestApp1]\n";
     for (int LBA = ssddriver->GetMinLBA(); LBA <= ssddriver->GetMaxLBA(); LBA++) {
         ssddriver->Write(LBA, "0x12341234");
@@ -112,6 +124,7 @@ void TestApp1::Run(SsdDriver* ssddriver) {
 }
 
 void TestApp2::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute testapp2 scenario");
     std::cout << "[TestApp2]\n";
     for (unsigned int LBA = 0; LBA <= 5; LBA++) {
         for (unsigned int cnt = 1; cnt <= 5; cnt++) {
@@ -128,5 +141,22 @@ void TestApp2::Run(SsdDriver* ssddriver) {
         std::cout << "[Read] LBA : " << std::to_string(LBA);
         std::cout << ", Data : " << resultData << std::endl;
     }
+}
+
+void Compare::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("execute compare command");
+    std::cout << "[Compare]\n";
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+        std::string resultData = ssddriver->Read(LBA);
+        std::string compareData = ssddriver->CmpBufRead(LBA);
+        if (resultData != compareData)
+        {
+            std::cout << "Fail\n";
+            throw ExceptionCompareFail();
+        }
+    }
+
+    std::cout << "Pass\n";
+    return;
 }
 

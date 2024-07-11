@@ -105,9 +105,22 @@ class TestApp2 : public ShellCommand {
     void Run(SsdDriver* ssddriver) override;
 };
 
+class Compare : public ShellCommand {
+public:
+    Compare() {}
+    void Run(SsdDriver* ssddriver) override;
+};
+
 class ExitTestShell : public std::exception {
  public:
     char const* what() const override {
         return "Exit Test Shell!";
+    }
+};
+
+class ExceptionCompareFail : public std::exception {
+public:
+    char const* what() const override {
+        return "Compare Fail";
     }
 };

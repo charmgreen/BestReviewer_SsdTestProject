@@ -1,7 +1,7 @@
 // Copyright 2024, Samsung
 
 #include "ShellCommandFactory.h"
-#include "ShellScript.h"
+#include "../Logger/logger.cpp"
 
 ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
     TokenArgument(strCommand);
@@ -14,6 +14,7 @@ void ShellCommandFactory::SetSsdDriver(SsdDriver* ssddriver) {
 }
 
 void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
+    LOG_PRINT("Separate commands into tokens");
     std::string token;
     size_t start = 0, end = 0;
     CommandToken.clear();
@@ -30,6 +31,7 @@ void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
 }
 
 void ShellCommandFactory::MakeCommand() {
+    LOG_PRINT("Generate the appropriate command");
     if (CommandToken.empty() == true) result = MakeInvalidCommand();
     else if (CommandToken[0] == "write") result = MakeWriteCommand();
     else if (CommandToken[0] == "read") result = MakeReadCommand();
@@ -42,6 +44,7 @@ void ShellCommandFactory::MakeCommand() {
     else if (CommandToken[0] == "fullread") result = MakeFullReadCommand();
     else if (CommandToken[0] == "testapp1") result = MakeTestApp1Command();
     else if (CommandToken[0] == "testapp2") result = MakeTestApp2Command();
+    else if (CommandToken[0] == "compare") result = MakeCompareCommand();
     else
         result = MakeInvalidCommand();
 }
@@ -213,6 +216,15 @@ ShellCommand* ShellCommandFactory::MakeTestApp2Command() {
     }
 
     return new TestApp2();
+}
+
+ShellCommand* ShellCommandFactory::MakeCompareCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new Compare();
 }
 
 bool ShellCommandFactory::IsStringDecimal(const std::string& str) {

@@ -5,9 +5,8 @@
 #include <vector>
 #include"SSDInterface.h"
 
-
 struct CmdContent {
-public:
+ public:
     int LBA;
     std::string LBAData;
     int LBASize;

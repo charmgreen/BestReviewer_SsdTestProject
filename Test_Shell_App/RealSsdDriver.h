@@ -4,8 +4,23 @@
 #include <string>
 #include "SsdDriver.h"
 
+using namespace std;
+
+const int CONFIG_MAX_LBA = 100;
+
+class CompareBufferMgr {
+public:
+    string GetCompareData(int LBA);
+    void SetCompareData(int LBA, string Data);
+private:
+    string compareData[CONFIG_MAX_LBA];
+
+    const string ERASE_DATA = "0x00000000";
+};
+
 class RealSsdDriver : public SsdDriver {
  public:
+    RealSsdDriver();
     std::string Read(int LBA) override;
     void Write(int LBA, std::string Data) override;
     void Erase(int startLBA, int Size) override;
@@ -13,8 +28,11 @@ class RealSsdDriver : public SsdDriver {
 
     int GetMinLBA() override { return MIN_LBA; }
     int GetMaxLBA() override { return MAX_LBA; }
+    std::string CmpBufRead(int LBA) override;
  private:
     void SystemCall(std::string cmdLine);
+
+    CompareBufferMgr cmpBufMgr;
 
     const int MIN_LBA = 0;
     const int MAX_LBA = 99;

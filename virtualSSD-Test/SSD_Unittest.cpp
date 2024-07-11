@@ -26,17 +26,17 @@ public:
     SSD ssd;
     std::string getLSBData(int LBA) {
         std::string line;
-        std::ifstream writeFIle("nand.txt");
+        std::ifstream file("nand.txt");
 
-        if (writeFIle.is_open()) {
+        if (file.is_open()) {
             for (int i = 0; i < LBA; i++) {
-                if (!std::getline(writeFIle, line)) {
+                if (!std::getline(file, line)) {
                     break;
                 }
             }
-            getline(writeFIle, line);
+            getline(file, line);
             int LBADataFIrstIndex = line.find(" ");
-            writeFIle.close();
+            file.close();
             return line.substr(LBADataFIrstIndex + 1);
         }
         return "0x00000000";

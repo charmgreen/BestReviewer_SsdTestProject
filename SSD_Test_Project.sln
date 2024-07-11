@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "virtual_SSD", "virtual_SSD\virtual_SSD.vcxproj", "{257D1023-3D32-47E1-B6D4-5318E53A9B5E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SSD", "virtual_SSD\virtual_SSD.vcxproj", "{257D1023-3D32-47E1-B6D4-5318E53A9B5E}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test_Shell_App", "Test_Shell_App\Test_Shell_App.vcxproj", "{B12DFCBD-722F-4860-A9A4-AD400B037CE9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690} = {02FC160D-B5FC-47CD-9D3B-9E15C559D690}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "virtualSSD-Test", "virtualSSD-Test\virtualSSD-Test.vcxproj", "{3712CE8D-E89C-4409-96F6-EB65BFF56FDA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestShellApp-Test", "TestShellApp-Test\TestShellApp-Test.vcxproj", "{4674614E-B4EB-469C-ADD1-E43F3869A753}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Logger", "Logger\Logger.vcxproj", "{02FC160D-B5FC-47CD-9D3B-9E15C559D690}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +56,14 @@ Global
 		{4674614E-B4EB-469C-ADD1-E43F3869A753}.Release|x64.Build.0 = Release|x64
 		{4674614E-B4EB-469C-ADD1-E43F3869A753}.Release|x86.ActiveCfg = Release|Win32
 		{4674614E-B4EB-469C-ADD1-E43F3869A753}.Release|x86.Build.0 = Release|Win32
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Debug|x64.ActiveCfg = Debug|x64
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Debug|x64.Build.0 = Debug|x64
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Debug|x86.ActiveCfg = Debug|Win32
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Debug|x86.Build.0 = Debug|Win32
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Release|x64.ActiveCfg = Release|x64
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Release|x64.Build.0 = Release|x64
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Release|x86.ActiveCfg = Release|Win32
+		{02FC160D-B5FC-47CD-9D3B-9E15C559D690}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

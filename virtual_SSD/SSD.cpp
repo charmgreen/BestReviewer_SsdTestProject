@@ -48,7 +48,7 @@ CmdContent SSD::ParseCmd(std::string line) {
         LBAData.LBAData = line.substr(firstSpacePosition + 1);
     } else {
         LBAData.LBAData = line.substr(
-        firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+            firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
         LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
     }
     return LBAData;
@@ -68,7 +68,7 @@ std::vector<std::string> SSD::FindLBAData(const int& LBA) {
 }
 
 bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
-    return LBA >= bufferData.LBA && LBA <= (bufferData.LBA + bufferData.LBASize);
+    return LBA >= bufferData.LBA && LBA < (bufferData.LBA + bufferData.LBASize);
 }
 
 void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
@@ -92,7 +92,7 @@ void SSD::ReadMemory() {
         for (int i = 0; i <= MAX_LBA; i++) {
             memory[i] = InitialLBAData;
         }
-     }
+    }
 }
 
 void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size) {
@@ -126,38 +126,38 @@ std::map<int, std::string> SSD::getDataCheckMap(std::vector<std::string> &lines)
 }
 
 void SSD::StoreMemory() {
-    std::ofstream writeFile(WriteFIleName);
-    if (writeFile.is_open()) {
+    std::ofstream file(WriteFIleName);
+    if (file.is_open()) {
         for (int LBA = 0; LBA <= MAX_LBA; LBA++) {
-            writeFile << LBA << " " << memory[LBA] << "\n";
+            file << LBA << " " << memory[LBA] << "\n";
         }
-        writeFile.close();
+        file.close();
     }
 }
 
 std::vector<std::string> SSD::ReadFile(std::string FileName) {
     std::vector<std::string> lines;
-    std::ifstream ReadFile(FileName);
+    std::ifstream file(FileName);
     std::string line;
 
-    if (ReadFile.is_open()) {
-        while (getline(ReadFile, line)) {
+    if (file.is_open()) {
+        while (getline(file, line)) {
             lines.push_back(line);
         }
-        ReadFile.close();
+        file.close();
     }
 
     return lines;
 }
 
-void SSD::WriteFile(std::string FileName, std::vector<std::string> &lines) {
-  std::ofstream WriteFile(FileName);
-  if (WriteFile.is_open()) {
-    for (const auto &line : lines) {
-      WriteFile << line << "\n";
+void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
+    std::ofstream file(FileName);
+    if (file.is_open()) {
+        for (const auto& line : lines) {
+            file << line << "\n";
+        }
+        file.close();
     }
-    WriteFile.close();
-  }
 }
 
 void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
