@@ -31,7 +31,7 @@ RealSsdDriver::RealSsdDriver() {
 }
 
 string RealSsdDriver::Read(int LBA) {
-    Logger::getInstance().print(__FUNCTION__, "Read from LBA");
+    LOG_PRINT("Read from LBA");
     string cmdLine = "R " + to_string(LBA);
     SystemCall(cmdLine);
     string ReadFileName{ "result.txt" };
@@ -50,14 +50,14 @@ string RealSsdDriver::Read(int LBA) {
 }
 
 void RealSsdDriver::Write(int LBA, std::string Data) {
-    Logger::getInstance().print(__FUNCTION__, "Write a data to LBA");
+    LOG_PRINT("Write a data to LBA");
     string cmdLine = "W " + to_string(LBA) + " " + Data;
     cmpBufMgr.SetCompareData(LBA, Data);
     SystemCall(cmdLine);
 }
 
 void RealSsdDriver::Erase(int startLBA, int Size) {
-    Logger::getInstance().print(__FUNCTION__, "Erase data in specific area");
+    LOG_PRINT("Erase data in specific area");
     int LBA = startLBA;
     while (Size > 0) {
         int EraseUnitSize = ((ERASE_LBA_UNIT < Size) ? (ERASE_LBA_UNIT) : (Size));
@@ -73,7 +73,7 @@ void RealSsdDriver::Erase(int startLBA, int Size) {
 }
 
 void RealSsdDriver::Flush() {
-    Logger::getInstance().print(__FUNCTION__, "Execute commands in 'Command Buffer'");
+    LOG_PRINT("Execute commands in 'Command Buffer'");
     SystemCall("F ");
 }
 
@@ -82,7 +82,7 @@ string RealSsdDriver::CmpBufRead(int LBA) {
 }
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
-    Logger::getInstance().print(__FUNCTION__, "Execute SSD.exe with a command");
+    LOG_PRINT("Execute SSD.exe with a command");
 #ifdef _DEBUG
     string ssd_exe_path = "..\\x64\\Debug\\SSD.exe";
 #else

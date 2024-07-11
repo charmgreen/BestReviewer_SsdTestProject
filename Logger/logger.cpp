@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 
+#define LOG_PRINT(text)  Logger::getInstance().print(__FUNCTION__, text)
+
 class Logger {
  public:
     static Logger& getInstance() {
