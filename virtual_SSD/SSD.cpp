@@ -34,7 +34,8 @@ void SSD::Erase(const int& LBA, const int& size) {
 void SSD::Flush() {
     ReadMemory();
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
-    UpdateMemoryWithBuffer(lines);
+    CheckValidCommand(lines);
+    RunValidCommand();
     remove(CommandBufferFileName.c_str());
     StoreMemory();
 }
@@ -87,7 +88,11 @@ void SSD::CheckFlush(const int& bufferSize) {
 
 void SSD::ReadMemory() {
     std::vector<std::string> lines = ReadFile(WriteFIleName);
-    UpdateMemoryWithBuffer(lines);
+    for (const auto &line : lines) {
+        CmdContent bufferData = ParseCmd(line);
+        UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
+    }
+
     if (lines.empty()) {
         for (int i = 0; i <= MAX_LBA; i++) {
             memory[i] = InitialLBAData;
@@ -101,11 +106,6 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
     for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
         memory[iLBA] = data;
     }
-}
-
-void SSD::UpdateMemoryWithBuffer(const std::vector<std::string> &lines) {
-    CheckValidCommand(lines);
-    RunValidCommand();
 }
 
 void SSD::CheckValidCommand(const std::vector<std::string> &lines) {

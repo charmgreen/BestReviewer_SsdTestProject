@@ -42,6 +42,7 @@ class SSD : public SSDInterface {
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void UpdateMemoryWithBuffer(const std::vector<std::string> &lines);
+    void UpdateMemoryWithCmd(const std::vector<std::string> &lines);
     void CheckValidCommand(const std::vector<std::string> &lines);
     void RunValidCommand();
     void StoreMemory();
