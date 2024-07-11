@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <vector>
 #include"SSD.h"
+#include "../Logger/logger.cpp"
 
 class LBARangeException : public std::exception {};
 class DataRangeException : public std::exception {};
@@ -73,7 +74,8 @@ bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
     return LBA >= bufferData.LBA && LBA < (bufferData.LBA + bufferData.LBASize);
 }
 
-void SSD::StoreCommand(const int& LBA, const std::string& data, const int& size) {
+void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
+    LOG_PRINT("store new cmd into 'Command Buffer'");
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
     lines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
     WriteFile(CommandBufferFileName, lines);
