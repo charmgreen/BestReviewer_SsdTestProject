@@ -31,7 +31,8 @@ class SSD : public SSDInterface {
     const int InitialUpdateSize{1};
     const int COMMAND_MAX_LINE{10};
 
-    void ProcessMemory(const int &LBA, const std::string data, const int &size);
+   void UpdateMemoryWithCmd(std::vector<std::string> &lines);
+
     void StoreCommand(const int &LBA, const std::string data, const int &size);
     void CheckFlush(const int& bufferSize);
     void ReadMemory();
