@@ -7,12 +7,12 @@
 
 class ShellCommandFactory {
  public:
-    ShellCommand* Make(const std::string& strCommand);
+    ShellCommand* Make(const string& strCommand);
     void SetSsdDriver(SsdDriver* ssddriver);
  protected:
     SsdDriver* ssddriver;
  private:
-    void TokenArgument(const std::string& strCommand);
+    void TokenArgument(const string& strCommand);
     void MakeCommand();
     ShellCommand* MakeInvalidCommand();
     ShellCommand* MakeWriteCommand();
@@ -28,15 +28,15 @@ class ShellCommandFactory {
     ShellCommand* MakeTestApp2Command();
     ShellCommand* MakeCompareCommand();
 
-    bool IsStringDecimal(const std::string& str);
-    bool IsStringHexadecimal(const std::string& str);
-    bool IsStringValidLBA(const std::string& str);
-    bool IsStringValidLength(const std::string& strSize);
-    bool IsStringValidLength(const std::string& strStartLBA, const std::string& strEndLBA);
-    std::string LimitToMinLBA(const std::string& str);
-    std::string LimitToMaxLBA(const std::string& str);
+    bool IsStringDecimal(const string& str);
+    bool IsStringHexadecimal(const string& str);
+    bool IsStringValidLBA(const string& str);
+    bool IsStringValidLength(const string& strSize);
+    bool IsStringValidLength(const string& strStartLBA, const string& strEndLBA);
+    string LimitToMinLBA(const string& str);
+    string LimitToMaxLBA(const string& str);
 
-    std::vector<std::string> CommandToken;
+    vector<string> CommandToken;
     ShellCommand* result;
 
     const int MAX_STR_LENGTH_DATA = 10;

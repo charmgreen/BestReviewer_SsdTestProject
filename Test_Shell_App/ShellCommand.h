@@ -22,43 +22,43 @@ class InvalidCommand : public ShellCommand {
 
 class WriteCommand : public ShellCommand {
  public:
-    WriteCommand(std::string strLBA, std::string strData);
+    WriteCommand(string strLBA, string strData);
     void Run(SsdDriver* ssddriver) override;
  private:
     int nLBA;
-    std::string strLBA;
-    std::string strData;
+    string strLBA;
+    string strData;
 };
 
 class ReadCommand : public ShellCommand {
  public:
-    explicit ReadCommand(std::string strLBA);
+    explicit ReadCommand(string strLBA);
     void Run(SsdDriver* ssddriver) override;
  private:
     int nLBA;
-    std::string strLBA;
+    string strLBA;
 };
 
 class EraseCommand : public ShellCommand {
 public:
-    EraseCommand(std::string strStartLBA, std::string strSize);
+    EraseCommand(string strStartLBA, string strSize);
     void Run(SsdDriver* ssddriver) override;
 private:
     int nStartLBA;
     int nSize;
-    std::string strStartLBA;
-    std::string strSize;
+    string strStartLBA;
+    string strSize;
 };
 
 class EraseRangeCommand : public ShellCommand {
 public:
-    EraseRangeCommand(std::string strStartLBA, std::string strEndLBA);
+    EraseRangeCommand(string strStartLBA, string strEndLBA);
     void Run(SsdDriver* ssddriver) override;
 private:
     int nStartLBA;
     int nEndLBA;
-    std::string strStartLBA;
-    std::string strEndLBA;
+    string strStartLBA;
+    string strEndLBA;
 };
 
 class FlushCommand : public ShellCommand {
@@ -81,10 +81,10 @@ class HelpCommand : public ShellCommand {
 
 class FullWriteCommand : public ShellCommand {
  public:
-    explicit FullWriteCommand(std::string strData);
+    explicit FullWriteCommand(string strData);
     void Run(SsdDriver* ssddriver) override;
  private:
-    std::string strData;
+    string strData;
 };
 
 class FullReadCommand : public ShellCommand {
@@ -111,14 +111,14 @@ public:
     void Run(SsdDriver* ssddriver) override;
 };
 
-class ExitTestShell : public std::exception {
+class ExitTestShell : public exception {
  public:
     char const* what() const override {
         return "Exit Test Shell!";
     }
 };
 
-class ExceptionCompareFail : public std::exception {
+class ExceptionCompareFail : public exception {
 public:
     char const* what() const override {
         return "Compare Fail";

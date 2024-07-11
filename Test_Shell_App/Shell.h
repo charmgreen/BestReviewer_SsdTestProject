@@ -7,10 +7,11 @@
 #include "SsdDriver.h"
 #include "ShellCommandFactory.h"
 
+using namespace std;
 
-class TestShell {
+class Shell {
  public:
-    void Run(const std::string& str);
+    void Run(const string& str);
     void SetSsdDriver(SsdDriver* ssddriver);
 
  private:

@@ -25,6 +25,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <ProjectName>Shell-Test</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -99,7 +100,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\packages\gmock.1.11.0\lib\native\src\gtest\src\gtest_main.cc" />
-    <ClCompile Include="TestShellUnitTest.cpp" />
+    <ClCompile Include="Shell_UnitTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Test_Shell_App\Test_Shell_App.vcxproj">
