@@ -22,7 +22,7 @@ void SSD::Write(const int& LBA, const std::string& data) {
 void SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
     std::vector<std::string> readLine = FindLBAData(LBA);
-    WriteFile(ReadFileName, readLine);
+    WriteFile(ReadFileName, readLine );
 }
 
 void SSD::Erase(const int& LBA, const int& size) {
@@ -31,6 +31,17 @@ void SSD::Erase(const int& LBA, const int& size) {
 }
 
 void SSD::Flush() {
+    ReadMemory();
+    std::vector<std::string> lines = ReadFile(CommandBufferFileName);
+    for (const auto& line : lines) {
+        int firstSpacePosition = line.find(' ');
+        int BufferLBA = stoi(line.substr(0, firstSpacePosition));
+        int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
+        std::string BufferLBADATA = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+        int BufferLBAsize = stoi(line.substr(secondSpacePosition + 1));
+        UpdateMemory(BufferLBA, BufferLBADATA, BufferLBAsize);
+    }
+    StoreMemory();
 }
 
 std::vector<std::string> SSD::FindLBAData(const int& LBA) {
