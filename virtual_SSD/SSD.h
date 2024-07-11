@@ -29,7 +29,7 @@ class SSD : public SSDInterface {
     const int MAX_LBA{ 99 };
     const int MIN_LBA{ 0 };
     const int InitialUpdateSize{1};
-    const int COMMAND_MAX_LINE{10};
+    const int Buffer_MAX_LINE{10};
 
     void ProcessMemory(const int &LBA, const std::string data, const int &size);
     void StoreCommand(const int &LBA, const std::string data, const int &size);

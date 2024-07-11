@@ -72,7 +72,7 @@ void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) 
 }
 
 void SSD::CheckFlush(const int& bufferSize) {
-    if (bufferSize == 10) {
+    if (bufferSize == Buffer_MAX_LINE) {
         Flush();
     }
 }
