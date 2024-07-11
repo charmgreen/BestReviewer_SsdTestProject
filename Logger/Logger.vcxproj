@@ -18,30 +18,11 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Main_TestShell.cpp" />
-    <ClCompile Include="RealSsdDriver.cpp" />
-    <ClCompile Include="ShellCommand.cpp" />
-    <ClCompile Include="ShellCommandFactory.cpp" />
-    <ClCompile Include="TestShell.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="RealSsdDriver.h" />
-    <ClInclude Include="ShellCommand.h" />
-    <ClInclude Include="ShellCommandFactory.h" />
-    <ClInclude Include="SsdDriver.h" />
-    <ClInclude Include="TestShell.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Logger\Logger.vcxproj">
-      <Project>{02fc160d-b5fc-47cd-9d3b-9e15c559d690}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b12dfcbd-722f-4860-a9a4-ad400b037ce9}</ProjectGuid>
-    <RootNamespace>TestShellApp</RootNamespace>
+    <ProjectGuid>{02fc160d-b5fc-47cd-9d3b-9e15c559d690}</ProjectGuid>
+    <RootNamespace>Logger</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -89,9 +70,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)Logger;$(IncludePath)</IncludePath>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -148,6 +126,11 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

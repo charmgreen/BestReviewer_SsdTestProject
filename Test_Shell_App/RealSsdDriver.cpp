@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include "../Logger/logger.cpp"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ RealSsdDriver::RealSsdDriver() {
 }
 
 string RealSsdDriver::Read(int LBA) {
+    LOG_PRINT("Read from LBA");
     string cmdLine = "R " + to_string(LBA);
     SystemCall(cmdLine);
     string ReadFileName{ "result.txt" };
@@ -48,12 +50,14 @@ string RealSsdDriver::Read(int LBA) {
 }
 
 void RealSsdDriver::Write(int LBA, std::string Data) {
+    LOG_PRINT("Write a data to LBA");
     string cmdLine = "W " + to_string(LBA) + " " + Data;
     cmpBufMgr.SetCompareData(LBA, Data);
     SystemCall(cmdLine);
 }
 
 void RealSsdDriver::Erase(int startLBA, int Size) {
+    LOG_PRINT("Erase data in specific area");
     int LBA = startLBA;
     while (Size > 0) {
         int EraseUnitSize = ((ERASE_LBA_UNIT < Size) ? (ERASE_LBA_UNIT) : (Size));
@@ -69,6 +73,7 @@ void RealSsdDriver::Erase(int startLBA, int Size) {
 }
 
 void RealSsdDriver::Flush() {
+    LOG_PRINT("Execute commands in 'Command Buffer'");
     SystemCall("F ");
 }
 
@@ -77,6 +82,7 @@ string RealSsdDriver::CmpBufRead(int LBA) {
 }
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
+    LOG_PRINT("Execute SSD.exe with a command");
 #ifdef _DEBUG
     string ssd_exe_path = "..\\x64\\Debug\\SSD.exe";
 #else
