@@ -3,7 +3,9 @@
 #include "ShellCommandFactory.h"
 #include "../Logger/logger.cpp"
 
-ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
+using namespace std;
+
+ShellCommand* ShellCommandFactory::Make(const string& strCommand) {
     TokenArgument(strCommand);
     MakeCommand();
     return result;
@@ -13,13 +15,13 @@ void ShellCommandFactory::SetSsdDriver(SsdDriver* ssddriver) {
     this->ssddriver = ssddriver;
 }
 
-void ShellCommandFactory::TokenArgument(const std::string& strCommand) {
+void ShellCommandFactory::TokenArgument(const string& strCommand) {
     LOG_PRINT("Separate commands into tokens");
-    std::string token;
+    string token;
     size_t start = 0, end = 0;
     CommandToken.clear();
 
-    while ((end = strCommand.find(' ', start)) != std::string::npos) {
+    while ((end = strCommand.find(' ', start)) != string::npos) {
         token = strCommand.substr(start, end - start);
         CommandToken.push_back(token);
         start = end + 1;
@@ -227,7 +229,7 @@ ShellCommand* ShellCommandFactory::MakeCompareCommand() {
     return new Compare();
 }
 
-bool ShellCommandFactory::IsStringDecimal(const std::string& str) {
+bool ShellCommandFactory::IsStringDecimal(const string& str) {
     for (char ch = 0; ch < str.size(); ch++) {
         if ('0' > str[ch] || str[ch] > '9') {
             return false;
@@ -236,7 +238,7 @@ bool ShellCommandFactory::IsStringDecimal(const std::string& str) {
     return true;
 }
 
-bool ShellCommandFactory::IsStringHexadecimal(const std::string& str) {
+bool ShellCommandFactory::IsStringHexadecimal(const string& str) {
     if ((str[0] != '0') ||
         (str[1] != 'x') ||
         (str.size() != MAX_STR_LENGTH_DATA)) {
@@ -252,38 +254,38 @@ bool ShellCommandFactory::IsStringHexadecimal(const std::string& str) {
     return true;
 }
 
-bool ShellCommandFactory::IsStringValidLBA(const std::string& str) {
-    int LBA = std::stoi(str);
+bool ShellCommandFactory::IsStringValidLBA(const string& str) {
+    int LBA = stoi(str);
     if ((ssddriver->GetMinLBA() <= LBA) && (LBA <= ssddriver->GetMaxLBA())) {
         return true;
     }
     return false;
 }
 
-bool ShellCommandFactory::IsStringValidLength(const std::string& str) {
-    return (std::stoi(str) > 0);
+bool ShellCommandFactory::IsStringValidLength(const string& str) {
+    return (stoi(str) > 0);
 }
 
-bool ShellCommandFactory::IsStringValidLength(const std::string& strStartLBA, const std::string& strEndLBA)
+bool ShellCommandFactory::IsStringValidLength(const string& strStartLBA, const string& strEndLBA)
 {
-    return ((std::stoi(strEndLBA) - std::stoi(strStartLBA)) > 0);
+    return ((stoi(strEndLBA) - stoi(strStartLBA)) > 0);
 }
 
 
-std::string ShellCommandFactory::LimitToMinLBA(const std::string& str) {
-    int LBA = std::stoi(str);
+string ShellCommandFactory::LimitToMinLBA(const string& str) {
+    int LBA = stoi(str);
     if (LBA < ssddriver->GetMinLBA()) {
         LBA = ssddriver->GetMinLBA();
     }
 
-    return std::to_string(LBA);
+    return to_string(LBA);
 }
 
-std::string ShellCommandFactory::LimitToMaxLBA(const std::string& str) {
-    int LBA = std::stoi(str);
+string ShellCommandFactory::LimitToMaxLBA(const string& str) {
+    int LBA = stoi(str);
     if (LBA > ssddriver->GetMaxLBA() + 1) {
         LBA = ssddriver->GetMaxLBA() + 1;
     }
 
-    return std::to_string(LBA);
+    return to_string(LBA);
 }

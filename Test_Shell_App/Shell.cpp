@@ -1,9 +1,9 @@
 // Copyright [2024] <CRA/BestReviewer>
-#include "TestShell.h"
+#include "Shell.h"
 #include "SsdDriver.h"
 #include <string>
 
-void TestShell::Run(const std::string& strCommand) {
+void Shell::Run(const string& strCommand) {
     shellCommand = shellCommandFactory.Make(strCommand);
 
     try {
@@ -19,7 +19,7 @@ void TestShell::Run(const std::string& strCommand) {
     delete(shellCommand);
 }
 
-void TestShell::SetSsdDriver(SsdDriver* ssddriver) {
+void Shell::SetSsdDriver(SsdDriver* ssddriver) {
     this->ssddriver = ssddriver;
     shellCommandFactory.SetSsdDriver(ssddriver);
 }

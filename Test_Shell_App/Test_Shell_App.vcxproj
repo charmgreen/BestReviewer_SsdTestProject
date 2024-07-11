@@ -19,18 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main_TestShell.cpp" />
+    <ClCompile Include="Main_Shell.cpp" />
     <ClCompile Include="RealSsdDriver.cpp" />
     <ClCompile Include="ShellCommand.cpp" />
     <ClCompile Include="ShellCommandFactory.cpp" />
-    <ClCompile Include="TestShell.cpp" />
+    <ClCompile Include="Shell.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RealSsdDriver.h" />
     <ClInclude Include="ShellCommand.h" />
     <ClInclude Include="ShellCommandFactory.h" />
     <ClInclude Include="SsdDriver.h" />
-    <ClInclude Include="TestShell.h" />
+    <ClInclude Include="Shell.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Logger\Logger.vcxproj">
@@ -43,6 +43,7 @@
     <ProjectGuid>{b12dfcbd-722f-4860-a9a4-ad400b037ce9}</ProjectGuid>
     <RootNamespace>TestShellApp</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Shell</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

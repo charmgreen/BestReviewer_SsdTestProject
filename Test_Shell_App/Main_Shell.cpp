@@ -2,9 +2,8 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <cstdio> // std::remove
 #include <string>
-#include "TestShell.h"
+#include "Shell.h"
 #include "RealSsdDriver.h"
 #include "../Logger/logger.cpp"
 
@@ -15,52 +14,46 @@ const int SCRIPT_MODE = 2;
 
 void CommandMode(void);
 void ScriptMode(char* argv[]);
-void RunScript(std::ifstream& runListFile);
+void RunScript(ifstream& runListFile);
 void FormatSSD(void);
 
 int main(int argc, char* argv[]) {
-    if (argc == COMMAND_MODE)
-    {
+    if (argc == COMMAND_MODE) {
         CommandMode();
     }
-    else if (argc == SCRIPT_MODE)
-    {
+    else if (argc == SCRIPT_MODE) {
         ScriptMode(argv);
     }
 
     return 0;
 }
 
-bool deleteFileIfExists(const string& file_path)
-{
+bool deleteFileIfExists(const string& file_path) {
     ifstream file(file_path);
 
-    // 파일이 존재하는지 확인
     if (file.good()) {
-        file.close(); // 파일 스트림 닫기
-        if (std::remove(file_path.c_str()) == 0) {
-            return true; // 파일 삭제 성공
+        file.close();
+        if (remove(file_path.c_str()) == 0) {
+            return true;
         }
         else {
-            return false; // 파일 삭제 실패
+            return false;
         }
     }
     else {
-        return false; // 파일이 존재하지 않음
+        return false;
     }
 }
 
-void FormatSSD(void)
-{
+void FormatSSD(void) {
     deleteFileIfExists("nand.txt");
     deleteFileIfExists("result.txt");
     deleteFileIfExists("buffer.txt");
 }
 
-void CommandMode(void)
-{
+void CommandMode(void) {
     LOG_PRINT("Execute the input command being supported");
-    TestShell TestShellApp;
+    Shell TestShellApp;
     TestShellApp.SetSsdDriver(new RealSsdDriver());
 
     FormatSSD();
@@ -78,17 +71,14 @@ void CommandMode(void)
     }
 }
 
-void ScriptMode(char* argv[])
-{
+void ScriptMode(char* argv[]) {
     LOG_PRINT("Verify the script exists");
     string inputArg = argv[1];
     string strRunListFile{ inputArg };
     ifstream runListFile(strRunListFile);
 
     if (runListFile.is_open()) {
-
         RunScript(runListFile);
-
         runListFile.close();
     }
     else {
@@ -103,7 +93,7 @@ void RunScript(ifstream& runListFile)
 
     while (getline(runListFile, strScriptFile)) {
         ifstream scriptFile(strScriptFile);
-        TestShell TestShellApp;
+        Shell TestShellApp;
         TestShellApp.SetSsdDriver(new RealSsdDriver());
         FormatSSD();
 

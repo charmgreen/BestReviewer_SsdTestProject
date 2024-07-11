@@ -21,16 +21,16 @@ private:
 class RealSsdDriver : public SsdDriver {
  public:
     RealSsdDriver();
-    std::string Read(int LBA) override;
-    void Write(int LBA, std::string Data) override;
+    string Read(int LBA) override;
+    void Write(int LBA, string Data) override;
     void Erase(int startLBA, int Size) override;
     void Flush() override;
 
     int GetMinLBA() override { return MIN_LBA; }
     int GetMaxLBA() override { return MAX_LBA; }
-    std::string CmpBufRead(int LBA) override;
+    string CmpBufRead(int LBA) override;
  private:
-    void SystemCall(std::string cmdLine);
+    void SystemCall(string cmdLine);
 
     CompareBufferMgr cmpBufMgr;
 
