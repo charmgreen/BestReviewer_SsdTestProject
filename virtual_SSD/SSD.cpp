@@ -56,12 +56,16 @@ std::vector<std::string> SSD::FindLBAData(const int& LBA) {
     for (int line_index = lines.size() - 1; line_index >= 0; line_index--) {
         std::string line = lines[line_index];
         CmdContent bufferData = ParseCmd(line);
-        if (LBA >= bufferData.LBA && LBA <= (bufferData.LBA + bufferData.LBASize))
+        if (IsInLBA(LBA, bufferData))
             return { bufferData.LBAData };
     }
 
     ReadMemory();
     return { memory[LBA] };
+}
+
+bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
+    return LBA >= bufferData.LBA && LBA <= (bufferData.LBA + bufferData.LBASize);
 }
 
 void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
