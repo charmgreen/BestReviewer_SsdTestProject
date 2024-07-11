@@ -130,3 +130,19 @@ void TestApp2::Run(SsdDriver* ssddriver) {
     }
 }
 
+void Compare::Run(SsdDriver* ssddriver) {
+    std::cout << "[Compare]\n";
+    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
+        std::string resultData = ssddriver->Read(LBA);
+        std::string compareData = ssddriver->CmpBufRead(LBA);
+        if (resultData != compareData)
+        {
+            std::cout << "Fail\n";
+            return;
+        }
+    }
+
+    std::cout << "Pass\n";
+    return;
+}
+

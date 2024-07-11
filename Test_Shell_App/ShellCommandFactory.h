@@ -26,6 +26,7 @@ class ShellCommandFactory {
     ShellCommand* MakeFullReadCommand();
     ShellCommand* MakeTestApp1Command();
     ShellCommand* MakeTestApp2Command();
+    ShellCommand* MakeCompareCommand();
 
     bool IsStringDecimal(const std::string& str);
     bool IsStringHexadecimal(const std::string& str);
