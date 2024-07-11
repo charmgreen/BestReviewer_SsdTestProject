@@ -3,6 +3,8 @@
 #include "gmock/gmock.h"
 #include <fstream>
 #include <cstdio> // std::remove
+#include <sstream>
+#include <iomanip>
 #include "../Test_Shell_App/ShellCommandFactory.cpp"
 #include "../Test_Shell_App/RealSsdDriver.cpp"
 #include "../Test_Shell_App/TestShell.cpp"
@@ -312,18 +314,87 @@ TEST_F(MockSsdTestShellFixture, UnmapCompare) {
     testShell.Run("compare");
 }
 
+
 #ifdef _DEBUG
 // Real Ssd Driver 관련 Test Case
 class RealSsdTestShellFixture : public testing::Test {
 public:
     TestShell testShell;
     RealSsdDriver realSsdDriver;
+    stringstream actualOutput;
+    streambuf* backup_cout;
+    int startOneLBA = 3;
+    const int MAX_LBA_CNT = 100;
+    const string UNMAPPED_DATA = "0x00000000";
+    const string WRITE_DATA = "0xAABBCCDD";
+    const string INV_WRITE_DATA = "0xAAGGCCDD";
+    const string INVALID_COMMAND = "INVALID COMMAND\n";
+    vector<string> strDataList;
+    string MakeFullReadData() {
+        string expectedOutStr;
+        expectedOutStr = "[FullRead]\n";
+        for (int i = 0; i < MAX_LBA_CNT; i++) {
+            expectedOutStr += ("[Read] LBA : " + to_string(i));
+            expectedOutStr += (", Data : " + strDataList[i] + "\n");
+        }
+
+        return expectedOutStr;
+    }
+
+    void VerifyFullReadData() {
+        testShell.Run("fullread");
+        EXPECT_THAT(actualOutput.str(), StrEq(MakeFullReadData()));
+        actualOutput.str("");
+    }
+
+    void FullWrite(string data) {
+        for (int i = 0; i < MAX_LBA_CNT; i++) {
+            testShell.Run("write " + to_string(i) + " " + data);
+            strDataList[i] = data;
+        }
+    }
+
+    void Write(int LBA, int Length, string data) {
+        for (int i = 0; i < Length; i++) {
+            testShell.Run("write " + to_string(LBA + i) + " " + data);
+            strDataList[LBA + i] = data;
+        }
+    }
+
+    void Erase(int LBA, int Length) {
+        testShell.Run("erase " + to_string(LBA) + " " + to_string(Length));
+        for (int i = 0; i < Length; i++) {
+            if (LBA + i >= MAX_LBA_CNT) break;
+            strDataList[LBA + i] = UNMAPPED_DATA;
+        }
+    }
+    void Flush() {
+        testShell.Run("flush");
+    }
+
+    void PrintCurrentStep(int step, string stepname) {
+        cout.rdbuf(backup_cout);
+        cout << "\r [Step #" << step << "] " << stepname;
+        backup_cout = cout.rdbuf(actualOutput.rdbuf());
+    }
+
+    string MakeRandomData(int randvalue) {
+        std::stringstream stream;
+        stream << "0x" << std::setfill('0') << std::setw(8) << std::hex << std::uppercase << randvalue;
+        return stream.str();
+    }
 protected:
     void SetUp() override {
+        backup_cout = cout.rdbuf(actualOutput.rdbuf());
         testShell.SetSsdDriver(&realSsdDriver);
         FormatSSD();
+        strDataList.clear();
+        for (int i = 0; i < MAX_LBA_CNT; i++) {
+            strDataList.push_back("0x00000000");
+        }
     }
     void TearDown() override {
+        cout.rdbuf(backup_cout);
     }
 private:
     bool deleteFileIfExists(const string& file_path)
@@ -382,5 +453,35 @@ TEST_F(RealSsdTestShellFixture, Write10AndCompare) {
     }
     testShell.Run("compare");
 }
-#endif
 
+TEST_F(RealSsdTestShellFixture, LongTermTest) {
+    PrintCurrentStep(0, "FullWrite");
+    FullWrite("0xABCDABCD");
+    VerifyFullReadData();
+
+    srand(0);
+    for (int i = 0; i < 1000; i++) {
+        if (true) {
+            PrintCurrentStep(i, "PartialWrite");
+            int LBA = (rand() % 100);
+            int Length = rand() % 13;
+            if (LBA + Length >= MAX_LBA_CNT) Length = MAX_LBA_CNT - LBA - 1;
+            Write(LBA, Length, MakeRandomData(rand()));
+        }
+        if (i % 5 == 0) {
+            PrintCurrentStep(i, "PartialErase");
+            Erase((rand() % 100), (rand() % 10) + 1);
+        }
+        if (i % 23 == 0) {
+            PrintCurrentStep(i, "Flush ");
+            // Flush();
+        }
+
+        // Verify가 너무 오래 걸려 Interval을 늘림. TC Fail 시 Interval 조정하여 Verify.
+        if (i % 31 == 0) {
+            VerifyFullReadData();
+        }
+    }
+}
+
+#endif
