@@ -149,7 +149,7 @@ void Compare::Run(SsdDriver* ssddriver) {
     LOG_PRINT("execute compare command");
     cout << "[Compare]\n";
     ssddriver->Flush();
-    if (0 == ssddriver->Compare())
+    if (IsCompareFail(ssddriver))
     {
         cout << "Fail" << endl;
         throw ExceptionCompareFail();
@@ -157,4 +157,9 @@ void Compare::Run(SsdDriver* ssddriver) {
 
     cout << "Pass" << endl;
     return;
+}
+
+bool Compare::IsCompareFail(SsdDriver* ssddriver)
+{
+    return 0 == ssddriver->Compare();
 }

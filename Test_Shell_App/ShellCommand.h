@@ -109,6 +109,7 @@ class Compare : public ShellCommand {
 public:
     Compare() {}
     void Run(SsdDriver* ssddriver) override;
+    bool IsCompareFail(SsdDriver* ssddriver);
 };
 
 class ExitTestShell : public exception {
