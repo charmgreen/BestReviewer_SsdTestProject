@@ -38,7 +38,7 @@ void SSD::Flush() {
     StoreMemory();
 }
 
-CmdContent SSD::ParseCmd(std::string line) {
+CmdContent SSD::ParseCmd(const std::string& line) {
     CmdContent LBAData;
     int firstSpacePosition = line.find(' ');
     int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
@@ -49,7 +49,7 @@ CmdContent SSD::ParseCmd(std::string line) {
     }
     else {
         LBAData.LBAData = line.substr(
-            firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+        firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
         LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
     }
     return LBAData;
@@ -72,7 +72,7 @@ bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
     return LBA >= bufferData.LBA && LBA < (bufferData.LBA + bufferData.LBASize);
 }
 
-void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
+void SSD::StoreCommand(const int& LBA, const std::string& data, const int& size) {
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
     lines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
     WriteFile(CommandBufferFileName, lines);
@@ -104,7 +104,7 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
     }
 }
 
-void SSD::UpdateMemoryWithCmd(std::vector<std::string>& lines) {
+void SSD::UpdateMemoryWithCmd(const std::vector<std::string>& lines) {
     for (const auto& line : lines) {
         CmdContent bufferData = ParseCmd(line);
         UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
@@ -121,7 +121,7 @@ void SSD::StoreMemory() {
     }
 }
 
-std::vector<std::string> SSD::ReadFile(std::string FileName) {
+std::vector<std::string> SSD::ReadFile(const std::string& FileName) {
     std::vector<std::string> lines;
     std::ifstream file(FileName);
     std::string line;
@@ -136,7 +136,7 @@ std::vector<std::string> SSD::ReadFile(std::string FileName) {
     return lines;
 }
 
-void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
+void SSD::WriteFile(const std::string& FileName, std::vector<std::string>& lines) {
     std::ofstream file(FileName);
     if (file.is_open()) {
         for (const auto& line : lines) {
@@ -180,12 +180,12 @@ void SSD::CheckDataType(const std::string& data) {
     }
 }
 
-void SSD::CheckEraseSizeRange(const int size) {
+void SSD::CheckEraseSizeRange(const int& size) {
     if (size > 10 || size < 0)
         throw EraseSizeException();
 }
 
 bool SSD::isHexData(const char& data) {
     return (0 <= data - '0' && data - '0' < 10)
-        || (0 <= data - 'A' && data - 'A' < 6);
+        || ('A' <= data && data <= 'F');
 }
