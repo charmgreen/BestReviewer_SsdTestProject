@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include"SSD.h"
 
@@ -104,25 +105,35 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
 }
 
 void SSD::UpdateMemoryWithBuffer(std::vector<std::string> &lines) {
-    std::map<int, std::string> dataCheckMap = getDataCheckMap(lines);
-    for (int LBA_i = MIN_LBA; LBA_i < MAX_LBA + 1; LBA_i++) {
-        std::string LBAData = dataCheckMap[LBA_i];
-        LBAData = LBAData == "" ? "0x00000000" : LBAData;
-        UpdateMemory(LBA_i, LBAData, InitialUpdateSize);
-    }
+    int isUsed[100] = {0, };
+    std::unordered_map<int, std::string> validDataMap;
+    CheckValidCommand(lines, isUsed, validDataMap);
+    RunValidCommand(isUsed, validDataMap);
 }
 
-std::map<int, std::string> SSD::getDataCheckMap(std::vector<std::string> &lines) {
-    std::map<int, std::string> checkMap;
+void SSD::CheckValidCommand(
+    std::vector<std::string> &lines, int isUsed[100],
+    std::unordered_map<int, std::string> &validDataMap) {
     for (auto line_it = lines.rbegin(); line_it != lines.rend(); line_it++) {
         CmdContent bufferData = ParseCmd(*line_it);
         for (int LBA_i = bufferData.LBA;  LBA_i < bufferData.LBA + bufferData.LBASize; LBA_i++) {
-            if (checkMap.find(LBA_i) == checkMap.end()) {
-                checkMap[LBA_i] = bufferData.LBAData;
+            if (!isUsed[LBA_i]) {
+                validDataMap[LBA_i] = bufferData.LBAData;
+                isUsed[LBA_i] = 1;
             }
         }
     }
-    return checkMap;
+}
+
+void SSD::RunValidCommand(int isUsed[100],
+    std::unordered_map<int, std::string> &validDataMap) {
+    for (int LBA_i = MIN_LBA; LBA_i < MAX_LBA + 1; LBA_i++) {
+        if (isUsed[LBA_i]) {
+            UpdateMemory(LBA_i, validDataMap[LBA_i], InitialUpdateSize);
+            continue;
+        } 
+        UpdateMemory(LBA_i, "0x00000000", InitialUpdateSize);
+    }
 }
 
 void SSD::StoreMemory() {

@@ -1,7 +1,8 @@
 // Copyright [2024] <CRA/BestReviewer>
 #pragma once
-#include<map>
-#include<string>
+#include <map>
+#include <unordered_map>
+#include <string>
 #include <vector>
 #include"SSDInterface.h"
 
@@ -39,7 +40,10 @@ class SSD : public SSDInterface {
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
     void UpdateMemoryWithBuffer(std::vector<std::string> &lines);
-    std::map<int, std::string> getDataCheckMap(std::vector<std::string> &lines);
+    void CheckValidCommand(std::vector<std::string> &lines, int isUsed[100],
+                           std::unordered_map<int, std::string> &validDataMap);
+    void RunValidCommand(int isUsed[100],
+                         std::unordered_map<int, std::string> &validDataMap);
     void StoreMemory();
     std::vector<std::string> ReadFile(std::string FileName);
     void WriteFile(std::string FileName, std::vector<std::string> &lines);
