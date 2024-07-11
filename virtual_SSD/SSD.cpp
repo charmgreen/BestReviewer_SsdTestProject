@@ -39,28 +39,18 @@ void SSD::Flush() {
 }
 
 CmdContent SSD::ParseCmd(std::string line) {
-  //CmdContent LBAData;
-  //int firstSpacePosition = line.find(' ');
-  //int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
-  //LBAData.LBA = stoi(line.substr(0, firstSpacePosition));
-  //if (secondSpacePosition == std::string::npos) {
-  //  LBAData.LBASize = 1;
-  //  LBAData.LBAData = line.substr(firstSpacePosition + 1);
-  //} else {
-  //  LBAData.LBAData = line.substr(
-  //      firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
-  //  LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
-  //}
-  //return LBAData;
     CmdContent LBAData;
-
     int firstSpacePosition = line.find(' ');
     int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
-
     LBAData.LBA = stoi(line.substr(0, firstSpacePosition));
-    LBAData.LBAData = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
-    LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
-
+    if (secondSpacePosition == std::string::npos) {
+        LBAData.LBASize = 1;
+        LBAData.LBAData = line.substr(firstSpacePosition + 1);
+    } else {
+        LBAData.LBAData = line.substr(
+        firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+        LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
+    }
     return LBAData;
 }
 
