@@ -22,6 +22,8 @@ class SSD : public SSDInterface {
 
  private:
     std::map<int, std::string> memory;
+    std::unordered_map<int, std::string> validDataMap;
+    int isUsedBuffer[100];
     std::string InitialLBAData{ "0x00000000" };
     std::string WriteFIleName{ "nand.txt" };
     std::string ReadFileName{ "result.txt" };
@@ -32,27 +34,25 @@ class SSD : public SSDInterface {
     const int InitialUpdateSize{1};
     const int Buffer_MAX_LINE{10};
 
-    CmdContent ParseCmd(std::string line);
+    CmdContent ParseCmd(const std::string &line);
     std::vector<std::string> FindLBAData(const int &LBA);
     bool IsInLBA(const int &LBA, CmdContent &bufferData);
-    void StoreCommand(const int &LBA, const std::string data, const int &size);
+    void StoreCommand(const int &LBA, const std::string &data, const int &size);
     void CheckFlush(const int& bufferSize);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
-    void UpdateMemoryWithBuffer(std::vector<std::string> &lines);
-    void CheckValidCommand(std::vector<std::string> &lines, int isUsed[100],
-                           std::unordered_map<int, std::string> &validDataMap);
-    void RunValidCommand(int isUsed[100],
-                         std::unordered_map<int, std::string> &validDataMap);
+    void UpdateMemoryWithBuffer(const std::vector<std::string> &lines);
+    void CheckValidCommand(const std::vector<std::string> &lines);
+    void RunValidCommand();
     void StoreMemory();
-    std::vector<std::string> ReadFile(std::string FileName);
-    void WriteFile(std::string FileName, std::vector<std::string> &lines);
+    std::vector<std::string> ReadFile(const std::string& FileName);
+    void WriteFile(const std::string& FileName, std::vector<std::string>& lines);
     void CheckWriteCondition(const int& LBA, const std::string& data);
-    void CheckEraseCondition(const int &LBA, const int &size);
+    void CheckEraseCondition(const int& LBA, const int& size);
     void CheckLBARange(const int& LBA);
     void CheckDataLength(const std::string& data);
     void CheckDataPreFix(const std::string& data);
     void CheckDataType(const std::string& data);
-    void CheckEraseSizeRange(const int size);
+    void CheckEraseSizeRange(const int &size);
     bool isHexData(const char& data);
 };

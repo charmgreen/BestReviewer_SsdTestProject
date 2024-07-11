@@ -39,7 +39,7 @@ void SSD::Flush() {
     StoreMemory();
 }
 
-CmdContent SSD::ParseCmd(std::string line) {
+CmdContent SSD::ParseCmd(const std::string& line) {
     CmdContent LBAData;
     int firstSpacePosition = line.find(' ');
     int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
@@ -49,7 +49,7 @@ CmdContent SSD::ParseCmd(std::string line) {
         LBAData.LBAData = line.substr(firstSpacePosition + 1);
     } else {
         LBAData.LBAData = line.substr(
-            firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+        firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
         LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
     }
     return LBAData;
@@ -72,7 +72,7 @@ bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
     return LBA >= bufferData.LBA && LBA < (bufferData.LBA + bufferData.LBASize);
 }
 
-void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
+void SSD::StoreCommand(const int& LBA, const std::string& data, const int& size) {
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
     lines.push_back(std::to_string(LBA) + " " + data + " " + std::to_string(size));
     WriteFile(CommandBufferFileName, lines);
@@ -88,7 +88,6 @@ void SSD::CheckFlush(const int& bufferSize) {
 void SSD::ReadMemory() {
     std::vector<std::string> lines = ReadFile(WriteFIleName);
     UpdateMemoryWithBuffer(lines);
-
     if (lines.empty()) {
         for (int i = 0; i <= MAX_LBA; i++) {
             memory[i] = InitialLBAData;
@@ -104,35 +103,30 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
     }
 }
 
-void SSD::UpdateMemoryWithBuffer(std::vector<std::string> &lines) {
-    int isUsed[100] = {0, };
-    std::unordered_map<int, std::string> validDataMap;
-    CheckValidCommand(lines, isUsed, validDataMap);
-    RunValidCommand(isUsed, validDataMap);
+void SSD::UpdateMemoryWithBuffer(const std::vector<std::string> &lines) {
+    CheckValidCommand(lines);
+    RunValidCommand();
 }
 
-void SSD::CheckValidCommand(
-    std::vector<std::string> &lines, int isUsed[100],
-    std::unordered_map<int, std::string> &validDataMap) {
+void SSD::CheckValidCommand(const std::vector<std::string> &lines) {
+    std::memset(isUsedBuffer, 0, sizeof(isUsedBuffer));
+    validDataMap.clear();
     for (auto line_it = lines.rbegin(); line_it != lines.rend(); line_it++) {
         CmdContent bufferData = ParseCmd(*line_it);
         for (int LBA_i = bufferData.LBA;  LBA_i < bufferData.LBA + bufferData.LBASize; LBA_i++) {
-            if (!isUsed[LBA_i]) {
+            if (!isUsedBuffer[LBA_i]) {
                 validDataMap[LBA_i] = bufferData.LBAData;
-                isUsed[LBA_i] = 1;
+                isUsedBuffer[LBA_i] = 1;
             }
         }
     }
 }
 
-void SSD::RunValidCommand(int isUsed[100],
-    std::unordered_map<int, std::string> &validDataMap) {
+void SSD::RunValidCommand() {
     for (int LBA_i = MIN_LBA; LBA_i < MAX_LBA + 1; LBA_i++) {
-        if (isUsed[LBA_i]) {
+        if (isUsedBuffer[LBA_i]) {
             UpdateMemory(LBA_i, validDataMap[LBA_i], InitialUpdateSize);
-            continue;
-        } 
-        UpdateMemory(LBA_i, "0x00000000", InitialUpdateSize);
+        }
     }
 }
 
@@ -146,7 +140,7 @@ void SSD::StoreMemory() {
     }
 }
 
-std::vector<std::string> SSD::ReadFile(std::string FileName) {
+std::vector<std::string> SSD::ReadFile(const std::string& FileName) {
     std::vector<std::string> lines;
     std::ifstream file(FileName);
     std::string line;
@@ -161,7 +155,7 @@ std::vector<std::string> SSD::ReadFile(std::string FileName) {
     return lines;
 }
 
-void SSD::WriteFile(std::string FileName, std::vector<std::string>& lines) {
+void SSD::WriteFile(const std::string& FileName, std::vector<std::string>& lines) {
     std::ofstream file(FileName);
     if (file.is_open()) {
         for (const auto& line : lines) {
@@ -205,12 +199,12 @@ void SSD::CheckDataType(const std::string& data) {
     }
 }
 
-void SSD::CheckEraseSizeRange(const int size) {
+void SSD::CheckEraseSizeRange(const int& size) {
     if (size > 10 || size < 0)
         throw EraseSizeException();
 }
 
 bool SSD::isHexData(const char& data) {
     return (0 <= data - '0' && data - '0' < 10)
-        || (0 <= data - 'A' && data - 'A' < 6);
+        || ('A' <= data && data <= 'F');
 }
