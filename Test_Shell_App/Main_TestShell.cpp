@@ -53,6 +53,7 @@ void FormatSSD(void)
 {
     deleteFileIfExists("nand.txt");
     deleteFileIfExists("result.txt");
+    deleteFileIfExists("buffer.txt");
 }
 
 void CommandMode(void)

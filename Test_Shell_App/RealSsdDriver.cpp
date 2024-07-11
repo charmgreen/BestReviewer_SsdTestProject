@@ -69,7 +69,7 @@ void RealSsdDriver::Erase(int startLBA, int Size) {
 }
 
 void RealSsdDriver::Flush() {
-    SystemCall("F ");
+    SystemCall("F");
 }
 
 string RealSsdDriver::CmpBufRead(int LBA) {
