@@ -4,6 +4,14 @@
 #include<string>
 #include"SSDInterface.h"
 
+
+struct CmdContent {
+public:
+    int LBA;
+    std::string LBAData;
+    int LBASize;
+};
+
 class SSD : public SSDInterface {
  public:
     virtual void Write(const int& LBA, const std::string& data) override;
@@ -40,4 +48,5 @@ class SSD : public SSDInterface {
     std::vector<std::string> FindLBAData(const int& LBA);
     void WriteFile(std::string FileName, std::vector<std::string>& lines);
     std::vector<std::string> ReadFile(std::string FileName);
+    CmdContent ParseCmd(std::string line);
 };

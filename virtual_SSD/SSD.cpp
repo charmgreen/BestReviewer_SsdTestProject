@@ -30,16 +30,22 @@ void SSD::Erase(const int& LBA, const int& size) {
     StoreCommand(LBA, InitialLBAData, InitialUpdateSize);
 }
 
+CmdContent SSD::ParseCmd(std::string line) {
+    CmdContent LBAData;
+    int firstSpacePosition = line.find(' ');
+    LBAData.LBA = stoi(line.substr(0, firstSpacePosition));
+    int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
+    LBAData.LBAData = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+    LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
+    return LBAData;
+}
+
 void SSD::Flush() {
     ReadMemory();
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
     for (const auto& line : lines) {
-        int firstSpacePosition = line.find(' ');
-        int BufferLBA = stoi(line.substr(0, firstSpacePosition));
-        int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
-        std::string BufferLBADATA = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
-        int BufferLBAsize = stoi(line.substr(secondSpacePosition + 1));
-        UpdateMemory(BufferLBA, BufferLBADATA, BufferLBAsize);
+        CmdContent bufferData = ParseCmd(line);
+        UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
     }
     remove(CommandBufferFileName.c_str());
     StoreMemory();
@@ -49,13 +55,9 @@ std::vector<std::string> SSD::FindLBAData(const int& LBA) {
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
     for (int line_index = lines.size() - 1; line_index >= 0; line_index--) {
         std::string line = lines[line_index];
-        int firstSpacePosition = line.find(' ');
-        int BufferLBA = stoi(line.substr(0, firstSpacePosition));
-        int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
-        std::string BufferLBADATA = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
-        int BufferLBAsize = stoi(line.substr(secondSpacePosition + 1));
-        if (LBA >= BufferLBA && LBA <= (BufferLBA + BufferLBAsize))
-            return { BufferLBADATA };
+        CmdContent bufferData = ParseCmd(line);
+        if (LBA >= bufferData.LBA && LBA <= (bufferData.LBA + bufferData.LBASize))
+            return { bufferData.LBAData };
     }
 
     ReadMemory();

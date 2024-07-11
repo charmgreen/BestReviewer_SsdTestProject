@@ -13,6 +13,7 @@ public:
     MOCK_METHOD(void, Write, (const int& LBA, const std::string& data), (override));
     MOCK_METHOD(void, Read, (const int& LBA), (override));
     MOCK_METHOD(void, Erase, (const int& LBA, const int& size), (override));
+    MOCK_METHOD(void, Flush, (), (override));
 };
 
 class SSDFixture : public testing::Test {
