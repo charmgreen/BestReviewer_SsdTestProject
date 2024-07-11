@@ -9,37 +9,38 @@
 using namespace testing;
 
 class MockSSD : public SSDInterface {
- public:
-    MOCK_METHOD(void, Write, (const int &LBA, const std::string &data), (override));
-    MOCK_METHOD(void, Read, (const int &LBA), (override));
-    MOCK_METHOD(void, Erase, (const int &LBA, const int &size), (override));
+public:
+    MOCK_METHOD(void, Write, (const int& LBA, const std::string& data), (override));
+    MOCK_METHOD(void, Read, (const int& LBA), (override));
+    MOCK_METHOD(void, Erase, (const int& LBA, const int& size), (override));
+    MOCK_METHOD(void, Flush, (), (override));
 };
 
 class SSDFixture : public testing::Test {
- public:
+public:
     NiceMock<MockSSD> mockSSD;
     Parser parser;
     CmdStatus cmd;
-    SSDCommand testCmd{&mockSSD, &parser, &cmd};
+    SSDCommand testCmd{ &mockSSD, &parser, &cmd };
 
     SSD ssd;
     std::string getLSBData(int LBA) {
-    std::string line;
-    std::ifstream writeFIle("nand.txt");
+        std::string line;
+        std::ifstream file("nand.txt");
 
-    if (writeFIle.is_open()) {
-      for (int i = 0; i < LBA; i++) {
-        if (!std::getline(writeFIle, line)) {
-          break;
+        if (file.is_open()) {
+            for (int i = 0; i < LBA; i++) {
+                if (!std::getline(file, line)) {
+                    break;
+                }
+            }
+            getline(file, line);
+            int LBADataFIrstIndex = line.find(" ");
+            file.close();
+            return line.substr(LBADataFIrstIndex + 1);
         }
-      }
-      getline(writeFIle, line);
-      int LBADataFIrstIndex = line.find(" ");
-      writeFIle.close();
-      return line.substr(LBADataFIrstIndex + 1);
+        return "0x00000000";
     }
-    return "0x00000000";
-  }
 };
 
 TEST_F(SSDFixture, TestLBARangeExceptionWhenWrite) {
