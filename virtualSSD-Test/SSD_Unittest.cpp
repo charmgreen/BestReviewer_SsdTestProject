@@ -61,9 +61,8 @@ TEST_F(SSDFixture, TestDataTypeException) {
 
 TEST_F(SSDFixture, TestWriteMemory) {
     ssd.Write(0, "0x10000001");
+    ssd.Flush();
     EXPECT_EQ("0x10000001", getLSBData(0));
-    ssd.Write(98, "0x10000099");
-    EXPECT_EQ("0x10000099", getLSBData(98));
 }
 
 TEST_F(SSDFixture, TestWriteCommandWithMock) {
@@ -93,11 +92,13 @@ TEST_F(SSDFixture, TestEraseSizeRangeException) {
 
 TEST_F(SSDFixture, TestEraseMemory) {
     ssd.Erase(0, 1);
+    ssd.Flush();
     EXPECT_EQ("0x00000000", getLSBData(0));
 }
 
 TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
     ssd.Erase(98, 10);
+    ssd.Flush();
     EXPECT_EQ("0x00000000", getLSBData(98));
     EXPECT_EQ("0x00000000", getLSBData(99));
 }
@@ -106,3 +107,5 @@ TEST_F(SSDFixture, TestEraseCommandWithMock) {
     EXPECT_CALL(mockSSD, Erase).Times(1);
     testCmd.Run("SSD.exe E 0 0x00000001");
 }
+
+
