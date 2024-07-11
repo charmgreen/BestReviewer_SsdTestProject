@@ -69,7 +69,7 @@ std::vector<std::string> SSD::FindLBAData(const int& LBA) {
 }
 
 bool SSD::IsInLBA(const int& LBA, CmdContent& bufferData) {
-    return LBA >= bufferData.LBA && LBA <= (bufferData.LBA + bufferData.LBASize);
+    return LBA >= bufferData.LBA && LBA < (bufferData.LBA + bufferData.LBASize);
 }
 
 void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
