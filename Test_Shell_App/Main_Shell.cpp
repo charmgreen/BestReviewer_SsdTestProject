@@ -64,13 +64,7 @@ void CommandMode(void) {
         command.clear();
         getline(cin, command);
         try {
-            auto start = std::chrono::high_resolution_clock::now();
-
             TestShellApp.Run(command);
-
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double, std::milli> elapsed = end - start;
-            std::cout << "cmd : " << elapsed.count() << " ms\n";
         }
         catch (ExitTestShell) {
             break;
@@ -110,9 +104,7 @@ void RunScript(ifstream& runListFile)
             string command;
             bool bIsPass = true;
 
-            auto start = std::chrono::high_resolution_clock::now();
             cout << strScriptFile << " --- Run ... ";
-
             backup_cout = cout.rdbuf(actualOutput.rdbuf());
 
             while (getline(scriptFile, command)) {
@@ -137,10 +129,6 @@ void RunScript(ifstream& runListFile)
             else {
                 cout << "FAIL!" << endl;
             }
-
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double, std::milli> elapsed = end - start;
-            std::cout << "script : " << elapsed.count() << " ms\n";
         }
         else {
             cerr << "script file open error " << strScriptFile << endl;

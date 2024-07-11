@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include "../Logger/logger.cpp"
+#include <windows.h>
 
 using namespace std;
 
@@ -120,9 +121,6 @@ unsigned int RealSsdDriver::Compare() {
     return (unsigned int)cmpBufMgr.CompareBuf();
 }
 
-#if 0
-#include <windows.h>
-
 void RealSsdDriver::SystemCall(std::string cmdLine) {
     LOG_PRINT("Execute SSD.exe with a command");
 
@@ -164,22 +162,3 @@ void RealSsdDriver::SystemCall(std::string cmdLine) {
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 }
-#else
-void RealSsdDriver::SystemCall(string cmdLine) {
-    LOG_PRINT("Execute SSD.exe with a command");
-#ifdef _DEBUG
-    string ssd_exe_path = "..\\x64\\Debug\\SSD.exe";
-#else
-    string ssd_exe_path = "SSD.exe";
-#endif
-    ssd_exe_path += " ";
-    ssd_exe_path += cmdLine;
-
-    int result = system(ssd_exe_path.c_str());
-
-    if (result)
-    {
-        cerr << "Failed to execute SSD.exe. Error code: " << result << '\n';
-    }
-}
-#endif
