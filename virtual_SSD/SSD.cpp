@@ -5,6 +5,7 @@
 #include <sstream>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include"SSD.h"
 
@@ -33,7 +34,8 @@ void SSD::Erase(const int& LBA, const int& size) {
 void SSD::Flush() {
     ReadMemory();
     std::vector<std::string> lines = ReadFile(CommandBufferFileName);
-    UpdateMemoryWithCmd(lines);
+    CheckValidCommand(lines);
+    RunValidCommand();
     remove(CommandBufferFileName.c_str());
     StoreMemory();
 }
@@ -46,8 +48,7 @@ CmdContent SSD::ParseCmd(const std::string& line) {
     if (secondSpacePosition == std::string::npos) {
         LBAData.LBASize = 1;
         LBAData.LBAData = line.substr(firstSpacePosition + 1);
-    }
-    else {
+    } else {
         LBAData.LBAData = line.substr(
         firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
         LBAData.LBASize = stoi(line.substr(secondSpacePosition + 1));
@@ -87,7 +88,10 @@ void SSD::CheckFlush(const int& bufferSize) {
 
 void SSD::ReadMemory() {
     std::vector<std::string> lines = ReadFile(WriteFIleName);
-    UpdateMemoryWithCmd(lines);
+    for (const auto &line : lines) {
+        CmdContent bufferData = ParseCmd(line);
+        UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
+    }
 
     if (lines.empty()) {
         for (int i = 0; i <= MAX_LBA; i++) {
@@ -104,10 +108,25 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
     }
 }
 
-void SSD::UpdateMemoryWithCmd(const std::vector<std::string>& lines) {
-    for (const auto& line : lines) {
-        CmdContent bufferData = ParseCmd(line);
-        UpdateMemory(bufferData.LBA, bufferData.LBAData, bufferData.LBASize);
+void SSD::CheckValidCommand(const std::vector<std::string> &lines) {
+    std::memset(isUsedBuffer, 0, sizeof(isUsedBuffer));
+    validDataMap.clear();
+    for (auto line_it = lines.rbegin(); line_it != lines.rend(); line_it++) {
+        CmdContent bufferData = ParseCmd(*line_it);
+        for (int LBA_i = bufferData.LBA;  LBA_i < bufferData.LBA + bufferData.LBASize; LBA_i++) {
+            if (!isUsedBuffer[LBA_i]) {
+                validDataMap[LBA_i] = bufferData.LBAData;
+                isUsedBuffer[LBA_i] = 1;
+            }
+        }
+    }
+}
+
+void SSD::RunValidCommand() {
+    for (int LBA_i = MIN_LBA; LBA_i < MAX_LBA + 1; LBA_i++) {
+        if (isUsedBuffer[LBA_i]) {
+            UpdateMemory(LBA_i, validDataMap[LBA_i], InitialUpdateSize);
+        }
     }
 }
 
