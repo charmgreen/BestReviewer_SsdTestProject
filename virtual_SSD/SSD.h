@@ -37,7 +37,7 @@ class SSD : public SSDInterface {
     void CheckDataType(const std::string& data);
     void CheckEraseSizeRange(const int size);
     bool isHexData(const char& data);
-    void WriteResultFile(const int& LBA);
+    std::vector<std::string> FindLBAData(const int& LBA);
     void WriteFile(std::string FileName, std::vector<std::string>& lines);
     std::vector<std::string> ReadFile(std::string FileName);
 };

@@ -21,16 +21,33 @@ void SSD::Write(const int& LBA, const std::string& data) {
 
 void SSD::Read(const int& LBA) {
     CheckLBARange(LBA);
-    ReadMemory();
-    WriteResultFile(LBA);
+    std::vector<std::string> readLine = FindLBAData(LBA);
+    WriteFile(ReadFileName, readLine);
 }
 
-void SSD::Erase(const int &LBA, const int &size) {
+void SSD::Erase(const int& LBA, const int& size) {
     CheckEraseCondition(LBA, size);
     StoreCommand(LBA, InitialLBAData, InitialUpdateSize);
 }
 
 void SSD::Flush() {
+}
+
+std::vector<std::string> SSD::FindLBAData(const int& LBA) {
+    std::vector<std::string> lines = ReadFile(CommandBufferFileName);
+    for (int line_index = lines.size() - 1; line_index >= 0; line_index--) {
+        std::string line = lines[line_index];
+        int firstSpacePosition = line.find(' ');
+        int BufferLBA = stoi(line.substr(0, firstSpacePosition));
+        int secondSpacePosition = line.find(' ', firstSpacePosition + 1);
+        std::string BufferLBADATA = line.substr(firstSpacePosition + 1, secondSpacePosition - (firstSpacePosition + 1));
+        int BufferLBAsize = stoi(line.substr(secondSpacePosition + 1));
+        if (LBA >= BufferLBA && LBA <= (BufferLBA + BufferLBAsize))
+            return { BufferLBADATA };
+    }
+
+    ReadMemory();
+    return { memory[LBA] };
 }
 
 void SSD::StoreCommand(const int& LBA, const std::string data, const int& size) {
@@ -71,7 +88,7 @@ std::vector<std::string> SSD::ReadFile(std::string FileName) {
     return lines;
 }
 
-void SSD::ProcessMemory(const int &LBA, const std::string data, const int &size) {
+void SSD::ProcessMemory(const int& LBA, const std::string data, const int& size) {
     ReadMemory();
     UpdateMemory(LBA, data, size);
     StoreMemory();
@@ -90,14 +107,15 @@ void SSD::ReadMemory() {
             UpdateMemory(iLBA, LBADATA, InitialUpdateSize);
         }
         writeFIle.close();
-    } else {
+    }
+    else {
         for (int i = 0; i <= MAX_LBA; i++) {
             memory[i] = InitialLBAData;
         }
     }
 }
 
-void SSD::UpdateMemory(const int &LBA, const std::string &data, const int &size) {
+void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size) {
     int endLBA = LBA + size;
     endLBA = endLBA > MAX_LBA ? MAX_LBA + 1 : endLBA;
     for (int iLBA = LBA; iLBA < endLBA; iLBA++) {
@@ -122,7 +140,7 @@ void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
     CheckDataType(data);
 }
 
-void SSD::CheckEraseCondition(const int &LBA, const int &size) {
+void SSD::CheckEraseCondition(const int& LBA, const int& size) {
     CheckLBARange(LBA);
     CheckEraseSizeRange(size);
 }
@@ -157,12 +175,4 @@ void SSD::CheckEraseSizeRange(const int size) {
 bool SSD::isHexData(const char& data) {
     return (0 <= data - '0' && data - '0' < 10)
         || (0 <= data - 'A' && data - 'A' < 6);
-}
-
-void SSD::WriteResultFile(const int &LBA) {
-    if (memory.find(LBA) != memory.end()) {
-        std::ofstream resultFile(ReadFileName);
-        resultFile << memory[LBA];
-        resultFile.close();
-    }
 }
