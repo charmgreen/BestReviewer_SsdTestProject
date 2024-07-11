@@ -49,5 +49,6 @@ class SSD : public SSDInterface {
     void CheckDataPreFix(const std::string& data);
     void CheckDataType(const std::string& data);
     void CheckEraseSizeRange(const int size);
+    bool IsInLBA(const int& LBA, CmdContent& bufferData);
     bool isHexData(const char& data);
 };
