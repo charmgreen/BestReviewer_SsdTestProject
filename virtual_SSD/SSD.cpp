@@ -103,23 +103,26 @@ void SSD::UpdateMemory(const int& LBA, const std::string& data, const int& size)
     }
 }
 
-// update memory with buffer
 void SSD::UpdateMemoryWithBuffer(std::vector<std::string> &lines) {
-    std::map<int, std::string> dataCheckMap;
-    for (auto line_it = lines.rbegin(); line_it != lines.rend(); line_it++) {
-        CmdContent bufferData = ParseCmd(*line_it);
-        for (int LBA_i = bufferData.LBA; LBA_i < bufferData.LBA + bufferData.LBASize; LBA_i++) {
-            if (dataCheckMap.find(LBA_i) == dataCheckMap.end()) {
-                dataCheckMap[LBA_i] = bufferData.LBAData;
-            } 
-        }
-    }
-
+    std::map<int, std::string> dataCheckMap = getDataCheckMap(lines);
     for (int LBA_i = MIN_LBA; LBA_i < MAX_LBA + 1; LBA_i++) {
         std::string LBAData = dataCheckMap[LBA_i];
         LBAData = LBAData == "" ? "0x00000000" : LBAData;
-        UpdateMemory(LBA_i, LBAData, 1);
+        UpdateMemory(LBA_i, LBAData, InitialUpdateSize);
     }
+}
+
+std::map<int, std::string> SSD::getDataCheckMap(std::vector<std::string> &lines) {
+    std::map<int, std::string> checkMap;
+    for (auto line_it = lines.rbegin(); line_it != lines.rend(); line_it++) {
+        CmdContent bufferData = ParseCmd(*line_it);
+        for (int LBA_i = bufferData.LBA;  LBA_i < bufferData.LBA + bufferData.LBASize; LBA_i++) {
+            if (checkMap.find(LBA_i) == checkMap.end()) {
+                checkMap[LBA_i] = bufferData.LBAData;
+            }
+        }
+    }
+    return checkMap;
 }
 
 void SSD::StoreMemory() {

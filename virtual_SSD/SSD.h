@@ -39,7 +39,8 @@ class SSD : public SSDInterface {
     void CheckFlush(const int& bufferSize);
     void ReadMemory();
     void UpdateMemory(const int &LBA, const std::string &data, const int &size);
-    void UpdateMemoryWithCmd(std::vector<std::string> &lines);
+    void UpdateMemoryWithBuffer(std::vector<std::string> &lines);
+    std::map<int, std::string> getDataCheckMap(std::vector<std::string> &lines);
     void StoreMemory();
     std::vector<std::string> ReadFile(std::string FileName);
     void WriteFile(std::string FileName, std::vector<std::string> &lines);
