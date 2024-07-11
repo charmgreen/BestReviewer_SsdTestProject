@@ -23,14 +23,12 @@
     <ClCompile Include="RealSsdDriver.cpp" />
     <ClCompile Include="ShellCommand.cpp" />
     <ClCompile Include="ShellCommandFactory.cpp" />
-    <ClCompile Include="ShellScript.cpp" />
     <ClCompile Include="TestShell.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RealSsdDriver.h" />
     <ClInclude Include="ShellCommand.h" />
     <ClInclude Include="ShellCommandFactory.h" />
-    <ClInclude Include="ShellScript.h" />
     <ClInclude Include="SsdDriver.h" />
     <ClInclude Include="TestShell.h" />
   </ItemGroup>

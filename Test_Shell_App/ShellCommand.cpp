@@ -138,7 +138,7 @@ void Compare::Run(SsdDriver* ssddriver) {
         if (resultData != compareData)
         {
             std::cout << "Fail\n";
-            return;
+            throw ExceptionCompareFail();
         }
     }
 

@@ -1,7 +1,6 @@
 // Copyright 2024, Samsung
 
 #include "ShellCommandFactory.h"
-#include "ShellScript.h"
 
 ShellCommand* ShellCommandFactory::Make(const std::string& strCommand) {
     TokenArgument(strCommand);
