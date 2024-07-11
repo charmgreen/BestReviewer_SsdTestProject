@@ -116,12 +116,12 @@ void RealSsdDriver::Flush() {
     SystemCall("F");
 }
 
-bool RealSsdDriver::Compare() {
-    return cmpBufMgr.CompareBuf();
+unsigned int RealSsdDriver::Compare() {
+    return (unsigned int)cmpBufMgr.CompareBuf();
 }
 
-#if 1
-#include <windows.h> 
+#if 0
+#include <windows.h>
 
 void RealSsdDriver::SystemCall(std::string cmdLine) {
     LOG_PRINT("Execute SSD.exe with a command");

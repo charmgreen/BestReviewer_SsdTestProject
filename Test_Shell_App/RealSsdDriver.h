@@ -9,7 +9,6 @@ using namespace std;
 const int CONFIG_MAX_LBA = 100;
 
 struct LBA_INFO {
-public:
     int LBA;
     string LBAData;
     int LBASize;
@@ -32,7 +31,7 @@ class RealSsdDriver : public SsdDriver {
     void Write(int LBA, string Data) override;
     void Erase(int startLBA, int Size) override;
     void Flush() override;
-    bool Compare() override;
+    unsigned int Compare() override;
 
     int GetMinLBA() override { return MIN_LBA; }
     int GetMaxLBA() override { return MAX_LBA; }

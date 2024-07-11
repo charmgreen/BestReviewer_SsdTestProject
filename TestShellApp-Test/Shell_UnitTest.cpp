@@ -18,7 +18,7 @@ class MockSsdDriver : public SsdDriver {
     MOCK_METHOD(void, Write, (int LBA, string Data), (override));
     MOCK_METHOD(void, Erase, (int startLBA, int Size), (override));
     MOCK_METHOD(void, Flush, (), (override));
-    MOCK_METHOD(bool, Compare, (), (override));
+    MOCK_METHOD(unsigned int, Compare, (), (override));
     int GetMinLBA() override { return 0; }
     int GetMaxLBA() override { return 99; }
 };
@@ -209,7 +209,8 @@ TEST_F(MockSsdTestShellFixture, TestApp2) {
 
 TEST_F(MockSsdTestShellFixture, UnmapCompare) {
     EXPECT_CALL(mockSsdDriver, Compare)
-        .Times(1);
+        .Times(1)
+        .WillRepeatedly(Return(1));
 
     testShell.Run("compare");
 }
@@ -217,7 +218,7 @@ TEST_F(MockSsdTestShellFixture, UnmapCompare) {
 TEST_F(MockSsdTestShellFixture, UnmapCompareFail) {
     EXPECT_CALL(mockSsdDriver, Compare)
         .Times(1)
-        .WillRepeatedly(Return(WRITE_DATA));
+        .WillRepeatedly(Return(0));
 
     EXPECT_THROW(testShell.Run("compare"), ExceptionCompareFail);
 }
