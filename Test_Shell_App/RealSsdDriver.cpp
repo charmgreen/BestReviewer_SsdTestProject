@@ -144,19 +144,22 @@ void RealSsdDriver::SystemCall(std::string cmdLine) {
 
     // CreateProcessW로 외부 프로그램 실행
     if (!CreateProcessW(NULL, // 실행할 프로그램의 경로. NULL이면 ssd_exe_path에서 전체 경로를 지정해야 함
-                        const_cast<LPWSTR>(ssd_exe_path.c_str()), // 실행할 프로그램 명령어 (const wchar_t* 타입으로 변환)
-                        NULL, // 보안 속성
-                        NULL, // 보안 속성
-                        FALSE, // 핸들 상속 여부
-                        0, // 생성 플래그
-                        NULL, // 새로운 프로세스의 환경 변수
-                        NULL, // 현재 디렉토리
-                        &si, // STARTUPINFOW 구조체
-                        &pi // PROCESS_INFORMATION 구조체
-                        )) {
+        const_cast<LPWSTR>(ssd_exe_path.c_str()), // 실행할 프로그램 명령어 (const wchar_t* 타입으로 변환)
+        NULL, // 보안 속성
+        NULL, // 보안 속성
+        FALSE, // 핸들 상속 여부
+        0, // 생성 플래그
+        NULL, // 새로운 프로세스의 환경 변수
+        NULL, // 현재 디렉토리
+        &si, // STARTUPINFOW 구조체
+        &pi // PROCESS_INFORMATION 구조체
+    )) {
         std::cerr << "Failed to execute SSD.exe. Error code: " << GetLastError() << '\n';
         return;
     }
+
+    // 프로세스가 종료될 때까지 기다림
+    WaitForSingleObject(pi.hProcess, INFINITE);
 
     // 프로세스 생성 후 핸들 닫기
     CloseHandle(pi.hProcess);
