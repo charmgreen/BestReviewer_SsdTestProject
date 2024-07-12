@@ -186,7 +186,7 @@ void SSD::CheckLBARange(const int& LBA) {
 }
 
 void SSD::CheckDataLength(const std::string& data) {
-    if (data.length() != 10)
+    if (data.length() != DATA_LENGTH)
         throw DataRangeException();
 }
 
