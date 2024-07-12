@@ -1,5 +1,4 @@
-// Copyright 2024, Samsung
-
+// Copyright [2024] <CRA/BestReviewer>
 #include "ShellCommandFactory.h"
 #include "../Logger/logger.cpp"
 

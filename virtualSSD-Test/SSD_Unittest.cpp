@@ -96,6 +96,10 @@ TEST_F(SSDFixture, TestEraseMemory) {
     EXPECT_EQ("0x00000000", getLSBData(0));
 }
 
+TEST_F(SSDFixture, TestEraseMemoryOverMaxLBAException) {
+    EXPECT_THROW(ssd.Erase(98, 10), LBARangeException);
+}
+
 TEST_F(SSDFixture, TestEraseMemoryWithMaxLBA) {
     ssd.Write(99, "0x00000099");
     ssd.Erase(99, 1);
