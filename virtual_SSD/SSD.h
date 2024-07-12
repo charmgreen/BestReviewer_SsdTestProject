@@ -33,6 +33,7 @@ class SSD : public SSDInterface {
     const int MIN_LBA{ 0 };
     const int InitialUpdateSize{1};
     const int Buffer_MAX_LINE{10};
+    const int DATA_LENGTH{10};
 
     CmdContent ParseCmd(const std::string &line);
     std::vector<std::string> FindLBAData(const int &LBA);
