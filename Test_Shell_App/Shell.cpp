@@ -9,6 +9,9 @@ void Shell::Run(const string& strCommand) {
     try {
         shellCommand->Run(ssddriver);
     }
+    catch (FailTestShell) {
+        throw FailTestShell();
+    }
     catch (ExitTestShell) {
         throw ExitTestShell();
     }

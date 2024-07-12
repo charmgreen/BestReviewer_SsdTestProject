@@ -21,6 +21,7 @@ class ShellCommandFactory {
     ShellCommand* MakeEraseRangeCommand();
     ShellCommand* MakeFlushCommand();
     ShellCommand* MakeExitCommand();
+    ShellCommand* MakeFailCommand();
     ShellCommand* MakeHelpCommand();
     ShellCommand* MakeFullWriteCommand();
     ShellCommand* MakeFullReadCommand();

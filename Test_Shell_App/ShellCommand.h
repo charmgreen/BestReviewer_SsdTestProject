@@ -73,6 +73,12 @@ class ExitCommand : public ShellCommand {
     void Run(SsdDriver* ssddriver) override;
 };
 
+class FailCommand : public ShellCommand {
+public:
+    FailCommand() {}
+    void Run(SsdDriver* ssddriver) override;
+};
+
 class HelpCommand : public ShellCommand {
  public:
     HelpCommand() {}
@@ -116,6 +122,13 @@ class ExitTestShell : public exception {
  public:
     char const* what() const override {
         return "Exit Test Shell!";
+    }
+};
+
+class FailTestShell : public exception {
+public:
+    char const* what() const override {
+        return "Fail Test Shell!";
     }
 };
 
