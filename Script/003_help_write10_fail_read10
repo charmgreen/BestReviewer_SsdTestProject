@@ -9,7 +9,7 @@ write 96 0xAAAAAAAA
 write 97 0xAAAAAAAA
 write 98 0xAAAAAAAA
 write 99 0xAAAAAAAA
-exit
+fail
 read 90
 read 91
 read 92
