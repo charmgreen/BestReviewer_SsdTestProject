@@ -80,9 +80,12 @@ string RealSsdDriver::Read(int LBA) {
     ifstream resultFile(ReadFileName);
     string line;
 
-    while (resultFile.is_open()) {
+    if (resultFile.is_open()) {
         getline(resultFile, line);
         resultFile.close();
+    }
+    else {
+            cerr << "result file open error " << ReadFileName << endl;
     }
 
     return line;
