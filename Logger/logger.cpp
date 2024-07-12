@@ -32,7 +32,7 @@ class Logger {
         try {
             if (GetLogFileSize(_LOG_FILE) < MAX_LOG_FILE_SIZE) {
                 WriteToLogFile(_LOG_FILE, std::ios::app, logCommit);  // append
-                    return;
+                return;
             }
 
             CompressOldestFile();
