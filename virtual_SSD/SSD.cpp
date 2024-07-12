@@ -177,6 +177,7 @@ void SSD::CheckWriteCondition(const int& LBA, const std::string& data) {
 void SSD::CheckEraseCondition(const int& LBA, const int& size) {
     CheckLBARange(LBA);
     CheckEraseSizeRange(size);
+    CheckLBARange(LBA + size - 1);
 }
 
 void SSD::CheckLBARange(const int& LBA) {
