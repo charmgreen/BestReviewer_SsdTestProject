@@ -16,7 +16,6 @@ class Logger {
     void print(const char* funcName, const char* logMessage) {
         const unsigned int KB = 1000;
         const unsigned int MAX_LOG_FILE_SIZE = 10 * KB;
-        static std::string previousLogFile = "";
 
         time_t timer = time(NULL);
         tm nowTime;
@@ -36,9 +35,9 @@ class Logger {
                 return;
             }
 
-            CompressOldestFile(previousLogFile);
+            CompressOldestFile();
 
-            previousLogFile = ChangeNameWithTimeStamp(nowTime);
+            ChangeNameWithTimeStamp(nowTime);
 
             WriteToLogFile(_LOG_FILE, std::ios::out, logCommit);  // overwrite
         }
@@ -49,9 +48,17 @@ class Logger {
 
  private:
     const char* _LOG_FILE;
+    const char* _OLD_FILE;
     Logger() {
         _LOG_FILE = "latest.log";
-        std::ofstream file(_LOG_FILE);
+        std::ofstream logfile;
+        logfile.open(_LOG_FILE, std::ios::app);
+        logfile.close();
+
+        _OLD_FILE = "oldest.txt";
+        std::ofstream flagfile;
+        logfile.open(_OLD_FILE, std::ios::app);
+        logfile.close();
     }
 
     int GetLogFileSize(const char* fileName) {
@@ -75,15 +82,32 @@ class Logger {
         writeFile << logContents;
     }
 
-    void CompressOldestFile(const std::string& oldfile) {
-        if (!oldfile.empty()) {
+    void CompressOldestFile() {
+        std::string oldfile;
+        if (IsExistPreviousOldFile(oldfile)) {
             std::string newFileName =
                 oldfile.substr(0, oldfile.find(".")) + std::string(".zip");
             int ret = rename(oldfile.c_str(), newFileName.c_str());
         }
     }
 
-    std::string ChangeNameWithTimeStamp(const tm& nowTime) {
+    int IsExistPreviousOldFile(std::string& oldFileName) {
+        std::ifstream readFile(_OLD_FILE);
+        if (!readFile.is_open()) {
+            throw std::runtime_error("[Error] failed to open readFile");
+        }
+
+        std::string stateAndName;
+        std::getline(readFile, stateAndName);
+        if (stateAndName.empty()) return 0;
+
+        int isOldFileExist = stoi(stateAndName.substr(0, stateAndName.find(" ")));
+        oldFileName = stateAndName.substr(stateAndName.find(" ")+1);
+
+        return isOldFileExist;
+    }
+
+    void ChangeNameWithTimeStamp(const tm& nowTime) {
         const unsigned int BUFFER_SIZE = 50;
         char over10KBLogFile[BUFFER_SIZE];
         sprintf_s(over10KBLogFile, BUFFER_SIZE,
@@ -91,6 +115,7 @@ class Logger {
             nowTime.tm_year - 100, nowTime.tm_mon + 1, nowTime.tm_mday,
             nowTime.tm_hour, nowTime.tm_min, nowTime.tm_sec);
         int ret = rename(_LOG_FILE, over10KBLogFile);
-        return over10KBLogFile;
+
+        WriteToLogFile(_OLD_FILE, std::ios::out, std::string("1 ") + std::string(over10KBLogFile));
     }
 };

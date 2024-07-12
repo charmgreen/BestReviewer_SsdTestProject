@@ -50,14 +50,17 @@ void FormatSSD(void) {
     deleteFileIfExists("nand.txt");
     deleteFileIfExists("result.txt");
     deleteFileIfExists("buffer.txt");
+    deleteFileIfExists("latest.log");
+    deleteFileIfExists("oldest.txt");
 }
 
-void CommandMode(void) {
+void CommandMode(void)
+{
+    FormatSSD();
     LOG_PRINT("Execute the input command being supported");
     Shell TestShellApp;
     TestShellApp.SetSsdDriver(new RealSsdDriver());
 
-    FormatSSD();
     string command;
     while (true) {
         cout << "> ";
@@ -72,8 +75,8 @@ void CommandMode(void) {
     }
 }
 
-void ScriptMode(char* argv[]) {
-    LOG_PRINT("Verify the script exists");
+void ScriptMode(char* argv[])
+{
     string inputArg = argv[1];
     string strRunListFile{ inputArg };
     ifstream runListFile(strRunListFile);
@@ -89,7 +92,6 @@ void ScriptMode(char* argv[]) {
 
 void RunScript(ifstream& runListFile)
 {
-    LOG_PRINT("Read the outer script");
     string strScriptFile;
 
     while (getline(runListFile, strScriptFile)) {
@@ -97,6 +99,7 @@ void RunScript(ifstream& runListFile)
         Shell TestShellApp;
         TestShellApp.SetSsdDriver(new RealSsdDriver());
         FormatSSD();
+        LOG_PRINT("execute the script in the 'run_list'");
 
         if (scriptFile.is_open()) {
             stringstream actualOutput;

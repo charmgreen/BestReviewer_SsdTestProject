@@ -1,6 +1,7 @@
 // Copyright [2024] <CRA/BestReviewer>
 #include<stdexcept>
 #include"Parser.h"
+#include "../Logger/logger.cpp"
 
 class ArgsLengthNotMatchException : public std::exception {};
 
@@ -10,6 +11,7 @@ CmdStatus *Parser::Parse(const std::string &strCommand) {
 }
 
 void Parser::TokenArgument(const std::string& strCommand) {
+    LOG_PRINT("Separate commands into tokens");
     std::string token;
     size_t start = strCommand.find(' ', 0) + 1;
     size_t end = start;
@@ -25,6 +27,7 @@ void Parser::TokenArgument(const std::string& strCommand) {
 }
 
 CmdStatus* Parser::UpdateCmdStatus() {
+    LOG_PRINT("Generate the appropriate command : W/R/E/F");
     if (CommandToken[0] == WRITE_CMD) return UpdateWriteCmdStatus();
     else if (CommandToken[0] == READ_CMD) return UpdateReadCmdStatus();
     else if (CommandToken[0] == ERASE_CMD) return UpdateEraseCmdStatus();
