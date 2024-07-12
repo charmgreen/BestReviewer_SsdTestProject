@@ -40,6 +40,7 @@ void ShellCommandFactory::MakeCommand() {
     else if (CommandToken[0] == "erase_range") result = MakeEraseRangeCommand();
     else if (CommandToken[0] == "flush") result = MakeFlushCommand();
     else if (CommandToken[0] == "exit") result = MakeExitCommand();
+    else if (CommandToken[0] == "fail") result = MakeFailCommand();
     else if (CommandToken[0] == "help") result = MakeHelpCommand();
     else if (CommandToken[0] == "fullwrite") result = MakeFullWriteCommand();
     else if (CommandToken[0] == "fullread") result = MakeFullReadCommand();
@@ -167,6 +168,15 @@ ShellCommand* ShellCommandFactory::MakeExitCommand() {
     }
 
     return new ExitCommand();
+}
+
+ShellCommand* ShellCommandFactory::MakeFailCommand() {
+    // Check Invalid 1) Argument Length
+    if (CommandToken.size() != 1) {
+        return new InvalidCommand();
+    }
+
+    return new FailCommand();
 }
 
 ShellCommand* ShellCommandFactory::MakeHelpCommand() {

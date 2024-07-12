@@ -70,6 +70,12 @@ void ExitCommand::Run(SsdDriver* ssddriver) {
     throw ExitTestShell();
 }
 
+void FailCommand::Run(SsdDriver* ssddriver) {
+    LOG_PRINT("");
+    cout << "[Fail] Fault Injection" << endl;
+    throw FailTestShell();
+}
+
 void HelpCommand::Run(SsdDriver* ssddriver) {
     LOG_PRINT("print supported commands");
     string HelpMessage = "";

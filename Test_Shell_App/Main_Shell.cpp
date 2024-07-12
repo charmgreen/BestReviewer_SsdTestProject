@@ -67,6 +67,9 @@ void CommandMode(void)
         try {
             TestShellApp.Run(command);
         }
+        catch (FailTestShell) {
+            break;
+        }
         catch (ExitTestShell) {
             break;
         }
@@ -112,11 +115,15 @@ void RunScript(ifstream& runListFile)
                 try {
                     TestShellApp.Run(command);
                 }
+                catch (FailTestShell) {
+                    bIsPass = false;
+                    break;
+                }
                 catch (ExitTestShell) {
                     break;
                 }
                 catch (ExceptionCompareFail) {
-                    bool bIsPass = false;
+                    bIsPass = false;
                     break;
                 }
             }
@@ -129,6 +136,7 @@ void RunScript(ifstream& runListFile)
             }
             else {
                 cout << "FAIL!" << endl;
+                return;
             }
         }
         else {
