@@ -50,8 +50,6 @@ void FormatSSD(void) {
     deleteFileIfExists("nand.txt");
     deleteFileIfExists("result.txt");
     deleteFileIfExists("buffer.txt");
-    deleteFileIfExists("latest.log");
-    deleteFileIfExists("oldest.txt");
 }
 
 void CommandMode(void)
