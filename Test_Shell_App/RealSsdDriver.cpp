@@ -1,4 +1,4 @@
-// Copyright 2024, Samsung
+// Copyright [2024] <CRA/BestReviewer>
 #include "RealSsdDriver.h"
 #include <iostream>
 #include <fstream>
