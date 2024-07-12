@@ -6,6 +6,7 @@
 #include "Shell.h"
 #include "RealSsdDriver.h"
 #include "../Logger/logger.cpp"
+#include <chrono>
 
 using namespace std;
 
@@ -104,7 +105,6 @@ void RunScript(ifstream& runListFile)
             bool bIsPass = true;
 
             cout << strScriptFile << " --- Run ... ";
-
             backup_cout = cout.rdbuf(actualOutput.rdbuf());
 
             while (getline(scriptFile, command)) {

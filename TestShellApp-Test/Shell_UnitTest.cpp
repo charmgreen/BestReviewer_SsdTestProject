@@ -1,6 +1,7 @@
 // Copyright 2024, Samsung
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include <iostream>
 #include <sstream>
 #include <iomanip>
 #include "../Test_Shell_App/ShellCommandFactory.cpp"
@@ -17,7 +18,7 @@ class MockSsdDriver : public SsdDriver {
     MOCK_METHOD(void, Write, (int LBA, string Data), (override));
     MOCK_METHOD(void, Erase, (int startLBA, int Size), (override));
     MOCK_METHOD(void, Flush, (), (override));
-    MOCK_METHOD(string, CmpBufRead, (int LBA), (override));
+    MOCK_METHOD(unsigned int, Compare, (), (override));
     int GetMinLBA() override { return 0; }
     int GetMaxLBA() override { return 99; }
 };
@@ -207,23 +208,17 @@ TEST_F(MockSsdTestShellFixture, TestApp2) {
 }
 
 TEST_F(MockSsdTestShellFixture, UnmapCompare) {
-    EXPECT_CALL(mockSsdDriver, Read)
-        .Times(MAX_LBA_CNT)
-        .WillRepeatedly(Return(UNMAPED_DATA));
-    EXPECT_CALL(mockSsdDriver, CmpBufRead)
-        .Times(MAX_LBA_CNT)
-        .WillRepeatedly(Return(UNMAPED_DATA));
+    EXPECT_CALL(mockSsdDriver, Compare)
+        .Times(1)
+        .WillRepeatedly(Return(1));
 
     testShell.Run("compare");
 }
 
 TEST_F(MockSsdTestShellFixture, UnmapCompareFail) {
-    EXPECT_CALL(mockSsdDriver, Read)
+    EXPECT_CALL(mockSsdDriver, Compare)
         .Times(1)
-        .WillRepeatedly(Return(UNMAPED_DATA));
-    EXPECT_CALL(mockSsdDriver, CmpBufRead)
-        .Times(1)
-        .WillRepeatedly(Return(WRITE_DATA));
+        .WillRepeatedly(Return(0));
 
     EXPECT_THROW(testShell.Run("compare"), ExceptionCompareFail);
 }

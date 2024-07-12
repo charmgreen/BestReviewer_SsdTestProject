@@ -148,17 +148,18 @@ void TestApp2::Run(SsdDriver* ssddriver) {
 void Compare::Run(SsdDriver* ssddriver) {
     LOG_PRINT("execute compare command");
     cout << "[Compare]\n";
-    for (int LBA = MIN_LBA; LBA <= MAX_LBA; LBA++) {
-        string resultData = ssddriver->Read(LBA);
-        string compareData = ssddriver->CmpBufRead(LBA);
-        if (resultData != compareData)
-        {
-            cout << "Fail" << endl;
-            throw ExceptionCompareFail();
-        }
+    ssddriver->Flush();
+    if (IsCompareFail(ssddriver))
+    {
+        cout << "Fail" << endl;
+        throw ExceptionCompareFail();
     }
 
-    cout << "Pass\n";
+    cout << "Pass" << endl;
     return;
 }
 
+bool Compare::IsCompareFail(SsdDriver* ssddriver)
+{
+    return 0 == ssddriver->Compare();
+}

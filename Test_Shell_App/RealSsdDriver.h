@@ -8,13 +8,19 @@ using namespace std;
 
 const int CONFIG_MAX_LBA = 100;
 
+struct LBA_INFO {
+    int LBA;
+    string LBAData;
+    int LBASize;
+};
+
 class CompareBufferMgr {
 public:
-    string GetCompareData(int LBA);
+    bool CompareBuf();
     void SetCompareData(int LBA, string Data);
 private:
+    LBA_INFO Parse(const string& line);
     string compareData[CONFIG_MAX_LBA];
-
     const string ERASE_DATA = "0x00000000";
 };
 
@@ -25,10 +31,10 @@ class RealSsdDriver : public SsdDriver {
     void Write(int LBA, string Data) override;
     void Erase(int startLBA, int Size) override;
     void Flush() override;
+    unsigned int Compare() override;
 
     int GetMinLBA() override { return MIN_LBA; }
     int GetMaxLBA() override { return MAX_LBA; }
-    string CmpBufRead(int LBA) override;
  private:
     void SystemCall(string cmdLine);
 
